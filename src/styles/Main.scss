@@ -1,0 +1,227 @@
+.MainContainer {
+    margin-top: 80px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.MainCategoryTop {
+    font-family: Roboto, sans-serif;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.MainSub {
+    font-size: 40px;
+}
+
+.AllModels {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.ItemsContainer {
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.ItemCard {
+    width: 20%;
+    font-family: Roboto, sans-serif;
+    cursor: pointer;
+}
+
+.ItemImg {
+    width: 100%;
+    height: 13vw;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    
+    img {
+        width: 100%;
+        transition: transform .3s ease;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+}
+
+.ItemSale {
+    background-color: rgba(170, 0, 0, 0.8);
+    width: fit-content;
+    padding: 4px 5px;
+    color: white;
+    border-radius: 7px;
+}
+
+.Invisible {
+    opacity: 0;
+}
+
+.ItemName {
+    font-weight: 400;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+.ItemSaledPrice {
+    margin-top: 5px;
+    color: rgb(170, 0, 0);
+    letter-spacing: 0.05em;
+    
+    span {
+        font-size: 16px;
+    }
+}
+
+.ItemPrice {
+    margin-top: 5px;
+    width: fit-content;
+    position: relative;
+    letter-spacing: 0.05em;
+}
+
+.ItemPriceAvailable {
+    margin-top: 5px;
+    font-size: 14px;
+    width: fit-content;
+    position: relative;
+}
+
+.Crossed {
+    &::before {
+        content: '';
+        width: 100%;
+        height: 1px;
+        background-color: rgb(170, 0, 0);
+        position: absolute;
+        top: calc(50% - 1px);
+    }
+}
+
+@media (max-width: 1200px) {
+    .ItemName {
+        font-size: 20px;
+    }
+
+    .ItemSaledPrice {
+        font-size: 18px;
+    }
+
+    .ItemsContainer {
+        width: 90%;
+    }
+}
+
+@media (max-width: 1100px) {
+    .MainContainer {
+        padding: 40px 40px 120px 40px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .ItemName {
+        font-size: 18px;
+    }
+
+    .ItemSaledPrice {
+        font-size: 16px;
+    }
+
+    .ItemPrice {
+        font-size: 14px;
+    }
+
+    .ItemsContainer {
+        width: 100%;
+    }
+}
+
+@media (max-width: 780px) {
+    .ItemsContainer {
+        flex-wrap: wrap;
+    }
+
+    .ItemCard {
+        width: 47%;
+        margin-bottom: 30px;
+    }
+
+    .ItemImg {
+        height: 30vw;
+    }
+
+    .MainCategoryTop {
+        align-items: center;
+    }
+
+    .MainSub {
+        font-size: 34px;
+    }
+}
+
+@media (max-width: 550px) {
+    .ItemSale {
+        font-size: 14px;
+    }
+
+    .ItemName {
+        font-size: 14px;
+    }
+
+    .ItemSaledPrice {
+        font-size: 14px;
+
+        span {
+            font-size: 14px;
+        }
+    }
+
+    .ItemPrice {
+        font-size: 12px;
+
+        span {
+            font-size: 12px;
+        }
+    }
+
+    .MainSub {
+        font-size: 30px;
+    }
+
+    .AllModels {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 450px) {
+    .MainContainer {
+        padding: 40px 15px;
+    }
+}
+
+@media (max-width: 380px) {
+    .MainSub {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 350px) {
+    .MainSub {
+        font-size: 22px;
+    }
+
+    .AllModels {
+        font-size: 16px;
+    }
+}
