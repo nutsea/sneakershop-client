@@ -155,6 +155,9 @@ const Item = () => {
                     <div className="ItemPanel">
                         {images && images.length > 0 &&
                             <div className="ItemImagesSmall">
+                                <div className="SmallImg" onClick={() => handleClickImg(0)}>
+                                    <img src={process.env.REACT_APP_API_URL + item.img} alt={item.name} />
+                                </div>
                                 {images && images.map((img, i) => {
                                     return (
                                         <div className="SmallImg" onClick={() => handleClickImg(i + 1)}>

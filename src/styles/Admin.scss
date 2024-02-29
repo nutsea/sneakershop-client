@@ -1,0 +1,380 @@
+.AdminSub {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+.AdminPassInput {
+    width: 300px;
+    padding: 10px;
+    margin: 20px 0;
+    border: solid 1px rgb(21, 21, 21, 0.3);
+    outline: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+.AdminBtn {
+    width: 300px;
+    padding: 10px;
+    margin: 0;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: rgb(21, 21, 21);
+    color: white;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+        background-color: rgb(21, 21, 21, 0.8);
+    }
+
+    &:active {
+        transform: scale(0.99);
+    }
+}
+
+.AdminPanel {
+    margin-top: 20px;
+    // width: 500px;
+    width: calc(100% - 40px);
+    padding: 20px;
+    // height: 300px;
+    background-color: white;
+    border-radius: 25px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.AdminTabs {
+    display: flex;
+    flex-direction: row;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 5px;
+}
+
+.AdminTab {
+    padding: 5px 10px;
+    // background-color: rgba(21, 21, 21, 0.3);
+    border: solid 1px rgba(21, 21, 21, 0.3);
+    color: rgb(21, 21, 21);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color .1s linear, color .1s linear;
+
+    &:hover {
+        background-color: rgba(21, 21, 21, 0.1);
+    }
+}
+
+.AdminTab+.AdminTab {
+    margin-left: 5px;
+}
+
+.ChosenTab {
+    background-color: rgb(21, 21, 21) !important;
+    color: white;
+}
+
+.AdminInput {
+    width: 100%;
+    padding: 10px;
+    margin: 0 0 5px 0;
+    border: solid 1px rgba(21, 21, 21, 0.3);
+    outline: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+.AdminTextarea {
+    min-height: 100px;
+    max-height: 300px;
+    resize: vertical;
+}
+
+.AdminColors {
+    width: 500px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: -5px;
+}
+
+.ColorItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 200px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.ColorExample {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    position: relative;
+    box-shadow: 0 0 15px rgba(21, 21, 21, 0.05) inset;
+    border-radius: 15px;
+}
+
+.CategoryCheck {
+    display: flex;
+    flex-direction: row;
+    // margin-bottom: 5px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+}
+
+.CategoryCheck + .CategoryCheck {
+    margin-top: 5px;
+}
+
+.CategoryCheckbox {
+    width: 15px;
+    height: 15px;
+    border: solid 1px rgba(21, 21, 21, 0.3);
+    border-radius: 3px;
+    transition: background-color .1s linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.BlackCheck {
+    background-color: rgb(21, 21, 21);
+}
+
+.CategoryName {
+    margin-left: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.AdminCreateBtn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgb(21, 21, 21);
+    color: white;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color .1s linear;
+
+    &:hover {
+        background-color: rgba(21, 21, 21, 0.9);
+    }
+
+    &:active {
+        background-color: rgba(21, 21, 21, 0.85);
+    }
+}
+
+.NonActiveCreate {
+    pointer-events: none;
+    background-color: rgba(21, 21, 21, 0.4);
+}
+
+.ImportantFields {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.InputClue {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-top: 10px;
+    margin-bottom: 2px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.FileInput {
+    font-family: 'Roboto', sans-serif;
+    width: calc(100% - 2px);
+    height: 100px;
+    border: solid 1px rgb(21, 21, 21, 0.3);
+    border-radius: 5px;
+    position: relative;
+    transition: background-color 0.1s linear;
+
+    &:hover {
+        background-color: rgba(21, 21, 21, 0.1);
+    }
+
+    .FileInfo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .FileText {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-size: 14px;
+
+            .FileTextLoad {
+                margin-left: 5px;
+            }
+        }
+
+        .FileClue {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 5px;
+            padding: 0 10px;
+            text-align: center;
+        }
+    }
+
+    .Showed {
+        display: flex;
+    }
+
+    input {
+        z-index: 5;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+        opacity: 0;
+        cursor: pointer;
+    }
+}
+
+.FileClear {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    display: none;
+}
+
+.FileClear.Showed {
+    display: block;
+}
+
+table {
+    font-family: 'Roboto', sans-serif;
+    margin-top: 5px;
+    color: #2c2c2c;
+    background-color: white;
+    font-size: 12px;
+    // background-color: rgba(21, 21, 21, 0.3);
+
+    tbody {
+        tr {
+
+            cursor: pointer;
+
+            &:nth-child(odd) {
+                // background-color: rgba(21, 21, 21, 0.025);
+                background-color: rgba(21, 21, 21, 0.1);
+            }
+
+            &:nth-child(even) {
+                // background-color: #e7e9eb;
+                // background-color: rgba(21, 21, 21, 0.1);
+                background-color: rgba(21, 21, 21, 0.025);
+            }
+
+            &:hover {
+                background-color: rgb(160, 223, 137);
+                background-color: rgb(220, 227, 244);
+            }
+
+            th {
+                // padding: 8px;
+                padding: 2px;
+                text-align: left;
+                font-weight: 500;
+                background-color: rgba(21, 21, 21, 0.1);
+                cursor: auto;
+            }
+
+            td {
+                // padding: 8px;
+                padding: 2px;
+                text-align: left;
+                font-weight: 400;
+            }
+
+            .DeleteChecker {
+                display: flex;
+                justify-content: center;
+                color: transparent;
+                transition: color .1s linear;
+
+                span {
+                    width: 15px;
+                    height: 15px;
+                    border: solid 1px rgba(21, 21, 21, 0.3);
+                    border-radius: 3px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background-color .1s linear, border .1s linear;
+                }
+            }
+
+            .CheckedItem {
+                color: white;
+
+                span {
+                    background-color: #d43434;
+                    border: solid 1px #d43434;
+                }
+            }
+
+            .Checkbox {
+                cursor: pointer;
+            }
+
+            .DeleteRow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    background-color: rgb(223, 137, 137);
+                    background-color: #d43434;
+                    color: white;
+                }
+            }
+
+            .ItemName {
+                display: flex;
+                flex-direction: column;
+
+                .Code {
+                    margin-top: 5px;
+                    font-size: 14px;
+                    opacity: 0.6;
+                }
+            }
+        }
+    }
+
+}

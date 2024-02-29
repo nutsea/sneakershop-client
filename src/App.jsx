@@ -20,21 +20,27 @@ export const App = observer(() => {
   const [scrollPos, setScrollPos] = useState(0)
   const [isTop, setIsTop] = useState(true)
   const [search, setSearch] = useState('')
+  const [searched, setSearched] = useState([])
+  const [isSearch, setIsSearch] = useState(false)
+  
   const navigate = useNavigate()
   const { cartItems } = useContext(Context)
 
   const handleNavigate = (e) => {
     navigate(e.target.id)
+    hideSearch()
   }
 
   const handleSearch = (e) => {
     setSearch(e.target.value)
     fetchSearch(e.target.value).then(data => {
-      console.log(data)
+      setSearched(data)
     })
-    // if (e.key === 'Enter') {
-    //   navigate(`/search/${search}`)
-    // }
+    console.log(e)
+    if (e.key === 'Enter') {
+      navigate(`/catalogue/all/all/${search}`)
+      hideSearch()
+    }
   }
 
   const convertToCapital = (word) => {
@@ -46,7 +52,9 @@ export const App = observer(() => {
   }
 
   const checkIsTop = () => {
-    if (window.scrollY > 0) setIsTop(false)
+    const url = window.location.href.split('/')
+    // console.log(url[3])
+    if (window.scrollY > 0 && url[3] !== 'admin') setIsTop(false)
     else setIsTop(true)
   }
 
@@ -102,11 +110,12 @@ export const App = observer(() => {
 
   const showSearch = () => {
     document.querySelector('.SearchContainer').classList.remove('Opacity0')
-    document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 9; backdrop-filter: blur(5px);')
+    document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(5px);')
     document.querySelector('.SearchBlock').setAttribute('style', 'transform: translateY(0);')
     setScrollPos(window.scrollY)
     document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
     document.querySelector('.AppContent').classList.add('Lock')
+    setIsSearch(true)
   }
 
   const handleTop = () => {
@@ -132,8 +141,8 @@ export const App = observer(() => {
   }
 
   const hideSearch = (e) => {
-    if (e.target.id !== 'search') {
-      document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 9; background-color: transparent; backdrop-filter: blur(0);')
+    if (!e || e.target.id !== 'search') {
+      document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 11; background-color: transparent; backdrop-filter: blur(0);')
       document.querySelector('.SearchBlock').setAttribute('style', 'transform: translateY(-280px);')
       document.querySelector('.AppContent').classList.remove('Lock')
       window.scrollTo(0, scrollPos)
@@ -142,6 +151,7 @@ export const App = observer(() => {
         document.querySelector('.SearchContainer').setAttribute('style', 'z-index: -1000; background-color: transparent; backdrop-filter: blur(0);')
         document.querySelector('.SearchContainer').classList.add('Opacity0')
       }, 334)
+      setIsSearch(false)
     }
   }
 
@@ -241,6 +251,7 @@ export const App = observer(() => {
   }, [windowWidth, windowHeight, brands.length])
 
   useEffect(() => {
+    console.log(process.env.REACT_APP_API_URL)
     document.querySelector('.InfoTab').setAttribute('style', `transform: translateY(-214px)`)
     document.querySelector('.BrandsTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-224px)`)
     fetchBrands().then(data => {
@@ -313,10 +324,27 @@ export const App = observer(() => {
           <div className="InfoBtn">FAQ</div>
         </div>
         <div className="SearchContainer" onClick={hideSearch}>
-          <div className='SearchBlock' id='search'>
+          <div className='SearchBlock'>
             <div className='SearchBox' id='search'>
-              <input type="text" className="SearchInput" placeholder="Поиск" value={search} onChange={handleSearch} id='search' />
-              <div className="SearchBtn" id='search'><CiSearch style={{ marginRight: 5, pointerEvents: 'none' }} size={30} /></div>
+              <input type="text" className="SearchInput" placeholder="Поиск" autoComplete='off' value={search} onChange={handleSearch} onKeyDown={handleSearch} id='search' />
+              <div className="SearchBtn" id={`/catalogue/all/all/${search}`} onClick={handleNavigate}><CiSearch style={{ marginRight: 5, pointerEvents: 'none' }} size={30} /></div>
+              {searched.length > 0 &&
+                <div className={`SearchResults ${isSearch ? '' : 'None'}`} id='search'>
+                  {searched.map((item, i) => {
+                    return (
+                      <div key={i} className='SearchResult' onClick={() => navigate(`/item/${item.id}`)}>
+                        <div className='SearchImg'>
+                          <img src={process.env.REACT_APP_API_URL + item.img} alt="item" />
+                        </div>
+                        <div className='SearchInfo'>
+                          <div className='SearchName'>{item.name.toUpperCase()}</div>
+                          <div className='SearchPrice'>от {item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽</div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              }
             </div>
           </div>
         </div>

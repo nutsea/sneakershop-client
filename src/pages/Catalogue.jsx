@@ -39,7 +39,7 @@ const colorsList = [
 ]
 
 const Catalogue = observer(() => {
-    const { category, brandlink } = useParams()
+    const { category, brandlink, search } = useParams()
     const { catalogue } = useContext(Context)
     const [sortBy, setSortBy] = useState('price')
     const [sortDir, setSortDir] = useState('down')
@@ -390,7 +390,6 @@ const Catalogue = observer(() => {
     }
 
     const handleCloSize = (e, size) => {
-        console.log(size)
         document.querySelector(`.${e.target.id}`).classList.toggle('CheckedInput')
         if (sizesCloSet.includes(size)) {
             setSizesCloSet(sizesCloSet.filter(s => s !== size))
@@ -420,7 +419,8 @@ const Catalogue = observer(() => {
                 inStock,
                 modelsSet.length > 0 ? true : false,
                 sizesEuSet.length > 0 || sizesRuSet.length > 0 || sizesUsSet.length > 0 || sizesUkSet.length > 0 || sizesSmSet.length > 0 ? true : false,
-                sizesCloSet.length > 0 ? true : false
+                sizesCloSet.length > 0 ? true : false,
+                search
             )
                 .then(data => {
                     catalogue.setItems(data.rows)
@@ -437,7 +437,6 @@ const Catalogue = observer(() => {
         prevP = catalogue.page - 1
 
     const handlePagination = (e) => {
-        console.log(e.target.id)
         const thisE = document.getElementById(`${e.target.id}`)
         const hide_1_2 = document.querySelector('.Hide-1-2')
         const hide_29_30 = document.querySelector('.Hide-29-30')
@@ -671,7 +670,7 @@ const Catalogue = observer(() => {
     }, [])
 
     useEffect(() => {
-        if (brandlink) {
+        if (brandlink && brandlink !== 'all') {
             setBrandsSet([{ brand: brandlink }])
         } else {
             setBrandsSet([])
@@ -683,7 +682,7 @@ const Catalogue = observer(() => {
             fetchBrandsCategory().then(data => setBrands(data))
             fetchColorsCategory().then(data => setColors(data))
         }
-    }, [category, brandlink])
+    }, [category, brandlink, search])
 
     useEffect(() => {
         findItems()
