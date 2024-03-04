@@ -443,12 +443,12 @@ export const App = observer(() => {
             <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
             <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
             <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
-            <li
+            {/* <li
               onMouseEnter={showInfoTab}
               onMouseLeave={hideInfoTab}
             >
               ИНФОРМАЦИЯ
-            </li>
+            </li> */}
           </nav>
           <div className="HeaderBtns">
             <div className="HeaderBtn" onClick={showSearch}><CiSearch size={30} /></div>
@@ -471,12 +471,12 @@ export const App = observer(() => {
               <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
               <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
               <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
-              <li
+              {/* <li
                 onMouseEnter={showInfoTab}
                 onMouseLeave={hideInfoTab}
               >
                 ИНФОРМАЦИЯ
-              </li>
+              </li> */}
             </nav>
           </div>
         </header>
