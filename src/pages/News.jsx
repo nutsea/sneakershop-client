@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { useNavigate } from "react-router-dom"
 import '../styles/Catalogue.scss'
@@ -9,7 +9,7 @@ import { Context } from ".."
 const News = observer(() => {
     const { catalogue } = useContext(Context)
     const navigate = useNavigate()
-
+    const [found, setFound] = useState(false)
 
     const navigateItem = (id) => {
         navigate(`/item/${id}`)
@@ -57,6 +57,7 @@ const News = observer(() => {
         fetchNews().then(data => {
             catalogue.setItems(data.rows)
             catalogue.setCount(data.count)
+            setFound(true)
         })
     }
 
@@ -71,36 +72,47 @@ const News = observer(() => {
             <div className="CatalogueTop">
                 <h2 style={{ marginTop: 0, marginBottom: 20, fontWeight: 500 }}>Новинки</h2>
             </div>
-            <div className="CatalogueItems2" style={{ marginTop: -60 }}>
-                <div className="CatalogueItems">
-                    {catalogue.items && catalogue.items.length === 0 &&
-                        <div className="CatalogueNotFound">Товары не найдены</div>
-                    }
-                    {catalogue.items && catalogue.items.map(item => {
-                        return (
-                            <div key={item.id[0]} className="CatalogueCard" onClick={() => navigateItem(item.id[0])}>
-                                <div className={`CatalogueImg H20`}><img src={`${process.env.REACT_APP_API_URL + item.img[0]}`} alt="" /></div>
-                                <div className={`ItemSale ${item.sale[0] ? '' : 'Invisible'}`}>Sale</div>
-                                <div className="ItemName">{capitalizeWords(item.name[0])}</div>
-                                {hasNotNull(item.counts) ?
-                                    <>
-                                        {item.sale[0] ?
-                                            <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(notNullMinimum(item.counts, item.sale))} <span>₽</span></div>
+            {found ?
+                <>
+                    <div className="CatalogueItems2" style={{ marginTop: -60 }}>
+                        <div className="CatalogueItems">
+                            {catalogue.items && catalogue.items.length === 0 &&
+                                <div className="CatalogueNotFound">Товары не найдены</div>
+                            }
+                            {catalogue.items && catalogue.items.map(item => {
+                                return (
+                                    <div key={item.id[0]} className="CatalogueCard" onClick={() => navigateItem(item.id[0])}>
+                                        <div className={`CatalogueImg H20`}><img src={`${process.env.REACT_APP_API_URL + item.img[0]}`} alt="" /></div>
+                                        <div className={`ItemSale ${item.sale[0] ? '' : 'Invisible'}`}>Sale</div>
+                                        <div className="ItemName">{capitalizeWords(item.name[0])}</div>
+                                        {hasNotNull(item.counts) ?
+                                            <>
+                                                {item.sale[0] ?
+                                                    <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(notNullMinimum(item.counts, item.sale))} <span>₽</span></div>
+                                                    :
+                                                    <></>
+                                                }
+                                                <div className={`ItemPrice ${item.sale[0] ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(notNullMinimum(item.counts, item.price))} ₽</div>
+                                            </>
                                             :
-                                            <></>
+                                            <>
+                                                <div className="ItemPriceAvailable">Доступен для заказа</div>
+                                            </>
                                         }
-                                        <div className={`ItemPrice ${item.sale[0] ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(notNullMinimum(item.counts, item.price))} ₽</div>
-                                    </>
-                                    :
-                                    <>
-                                        <div className="ItemPriceAvailable">Доступен для заказа</div>
-                                    </>
-                                }
-                            </div>
-                        )
-                    })}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </>
+                :
+                <div className="LoadingContainer2">
+                    <div className="Spinner">
+                        <div className="Ball"></div>
+                        <p className="Loading">ЗАГРУЗКА...</p>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     )
 })

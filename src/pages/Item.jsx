@@ -451,12 +451,16 @@ const Item = () => {
                     </div>
                     <div className="ItemDetails">
                         <div className="ItemInfoTabs">
-                            <div className="ItemTab ChosenTab" id="tab1" onClick={handleTab}>СПОСОБЫ ДОСТАВКИ</div>
+                            <div className="ItemTab ChosenTab" id="tab0" onClick={handleTab}>ОПИСАНИЕ</div>
+                            <div className="ItemTab" id="tab1" onClick={handleTab}>СПОСОБЫ ДОСТАВКИ</div>
                             <div className="ItemTab" id="tab2" onClick={handleTab}>УСЛОВИЯ ВОЗВРАТА</div>
                             <div className="ItemTab" id="tab3" onClick={handleTab}>СПОСОБЫ ОПЛАТ</div>
                             <div className="ItemTab" id="tab4" onClick={handleTab}>FAQ</div>
                         </div>
                         <div className="ItemInfoPars">
+                            <div className={`ItemInfoPar ${chosenTab === 'tab0' ? '' : 'InvisibleTab'}`}>
+                                <p>{item.description}</p>
+                            </div>
                             <div className={`ItemInfoPar ${chosenTab === 'tab1' ? '' : 'InvisibleTab'}`}>
                                 <p className="Bold">Сейчас доступны следующие варианты доставки:</p>
                                 <p>- доставка в любой магазин EFIM VERETSKY.</p>
