@@ -53,8 +53,13 @@ export const fetchItemsAdmin = async () => {
     return data
 }
 
-export const fetchItems = async (category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search) => {
-    const { data } = await $host.get('api/item/all', { params: { category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search } })
+export const fetchItems = async (category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search, sale) => {
+    const { data } = await $host.get('api/item/all', { params: { category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search, sale } })
+    return data
+}
+
+export const fetchNews = async () => {
+    const { data } = await $host.get('api/item/news')
     return data
 }
 
@@ -74,6 +79,7 @@ export const fetchImages = async (id) => {
 }
 
 export const fetchCart = async (idArr) => {
+    if (idArr.length === 0) return []
     const { data } = await $host.get('api/item/cart', { params: { idArr } })
     return data
 }
@@ -138,4 +144,73 @@ export const createItemWithFiles = async (code, brand, name, description, price,
             reject(error)
         }
     })
+}
+
+export const deleteChosen = async (idArr) => {
+    const { data } = await $host.delete('api/item/many', { params: { idArr } })
+    return data
+}
+
+export const changeItem = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags) => {
+    const formData = new FormData()
+    console.log(sale)
+    formData.append('id', id)
+    formData.append('code', code)
+    formData.append('brand', brand)
+    formData.append('name', name)
+    formData.append('description', description)
+    formData.append('price', Number(price))
+    formData.append('sale', Number(sale))
+    formData.append('count', Number(count))
+    formData.append('size_eu', Number(size_eu))
+    formData.append('size_ru', Number(size_ru))
+    formData.append('size_us', Number(size_us))
+    formData.append('size_uk', Number(size_uk))
+    formData.append('size_sm', Number(size_sm))
+    formData.append('size_clo', size_clo)
+    formData.append('category', category)
+    formData.append('model', model)
+    formData.append('color', color)
+    formData.append('tags', tags)
+    formData.append('img', img)
+
+    const { data } = await $host.post('api/item/update', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    return data
+}
+
+export const changeItemWithFiles = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await changeItem(id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags)
+                .then(async (data) => {
+                    let item_id = data.id
+                    const formData = new FormData()
+                    formData.append('item_id', item_id)
+
+                    for (let i of files) {
+                        formData.append('img', i)
+                    }
+
+                    const { data: data2 } = await $host.post('api/image', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+
+                    resolve(data2)
+                })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+export const destroyImages = async (toDelete) => {
+    console.log(toDelete)
+    const { data } = await $host.delete('api/image', { params: { toDelete } })
+    return data
 }

@@ -20,6 +20,7 @@ const Item = () => {
     const [nowImg, setNowImg] = useState(0)
     const [chosenTab, setChosenTab] = useState('tab1')
     const { cartItems } = useContext(Context)
+    const [scrollPos, setScrollPos] = useState(0)
 
     useEffect(() => {
         fetchItem(id).then((data) => {
@@ -148,6 +149,22 @@ const Item = () => {
         e.target.classList.add('ChosenTab')
     }
 
+    const showSizesTable = () => {
+        setScrollPos(window.scrollY)
+        document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
+        document.querySelector('.AppContent').classList.add('Lock')
+        document.querySelector('.SizesModal').classList.add('VisibleSizes')
+    }
+
+    const hideSizesTable = (e) => {
+        if (e.target.id !== 'sizes') {
+            document.querySelector('.AppContent').classList.remove('Lock')
+            window.scrollTo(0, scrollPos)
+            document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
+            document.querySelector('.SizesModal').classList.remove('VisibleSizes')
+        }
+    }
+
     return (
         <div className="MainContainer">
             {item && sameItems && price ?
@@ -191,19 +208,21 @@ const Item = () => {
                         <div className="ItemInfo">
                             <div className={`ItemSaleItem ${item.sale ? '' : 'Invisible'}`}>Sale</div>
                             <div className="ItemNameItem">{capitalizeWords(item.name)}</div>
-                            {sale && hasNotNull() &&
+                            {(sale && hasNotNull()) ?
                                 <div className="ItemSaledPriceItem MT20">{chosenItem ? formatNumberWithSpaces(chosenItem.sale) : formatNumberWithSpaces(sale)} <span>₽</span></div>
+                                :
+                                <></>
                             }
                             {hasNotNull() ?
                                 <div className={`ItemPriceItem MT10 FS20 Span16 FW400 ${item.sale && hasNotNull() ? 'Crossed' : ''}`}>{chosenItem ? formatNumberWithSpaces(chosenItem.price) : formatNumberWithSpaces(price)} <span>₽</span></div>
                                 :
                                 <div className="ItemPriceItem MT20">Доступен для заказа</div>
                             }
-                            {item.size_clo ?
-                                <div className="SizeTypes Centered">Размеры</div>
+                            {item.size_clo && item.size_clo !== 'null' ?
+                                <div className="SizeTypes2 Centered">Размеры</div>
                                 :
                                 (item.size_eu &&
-                                    <div className="SizeTypes">
+                                    <div className="SizeTypes2">
                                         <div className={`SizeType ${sizeType === 'eu' ? 'ChosenSize' : ''}`} id="eu" onClick={chooseSize}>EU</div>
                                         <div className={`SizeType ${sizeType === 'ru' ? 'ChosenSize' : ''}`} id="ru" onClick={chooseSize}>RU</div>
                                         <div className={`SizeType ${sizeType === 'us' ? 'ChosenSize' : ''}`} id="us" onClick={chooseSize}>US</div>
@@ -314,9 +333,102 @@ const Item = () => {
                                     )
                                 }
                             </div>
-                            <div className="SizesInfo">
+                            <div className="SizesInfo" onClick={showSizesTable}>
                                 <span className="BlackCircle">i</span>
                                 <span className="Underlined">Как выбрать размер?</span>
+                            </div>
+                            <div className="SizesModal" onClick={hideSizesTable}>
+                                <div className="SizesTable" id="sizes">
+                                    <div id="sizes">Таблица размеров</div>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>EU</td>
+                                                <td>RU</td>
+                                                <td>US</td>
+                                                <td>UK</td>
+                                                <td>CM</td>
+                                            </tr>
+                                            <tr>
+                                                <td>36</td>
+                                                <td>35</td>
+                                                <td>4</td>
+                                                <td>3</td>
+                                                <td>23</td>
+                                            </tr>
+                                            <tr>
+                                                <td>37</td>
+                                                <td>36</td>
+                                                <td>5</td>
+                                                <td>4</td>
+                                                <td>23</td>
+                                            </tr>
+                                            <tr>
+                                                <td>38</td>
+                                                <td>37</td>
+                                                <td>6</td>
+                                                <td>5</td>
+                                                <td>24</td>
+                                            </tr>
+                                            <tr>
+                                                <td>39</td>
+                                                <td>38</td>
+                                                <td>7</td>
+                                                <td>6</td>
+                                                <td>25</td>
+                                            </tr>
+                                            <tr>
+                                                <td>40</td>
+                                                <td>39</td>
+                                                <td>8</td>
+                                                <td>7</td>
+                                                <td>26</td>
+                                            </tr>
+                                            <tr>
+                                                <td>41</td>
+                                                <td>40</td>
+                                                <td>9</td>
+                                                <td>8</td>
+                                                <td>27</td>
+                                            </tr>
+                                            <tr>
+                                                <td>42</td>
+                                                <td>41</td>
+                                                <td>10</td>
+                                                <td>9</td>
+                                                <td>28</td>
+                                            </tr>
+                                            <tr>
+                                                <td>43</td>
+                                                <td>42</td>
+                                                <td>11</td>
+                                                <td>10</td>
+                                                <td>29</td>
+                                            </tr>
+                                            <tr>
+                                                <td>44</td>
+                                                <td>43</td>
+                                                <td>12</td>
+                                                <td>11</td>
+                                                <td>30</td>
+                                            </tr>
+                                            <tr>
+                                                <td>45</td>
+                                                <td>44</td>
+                                                <td>13</td>
+                                                <td>12</td>
+                                                <td>31</td>
+                                            </tr>
+                                            <tr>
+                                                <td>46</td>
+                                                <td>45</td>
+                                                <td>14</td>
+                                                <td>13</td>
+                                                <td>32</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div className="ItemBuy">
                                 <div className="BuyBtn" onClick={handleToCart}>
@@ -324,7 +436,7 @@ const Item = () => {
                                         <>
                                             {(chosenItem.size_clo || chosenItem.size_eu) &&
                                                 <>
-                                                    <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo ? chosenItem.size_clo.toUpperCase() : chosenItem.size_eu}</div>
+                                                    <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo && chosenItem.size_clo !== 'null' ? chosenItem.size_clo.toUpperCase() : chosenItem.size_eu}</div>
                                                     <div className="BuyLine"></div>
                                                 </>
                                             }

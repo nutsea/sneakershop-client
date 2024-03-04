@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import '../styles/Main.scss'
-import {fetchAccessoriesRnd, fetchClothesRnd, fetchShoesRnd} from "../http/itemAPI";
+import { fetchAccessoriesRnd, fetchClothesRnd, fetchShoesRnd } from "../http/itemAPI";
 import { MdArrowOutward } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const Main = () => {
     const navigateItem = (id) => {
         navigate(`/item/${id}`)
     }
-    
+
     useEffect(() => {
         fetchShoesRnd().then(data => {
             setShoes(data)
@@ -30,7 +30,7 @@ const Main = () => {
             setAccessories(data)
         })
     }, [])
-    
+
     function formatNumberWithSpaces(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     }
@@ -42,7 +42,7 @@ const Main = () => {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ');
     }
-    
+
     return (
         <div className="MainContainer">
             <div className="MainCategoryTop">
@@ -85,18 +85,20 @@ const Main = () => {
                             <div className="ItemName">{capitalizeWords(item.name)}</div>
                             {item.count > 0 ?
                                 <>
-                                {item.sale &&
+                                    {item.sale ?
                                         <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(item.sale)} <span>₽</span></div>
+                                        :
+                                        <></>
                                     }
-                                <div className={`ItemPrice ${item.sale ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(item.price)} ₽</div>
+                                    <div className={`ItemPrice ${item.sale ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(item.price)} ₽</div>
                                 </>
                                 :
                                 <>
-                                <div className="ItemPrice">Доступен для заказа</div>
+                                    <div className="ItemPrice">Доступен для заказа</div>
                                 </>
                             }
                         </div>
-                        )
+                    )
                 })}
             </div>
             <div className="MainCategoryTop MT100">
@@ -112,18 +114,18 @@ const Main = () => {
                             <div className="ItemName">{capitalizeWords(item.name)}</div>
                             {item.count > 0 ?
                                 <>
-                                {item.sale &&
+                                    {item.sale &&
                                         <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(item.sale)} <span>₽</span></div>
                                     }
-                                <div className={`ItemPrice ${item.sale ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(item.price)} ₽</div>
+                                    <div className={`ItemPrice ${item.sale ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(item.price)} ₽</div>
                                 </>
                                 :
                                 <>
-                                <div className="ItemPrice">Доступен для заказа</div>
+                                    <div className="ItemPrice">Доступен для заказа</div>
                                 </>
                             }
                         </div>
-                        )
+                    )
                 })}
             </div>
         </div>

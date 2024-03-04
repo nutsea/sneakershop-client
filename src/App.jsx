@@ -22,24 +22,159 @@ export const App = observer(() => {
   const [search, setSearch] = useState('')
   const [searched, setSearched] = useState([])
   const [isSearch, setIsSearch] = useState(false)
-  
+  const [isOrdering, setIsOrdering] = useState(false)
+  const [clientName, setClientName] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [sendNumber, setSendNumber] = useState('')
+  const [orderDone, setOrderDone] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
   const navigate = useNavigate()
   const { cartItems } = useContext(Context)
 
   const handleNavigate = (e) => {
     navigate(e.target.id)
     hideSearch()
+    document.querySelector('.HeaderBurger').classList.remove('ActiveBurger')
+    document.querySelector('.AppContent').classList.remove('Lock')
+    window.scrollTo(0, scrollPos)
+    document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
+    document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
   }
+
+  const handleName = (e) => {
+    setClientName(e.target.value)
+  }
+
+  const handlePhone = (e) => {
+    const formattedNumber = formatPhoneNumber(e)
+    const cleaned = ('' + e.target.value).replace(/\D/g, '')
+    setPhoneNumber(formattedNumber)
+    setSendNumber('7' + cleaned)
+  }
+
+
+  const formatPhoneNumber = (e) => {
+    const cleaned = ('' + e.target.value).replace(/\D/g, '')
+    setSendNumber('7' + cleaned)
+    const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})$/)
+    let formattedNumber
+    switch (cleaned.length) {
+      case 10:
+        formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}-${match[4]}`
+        break
+      case 9:
+        formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}-${match[4]}`
+        break
+      case 8:
+        formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}-`
+        break
+      case 7:
+        formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}`
+        break
+      case 6:
+        formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-`
+        break
+      case 5:
+        formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}`
+        break
+      case 4:
+        formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}`
+        break
+      case 3:
+        formattedNumber = !match ? '' : `(${match[1]}) `
+        break
+      case 2:
+        formattedNumber = !match ? '' : `(${match[1]}`
+        break
+      case 1:
+        formattedNumber = !match ? '' : `(${match[1]}`
+        break
+      case 0:
+        formattedNumber = !match ? '' : ``
+        break
+
+      default:
+        break
+    }
+
+    return formattedNumber;
+  }
+
+
+  const handleBackspace = (e) => {
+    if (e.keyCode === 8 || e.key === 'Backspace') {
+      e.preventDefault()
+      const cleaned = ('' + e.target.value).replace(/\D/g, '')
+      const match = cleaned.split('')
+      let formattedNumber
+      switch (cleaned.length) {
+        case 10:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-${match[6]}${match[7]}-${match[8]}`
+          break
+        case 9:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-${match[6]}${match[7]}-`
+          break
+        case 8:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-${match[6]}`
+          break
+        case 7:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-`
+          break
+        case 6:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}`
+          break
+        case 5:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}${match[2]}) ${match[3]}`
+          break
+        case 4:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}${match[2]}) `
+          break
+        case 3:
+          formattedNumber = !match ? '' :
+            `(${match[0]}${match[1]}`
+          break
+        case 2:
+          formattedNumber = !match ? '' :
+            `(${match[0]}`
+          break
+        case 1:
+          formattedNumber = !match ? '' : ``
+          break
+        case 0:
+          formattedNumber = !match ? '' : ``
+          break
+
+        default:
+          break
+      }
+      const newCleaned = ('7' + formattedNumber).replace(/\D/g, '')
+      setPhoneNumber(formattedNumber)
+      setSendNumber(newCleaned)
+    }
+  }
+
 
   const handleSearch = (e) => {
     setSearch(e.target.value)
     fetchSearch(e.target.value).then(data => {
       setSearched(data)
     })
-    console.log(e)
     if (e.key === 'Enter') {
       navigate(`/catalogue/all/all/${search}`)
       hideSearch()
+      document.querySelector('.HeaderBurger').classList.remove('ActiveBurger')
+      document.querySelector('.AppContent').classList.remove('Lock')
+      window.scrollTo(0, scrollPos)
+      document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
+      document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
     }
   }
 
@@ -53,7 +188,6 @@ export const App = observer(() => {
 
   const checkIsTop = () => {
     const url = window.location.href.split('/')
-    // console.log(url[3])
     if (window.scrollY > 0 && url[3] !== 'admin') setIsTop(false)
     else setIsTop(true)
   }
@@ -128,6 +262,13 @@ export const App = observer(() => {
 
   const hideCart = (e) => {
     if (e.target.id !== 'cart') {
+      if (orderDone) {
+        localStorage.removeItem('cart')
+        cartItems.setCart([])
+        cartItems.setCounts({})
+        setIsOrdering(false)
+        setOrderDone(false)
+      }
       document.querySelector('.CartContainer').setAttribute('style', 'z-index: 11; background-color: transparent; backdrop-filter: blur(0);')
       document.querySelector('.CartBlock').setAttribute('style', 'transform: translateX(100vw);')
       document.querySelector('.AppContent').classList.remove('Lock')
@@ -155,7 +296,19 @@ export const App = observer(() => {
     }
   }
 
+  const handleOrder = () => {
+    // localStorage.removeItem('cart')
+    // cartItems.setCart([])
+    // cartItems.setCounts({})
+    // setIsOrdering(false)
+    setOrderDone(true)
+  }
+
   useEffect(() => {
+    const url = window.location.href.split('/')
+    if (url[3] === 'admin') setIsAdmin(true)
+    else setIsAdmin(false)
+
     window.addEventListener('resize', handleWindowResize)
     window.addEventListener('scroll', checkIsTop)
 
@@ -200,7 +353,7 @@ export const App = observer(() => {
 
   const deleteFromCart = (id) => {
     let cartList = JSON.parse(localStorage.getItem('cart'))
-    if (Array.isArray(cartList)) {
+    if (Array.isArray(cartList) && cartList.length > 0) {
       cartList = cartList.filter(item => item !== id)
       localStorage.setItem('cart', JSON.stringify(cartList))
       fetchCart(cartList).then(data => {
@@ -227,7 +380,7 @@ export const App = observer(() => {
 
   useEffect(() => {
     const cartList = JSON.parse(localStorage.getItem('cart'))
-    if (Array.isArray(cartList)) {
+    if (Array.isArray(cartList) && cartList.length > 0) {
       fetchCart(cartList).then(data => {
         cartItems.setCart(data)
       })
@@ -251,7 +404,6 @@ export const App = observer(() => {
   }, [windowWidth, windowHeight, brands.length])
 
   useEffect(() => {
-    console.log(process.env.REACT_APP_API_URL)
     document.querySelector('.InfoTab').setAttribute('style', `transform: translateY(-214px)`)
     document.querySelector('.BrandsTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-224px)`)
     fetchBrands().then(data => {
@@ -259,13 +411,29 @@ export const App = observer(() => {
     })
   }, [])
 
+  const handleBurger = () => {
+    document.querySelector('.HeaderBurger').classList.toggle('ActiveBurger')
+    if (document.querySelector('.HeaderBurger').classList.contains('ActiveBurger')) {
+      setScrollPos(window.scrollY)
+      document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
+      document.querySelector('.AppContent').classList.add('Lock')
+      document.querySelector('.BurgerMenu').classList.add('ActiveBurgerMenu')
+    } else {
+      document.querySelector('.AppContent').classList.remove('Lock')
+      window.scrollTo(0, scrollPos)
+      document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
+      document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
+    }
+  }
+
   return (
     <div className="App">
       <>
         <header className="AppHeader">
           <div className="HeaderLogo" id='/' onClick={handleNavigate}>EV</div>
           <nav className="HeaderNav PCNav">
-            <li>НОВИНКИ</li>
+            <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
+            <li id='/news' onClick={handleNavigate}>НОВИНКИ</li>
             <li
               onMouseEnter={showBrandsTab}
               onMouseLeave={hideBrandsTab}
@@ -284,10 +452,32 @@ export const App = observer(() => {
           </nav>
           <div className="HeaderBtns">
             <div className="HeaderBtn" onClick={showSearch}><CiSearch size={30} /></div>
+            <div className='HeaderBurger' onClick={handleBurger}><span></span></div>
             <div className="HeaderBtn PCCart" style={{ marginLeft: 16 }} onClick={showCart}>
               <CiShoppingCart size={30} />
               <div className="CartCount">{cartItems.counts && countsSum()}</div>
             </div>
+          </div>
+          <div className='BurgerMenu'>
+            <nav className="HeaderBurgerNav">
+              <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
+              <li id='/news' onClick={handleNavigate}>НОВИНКИ</li>
+              <li
+                onMouseEnter={showBrandsTab}
+                onMouseLeave={hideBrandsTab}
+              >
+                БРЕНДЫ
+              </li>
+              <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
+              <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
+              <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
+              <li
+                onMouseEnter={showInfoTab}
+                onMouseLeave={hideInfoTab}
+              >
+                ИНФОРМАЦИЯ
+              </li>
+            </nav>
           </div>
         </header>
         <div
@@ -360,39 +550,71 @@ export const App = observer(() => {
             {cartItems.cart ? (
               cartItems.cart.length > 0 ?
                 <>
-                  <div id="cart" className='ScrollCart'>
-                    {cartItems.cart.map((item, i) => {
-                      return (
-                        <div key={i} className='CartItem' id="cart">
-                          <div className='CartImg' id="cart">
-                            <img src={process.env.REACT_APP_API_URL + item.img} alt="item" id="cart" />
-                          </div>
-                          <div className='CartInfo' id="cart">
-                            <div className='CartName' id="cart">{item.name.toUpperCase()}</div>
-                            <div className='CartSize2' id="cart">{item.size_ru ? `RU ${item.size_ru}` : (item.size_clo ? item.size_clo.toUpperCase() : '')}</div>
-                            <div className='CartItemCount' id="cart">
-                              <div className='CartPlus' id="cart" onClick={() => countMinus(item.id)}>
-                                <AiOutlineMinus size={20} style={{ pointerEvents: 'none' }} />
+                  {!isOrdering ?
+                    <>
+                      <div id="cart" className='ScrollCart'>
+                        {cartItems.cart.map((item, i) => {
+                          return (
+                            <div key={i} className='CartItem' id="cart">
+                              <div className='CartImg' id="cart">
+                                <img src={process.env.REACT_APP_API_URL + item.img} alt="item" id="cart" />
                               </div>
-                              <span className='CartDigit' id="cart">{cartItems.counts[item.id]}</span>
-                              <div className='CartMinus' id="cart" onClick={() => countPlus(item.id)}>
-                                <AiOutlinePlus size={20} style={{ pointerEvents: 'none' }} />
+                              <div className='CartInfo' id="cart">
+                                <div className='CartName' id="cart">{item.name.toUpperCase()}</div>
+                                <div className='CartSize2' id="cart">{item.size_ru ? `RU ${item.size_ru}` : (item.size_clo ? item.size_clo.toUpperCase() : '')}</div>
+                                <div className='CartItemCount' id="cart">
+                                  <div className='CartPlus' id="cart" onClick={() => countMinus(item.id)}>
+                                    <AiOutlineMinus size={20} style={{ pointerEvents: 'none' }} />
+                                  </div>
+                                  <span className='CartDigit' id="cart">{cartItems.counts[item.id]}</span>
+                                  <div className='CartMinus' id="cart" onClick={() => countPlus(item.id)}>
+                                    <AiOutlinePlus size={20} style={{ pointerEvents: 'none' }} />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className='CartSize' id="cart">{item.size_ru ? `RU ${item.size_ru}` : (item.size_clo ? item.size_clo.toUpperCase() : '')}</div>
+                              <div className='CartItemEnd' id='cart'>
+                                <div className='CartCost' id="cart">{item.sale ? formatNumberWithSpaces(cartItems.counts[item.id] * item.sale) : formatNumberWithSpaces(cartItems.counts[item.id] * item.price)} ₽</div>
+                                <div className='ItemDelete' id='cart' onClick={() => deleteFromCart(item.id)}><PiTrashSimpleLight size={24} style={{ pointerEvents: 'none' }} /></div>
                               </div>
                             </div>
-                          </div>
-                          <div className='CartSize' id="cart">{item.size_ru ? `RU ${item.size_ru}` : (item.size_clo ? item.size_clo.toUpperCase() : '')}</div>
-                          <div className='CartItemEnd' id='cart'>
-                            <div className='CartCost' id="cart">{item.sale ? formatNumberWithSpaces(cartItems.counts[item.id] * item.sale) : formatNumberWithSpaces(cartItems.counts[item.id] * item.price)} ₽</div>
-                            <div className='ItemDelete' id='cart' onClick={() => deleteFromCart(item.id)}><PiTrashSimpleLight size={24} style={{ pointerEvents: 'none' }} /></div>
-                          </div>
+                          )
+                        })}
+                      </div>
+                      <div className='CartOrder' id='cart'>
+                        <div className='CartSum' id='cart'>Итого: <span id='cart'>{cartItemsSum()} ₽</span></div>
+                        <div className='CartSend' id='cart' onClick={() => setIsOrdering(true)}>ОФОРМИТЬ ЗАКАЗ</div>
+                      </div>
+                    </>
+                    : (!orderDone) ?
+                      <div className='OrderingCart' id='cart'>
+                        <div className='OrderTitle' id='cart'>Оформление заказа</div>
+                        <input className='OrderInput' id='cart' type="text" placeholder='ФИО' value={clientName} onChange={handleName} />
+                        <div className='OrderInput' id='cart'>
+                          <span id='cart'>+7</span>
+                          <input
+                            id='cart'
+                            type="text"
+                            placeholder='(999) 999-99-99'
+                            maxLength="15"
+                            value={phoneNumber}
+                            onChange={(e) => {
+                              // handlePhoneChange(e)
+                              handlePhone(e)
+                            }}
+                            onKeyDown={handleBackspace}
+                          />
                         </div>
-                      )
-                    })}
-                  </div>
-                  <div className='CartOrder'>
-                    <div className='CartSum'>Итого: <span>{cartItemsSum()} ₽</span></div>
-                    <div className='CartSend'>ОФОРМИТЬ ЗАКАЗ</div>
-                  </div>
+                        <button className={`OrderConfirm ${clientName.length > 0 && sendNumber.length === 11 ? '' : 'NonActiveOrder'}`} id='cart' onClick={handleOrder}>Отправить</button>
+                      </div>
+                      :
+                      <>
+                        <div className='OrderingCart' id='cart'>
+                          <div className='OrderTitle' id='cart'>Ваш заказ оформлен!</div>
+                          <button className='OrderConfirm'>Вернуться к покупкам</button>
+                        </div>
+                      </>
+                  }
                 </>
                 :
                 <div className='CartIsEmpty'>Корзина пуста</div>
@@ -407,12 +629,14 @@ export const App = observer(() => {
             }
           </div>
         </div>
-        <div className="MobileCartBtnBox">
-          <button className="MobileCartBtn" onClick={showCart}>
-            <CiShoppingCart size={34} />
-            <span>20.990 ₽</span>
-          </button>
-        </div>
+        {!isAdmin &&
+          <div className="MobileCartBtnBox">
+            <button className="MobileCartBtn" onClick={showCart}>
+              <CiShoppingCart size={34} />
+              <span>20.990 ₽</span>
+            </button>
+          </div>
+        }
         <div className="AppContent">
           <AppRoutes />
           <footer></footer>

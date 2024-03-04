@@ -7,7 +7,7 @@ import { BsSortUpAlt, BsSortDown } from "react-icons/bs"
 import { LuSettings2 } from "react-icons/lu"
 import { SlClose } from "react-icons/sl"
 import { IoCheckmark } from "react-icons/io5"
-import { IoIosArrowRoundForward  } from "react-icons/io";
+import { IoIosArrowRoundForward } from "react-icons/io";
 import { fetchBrandsCategory, fetchColorsCategory, fetchItems, fetchModels, fetchSizesCategory } from "../http/itemAPI"
 import { Context } from ".."
 
@@ -39,7 +39,7 @@ const colorsList = [
 ]
 
 const Catalogue = observer(() => {
-    const { category, brandlink, search } = useParams()
+    const { category, brandlink, search, sale } = useParams()
     const { catalogue } = useContext(Context)
     const [sortBy, setSortBy] = useState('price')
     const [sortDir, setSortDir] = useState('down')
@@ -420,7 +420,8 @@ const Catalogue = observer(() => {
                 modelsSet.length > 0 ? true : false,
                 sizesEuSet.length > 0 || sizesRuSet.length > 0 || sizesUsSet.length > 0 || sizesUkSet.length > 0 || sizesSmSet.length > 0 ? true : false,
                 sizesCloSet.length > 0 ? true : false,
-                search
+                search,
+                sale
             )
                 .then(data => {
                     catalogue.setItems(data.rows)
@@ -649,6 +650,43 @@ const Catalogue = observer(() => {
             .join(' ');
     }
 
+    const clearFilters = () => {
+        setBrandsSet([])
+        setModelsSet([])
+        setColorsSet([])
+        setSizesEuSet([])
+        setSizesRuSet([])
+        setSizesUsSet([])
+        setSizesUkSet([])
+        setSizesSmSet([])
+        setSizesCloSet([])
+        setPriceMin('')
+        setPriceMax('')
+        setInStock(false)
+        const inputs = document.querySelectorAll('.InputCheckbox')
+        for (let i of inputs) {
+            i.classList.remove('CheckedInput')
+        }
+        const sizes = document.querySelectorAll('.CheckedSize')
+        for (let i of sizes) {
+            i.classList.remove('CheckedSize')
+        }
+        const colors = document.querySelectorAll('.CheckedColor')
+        for (let i of colors) {
+            i.classList.remove('CheckedColor')
+        }
+
+    }
+
+    const nullify = () => {
+        first = 1
+        last = pages
+        catalogue.setPage(1)
+        thisP = catalogue.page
+        nextP = catalogue.page + 1
+        prevP = catalogue.page - 1
+    }
+
     useEffect(() => {
         const handleSort = (e) => {
             const sortPanel = document.querySelector('.AbsoluteSortList')
@@ -682,6 +720,16 @@ const Catalogue = observer(() => {
             fetchBrandsCategory().then(data => setBrands(data))
             fetchColorsCategory().then(data => setColors(data))
         }
+        nullify()
+        setFilters(false)
+        if (window.innerWidth > 780) {
+            document.querySelector('.FilterPanel').setAttribute('style', 'transform: translateX(-300px); opacity: 0')
+            document.querySelector('.CatalogueItems2').setAttribute('style', 'width: 100%')
+        } else {
+            document.querySelector('.FilterPanel').setAttribute('style', 'display: none')
+            document.querySelector('.CatalogueItems2').setAttribute('style', 'width: 100%')
+        }
+        // eslint-disable-next-line
     }, [category, brandlink, search])
 
     useEffect(() => {
@@ -716,7 +764,7 @@ const Catalogue = observer(() => {
             </div>
             <div className="CatalogueContent">
                 <div className="FilterPanel">
-                    <div className="FilterClear">
+                    <div className="FilterClear" onClick={clearFilters}>
                         <SlClose style={{ marginRight: 10 }} />
                         <span>Очистить</span>
                     </div>
@@ -803,7 +851,7 @@ const Catalogue = observer(() => {
                                     <span className="FilterPlus"></span>
                                 </div>
                                 {sizes.sizesClo && sizes.sizesClo.map((size, i) => {
-                                    if (size && size.size_clo) {
+                                    if (size && size.size_clo && size.size_clo !== 'null') {
                                         return (
                                             <div key={i} className="FilterChecker" id={`size${i}`} onClick={(e) => handleCloSize(e, size)}>
                                                 <div className={`InputCheckbox size${i}`} id={`size${i}`}><IoCheckmark color="white" style={{ pointerEvents: 'none' }} /></div>
@@ -945,8 +993,10 @@ const Catalogue = observer(() => {
                                     <div className="ItemName">{capitalizeWords(item.name[0])}</div>
                                     {hasNotNull(item.counts) ?
                                         <>
-                                            {item.sale[0] &&
+                                            {item.sale[0] ?
                                                 <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(notNullMinimum(item.counts, item.sale))} <span>₽</span></div>
+                                                :
+                                                <></>
                                             }
                                             <div className={`ItemPrice ${item.sale[0] ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(notNullMinimum(item.counts, item.price))} ₽</div>
                                         </>

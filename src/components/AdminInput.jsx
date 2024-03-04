@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiImageAdd } from 'react-icons/bi'
 import { AiOutlineFileImage } from 'react-icons/ai'
 import colorwheel from '../assets/colorwheel.png'
 import { IoCheckmark } from 'react-icons/io5'
+import { FaTrash } from "react-icons/fa";
 
-import { createItem, createItemWithFiles, fetchItemsAdmin } from "../http/itemAPI";
+import { changeItem, changeItemWithFiles, createItem, createItemWithFiles, destroyImages, fetchImages } from "../http/itemAPI";
 
 const colorsList = [
     { name: 'Multicolor', hex: '#ffffff', color: 'multicolor' },
@@ -31,10 +32,10 @@ const colorsList = [
     { name: 'Чёрный', hex: '#000000', color: 'black' },
 ]
 
-const AdminInput = () => {
+const AdminInput = ({ itemChange }) => {
     const [category, setCategory] = useState('')
-    // eslint-disable-next-line
-    const [items, setItems] = useState()
+    // eslint-disable-next-lineА
+    // const [items, setItems] = useState()
     const [item, setItem] = useState({
         code: '',
         brand: '',
@@ -53,14 +54,12 @@ const AdminInput = () => {
         model: '',
         color: '',
         tags: '',
+        img: '',
         file: null,
         files: null
     })
-
-    // const [newImages, setNewImages] = useState({
-    //     file: null,
-    //     files: null
-    // })
+    const [oldImages, setOldImages] = useState([])
+    const [deleteImages, setDeleteImages] = useState([])
 
     const setFiles = (e) => {
         const unset = document.querySelector(`.${e.target.id}Unset`)
@@ -139,9 +138,22 @@ const AdminInput = () => {
         }))
     }
 
-    
+
     const canCreate = () => {
         if (item.category && item.code && item.brand && item.name && item.count && item.price && item.file) {
+            if (item.category === 'shoes' && item.size_eu && item.size_ru && item.size_us && item.size_uk && item.size_sm) {
+                return true
+            } else {
+                if (item.category === 'clothes' || item.category === 'accessories') {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    const canChange = () => {
+        if (item.category && item.code && item.brand && item.name && item.count && item.price) {
             if (item.category === 'shoes' && item.size_eu && item.size_ru && item.size_us && item.size_uk && item.size_sm) {
                 return true
             } else {
@@ -160,19 +172,41 @@ const AdminInput = () => {
                 createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
                     .then(data => {
                         nullify()
-                        fetchItemsAdmin().then(data => setItems(data))
+                        // fetchCallback()
+                        // fetchItemsAdmin().then(data => setItems(data))
                     })
             } else {
                 createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
                     .then(data => {
                         nullify()
-                        fetchItemsAdmin().then(data => setItems(data))
+                        // fetchCallback()
+                        // fetchItemsAdmin().then(data => setItems(data))
                     })
             }
         }
     }
 
-    
+    const click2 = () => {
+        if (canChange()) {
+            if (deleteImages.length > 0) {
+                destroyImages(deleteImages)
+            }
+            if (item.files) {
+                changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
+                    .then(data => {
+                        nullify()
+                        document.querySelector('.BackToTable')?.click()
+                    })
+            } else {
+                changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
+                    .then(data => {
+                        nullify()
+                        document.querySelector('.BackToTable')?.click()
+                    })
+            }
+        }
+    }
+
     const nullify = () => {
         setItem({
             code: '',
@@ -197,6 +231,19 @@ const AdminInput = () => {
         })
         setCategory('')
     }
+
+    const deleteImage = (id) => {
+        setDeleteImages(prev => [...prev, Number(id)])
+        setOldImages(prev => prev.filter(img => img.id !== id))
+    }
+
+    useEffect(() => {
+        if (itemChange) {
+            setItem(itemChange)
+            setCategory(itemChange.category)
+            fetchImages(itemChange.id).then(data => setOldImages(data))
+        }
+    }, [itemChange])
 
     return (
         <>
@@ -273,7 +320,12 @@ const AdminInput = () => {
             <textarea className="AdminInput AdminTextarea" type="text" name="description" value={item.description} onChange={handleChange} />
             <div className="InputClue MT5">Поисковые теги</div>
             <textarea className="AdminInput AdminTextarea" type="text" name="tags" value={item.tags} onChange={handleChange} />
-            <div className="InputClue MT5">Обложка*</div>
+            <div className="InputClue MT5">Обложка{itemChange ? '' : '*'}</div>
+            {itemChange &&
+                <div className="AdminInputImg">
+                    <img src={process.env.REACT_APP_API_URL + itemChange.img} alt="Обложка" />
+                </div>
+            }
             <div className="FileInput origfile">
                 <input
                     className="origfileInput"
@@ -304,6 +356,20 @@ const AdminInput = () => {
             </div>
             <div className="file FileClear origfileClear" id="origfile" name="file" onClick={clearFiles}>Очистить поле</div>
             <div className="InputClue">Фотографии карточки</div>
+            {itemChange && oldImages.length > 0 &&
+                <div className="AdminInputImgRow">
+                    {oldImages.map((img, i) => {
+                        return (
+                            <div key={i} className="AdminInputImg">
+                                <img src={process.env.REACT_APP_API_URL + img.name} alt="Фото" />
+                                <div className="DeleteHover" onClick={() => deleteImage(img.id)}>
+                                    <FaTrash size={30} />
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            }
             <div className="FileInput origfiles">
                 <input
                     className="origfilesInput"
@@ -335,7 +401,12 @@ const AdminInput = () => {
             </div>
             <div className="files FileClear origfilesClear" id="origfiles" name="files" onClick={clearFiles}>Очистить поле</div>
             <div className="ImportantFields">* обязательные поля</div>
-            <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>Создать</button>
+            {itemChange ?
+                <button className={`AdminCreateBtn ${canChange() ? '' : 'NonActiveCreate'}`} onClick={click2}>Сохранить</button>
+                :
+                <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>Создать</button>
+            }
+            {/* <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>{itemChange ? 'Сохранить' : 'Создать'}</button> */}
         </>
     )
 }

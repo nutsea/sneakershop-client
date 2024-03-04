@@ -50,6 +50,7 @@
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 }
 
 .AdminTabs {
@@ -276,13 +277,19 @@
     display: block;
 }
 
+.AdminTableScroll {
+    width: 100%;
+    overflow: auto;
+    margin-top: 10px;
+}
+
 table {
+    width: 100%;
     font-family: 'Roboto', sans-serif;
     margin-top: 5px;
     color: #2c2c2c;
     background-color: white;
     font-size: 12px;
-    // background-color: rgba(21, 21, 21, 0.3);
 
     tbody {
         tr {
@@ -290,13 +297,10 @@ table {
             cursor: pointer;
 
             &:nth-child(odd) {
-                // background-color: rgba(21, 21, 21, 0.025);
                 background-color: rgba(21, 21, 21, 0.1);
             }
 
             &:nth-child(even) {
-                // background-color: #e7e9eb;
-                // background-color: rgba(21, 21, 21, 0.1);
                 background-color: rgba(21, 21, 21, 0.025);
             }
 
@@ -306,7 +310,6 @@ table {
             }
 
             th {
-                // padding: 8px;
                 padding: 2px;
                 text-align: left;
                 font-weight: 500;
@@ -315,7 +318,6 @@ table {
             }
 
             td {
-                // padding: 8px;
                 padding: 2px;
                 text-align: left;
                 font-weight: 400;
@@ -376,5 +378,145 @@ table {
             }
         }
     }
+}
 
+.TableBtns {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+.DeleteChecked {
+    padding: 8px 10px;
+    background-color: #d43434;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    transition: opacity .1s linear;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.NonActiveDelete {
+    pointer-events: none;
+    background-color: rgba(21, 21, 21, 0.4);
+}
+
+.UpdateTable {
+    margin-left: 5px;
+    padding: 8px 10px;
+    background-color: rgb(21, 21, 21);
+    font-family: 'Roboto', sans-serif;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    transition: background-color .1s linear;
+
+    &:hover {
+        background-color: rgba(21, 21, 21, 0.8);
+    }
+}
+
+.DeleteConfirm {
+    margin-top: 5px;
+    border: solid 1px rgba(21, 21, 21, 0.3);
+    font-family: 'Roboto', sans-serif;
+    border-radius: 5px;
+    padding: 8px 10px;
+}
+
+.ConfirmSub {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.DeleteConfirmBtn {
+    padding: 8px 10px;
+    background-color: #d43434;
+    font-family: 'Roboto', sans-serif;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    transition: opacity .1s linear;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.DeleteCancelBtn {
+    margin-left: 5px;
+    padding: 8px 10px;
+    background-color: rgb(21, 21, 21);
+    font-family: 'Roboto', sans-serif;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    transition: background-color .1s linear;
+
+    &:hover {
+        background-color: rgba(21, 21, 21, 0.8);
+    }
+}
+
+.InvisibleDelete {
+    display: none;
+}
+
+.ChangeSub {
+    font-weight: 500;
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    // margin-bottom: 10px;
+    margin: 15px 0 10px 0;
+}
+
+.AdminInputImg {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 5px;
+    position: relative;
+
+    img {
+        width: 100%;
+        // height: 100px;
+        // object-fit: cover;
+        // border-radius: 5px;
+    }
+}
+
+.AdminInputImgRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    // margin-top: -5px;
+}
+
+.AdminInputImg + .AdminInputImg  {
+    margin-left: 5px;
+}
+
+.DeleteHover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(21, 21, 21, 0.5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity .1s linear;
+
+    &:hover {
+        opacity: 1;
+    }
 }

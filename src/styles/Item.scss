@@ -54,7 +54,7 @@
     width: 32%;
 }
 
-.SizeTypes {
+.SizeTypes2 {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -330,6 +330,7 @@
 }
 
 .SizesInfo {
+    width: fit-content;
     margin-top: 20px;
     display: flex;
     flex-direction: row;
@@ -354,6 +355,46 @@
 
 .ItemImagesSmall2 {
     display: none;
+}
+
+.SizesTable {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+
+    table {
+        pointer-events: none;
+    }
+}
+
+.NonSizes {
+    display: none;
+}
+
+.SizesModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.VisibleSizes {
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 1260px) {
@@ -416,7 +457,7 @@
         margin-top: 5px !important;
     }
 
-    .SizeTypes {
+    .SizeTypes2 {
         margin-top: 20px;
     }
 
