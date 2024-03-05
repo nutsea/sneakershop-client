@@ -60,6 +60,7 @@ const AdminInput = ({ itemChange }) => {
     })
     const [oldImages, setOldImages] = useState([])
     const [deleteImages, setDeleteImages] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const setFiles = (e) => {
         const unset = document.querySelector(`.${e.target.id}Unset`)
@@ -169,16 +170,20 @@ const AdminInput = ({ itemChange }) => {
         console.log(item)
         if (canCreate()) {
             if (item.files) {
+                nullify()
+                setIsLoading(true)
                 createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
                     .then(data => {
-                        nullify()
+                        setIsLoading(false)
                         // fetchCallback()
                         // fetchItemsAdmin().then(data => setItems(data))
                     })
             } else {
+                nullify()
+                setIsLoading(true)
                 createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
                     .then(data => {
-                        nullify()
+                        setIsLoading(false)
                         // fetchCallback()
                         // fetchItemsAdmin().then(data => setItems(data))
                     })
@@ -192,15 +197,19 @@ const AdminInput = ({ itemChange }) => {
                 destroyImages(deleteImages)
             }
             if (item.files) {
+                nullify()
+                setIsLoading(true)
                 changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
                     .then(data => {
-                        nullify()
+                        setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
                     })
             } else {
+                nullify()
+                setIsLoading(true)
                 changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
                     .then(data => {
-                        nullify()
+                        setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
                     })
             }
@@ -230,6 +239,16 @@ const AdminInput = ({ itemChange }) => {
             files: null
         })
         setCategory('')
+        document.querySelector(`.origfileInput`).value = null
+        document.querySelector(`.origfileUnset`).classList.add('Showed')
+        document.querySelector(`.origfileSet`).classList.remove('Showed')
+        document.querySelector(`.origfileClear`).classList.remove('Showed')
+        document.querySelector(`.origfilesInput`).value = null
+        document.querySelector(`.origfilesUnset`).classList.add('Showed')
+        document.querySelector(`.origfilesSet`).classList.remove('Showed')
+        document.querySelector(`.origfilesClear`).classList.remove('Showed')
+        setOldImages([])
+        document.querySelector('.CheckedColor')?.classList.remove('CheckedColor')
     }
 
     const deleteImage = (id) => {
@@ -247,166 +266,179 @@ const AdminInput = ({ itemChange }) => {
 
     return (
         <>
-            <div className="InputClue MT5">Выбор категории*</div>
-            <div className="AdminInput">
-                <div className="CategoryCheck" id="shoes" onClick={handleCategory}>
-                    <span className={`CategoryCheckbox ${category === 'shoes' ? 'BlackCheck' : ''}`} id="shoes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
-                    <span className="CategoryName" id="shoes">Обувь</span>
-                </div>
-                <div className="CategoryCheck" id="clothes" onClick={handleCategory}>
-                    <span className={`CategoryCheckbox ${category === 'clothes' ? 'BlackCheck' : ''}`} id="clothes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
-                    <span className="CategoryName" id="clothes">Одежда</span>
-                </div>
-                <div className="CategoryCheck" id="accessories" onClick={handleCategory}>
-                    <span className={`CategoryCheckbox ${category === 'accessories' ? 'BlackCheck' : ''}`} id="accessories"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
-                    <span className="CategoryName" id="accessories">Аксессуар</span>
-                </div>
-            </div>
-            <div className="InputClue MT5">Артикул*</div>
-            <input className="AdminInput" type="text" name="code" value={item.code} onChange={handleChange} />
-            <div className="InputClue MT5">Бренд*</div>
-            <input className="AdminInput" type="text" name="brand" value={item.brand} onChange={handleChange} />
-            <div className="InputClue MT5">Наименование*</div>
-            <input className="AdminInput" type="text" name="name" value={item.name} onChange={handleChange} />
-            <div className="InputClue MT5">Количество*</div>
-            <input className="AdminInput" type="text" name="count" value={item.count} onChange={handleChange} />
-            {category === 'shoes' ?
+            {!isLoading ?
                 <>
-                    <div className="InputClue MT5">Размер EU*</div>
-                    <input className="AdminInput" type="text" name="size_eu" value={item.size_eu} onChange={handleChange} />
-                    <div className="InputClue MT5">Размер RU*</div>
-                    <input className="AdminInput" type="text" name="size_ru" value={item.size_ru} onChange={handleChange} />
-                    <div className="InputClue MT5">Размер US*</div>
-                    <input className="AdminInput" type="text" name="size_us" value={item.size_us} onChange={handleChange} />
-                    <div className="InputClue MT5">Размер UK*</div>
-                    <input className="AdminInput" type="text" name="size_uk" value={item.size_uk} onChange={handleChange} />
-                    <div className="InputClue MT5">Размер СМ*</div>
-                    <input className="AdminInput" type="text" name="size_sm" value={item.size_sm} onChange={handleChange} />
-                </>
-                : (category === 'accessories' || category === 'clothes') &&
-                <>
-                    <div className="InputClue MT5">Размер одежды/аксессуара*</div>
-                    <input className="AdminInput" type="text" name="size_clo" value={item.size_clo} onChange={handleChange} />
-                </>
-            }
-            <div className="InputClue MT5">Цена*</div>
-            <input className="AdminInput" type="text" name="price" value={item.price} onChange={handleChange} />
-            <div className="InputClue MT5">Цена со скидкой</div>
-            <input className="AdminInput" type="text" name="sale" value={item.sale} onChange={handleChange} />
-            {category === 'shoes' &&
-                <>
-                    <div className="InputClue MT5">Модель</div>
-                    <input className="AdminInput" type="text" name="model" value={item.model} onChange={handleChange} />
-                </>
-            }
-            <div className="InputClue MT5">Цвет</div>
-            <div className="AdminInput">
-                <div className="AdminColors">
-                    {colorsList.map((color, i) => {
-                        return (
-                            <div key={i} className={`ColorItem Color${i}`} id={i} onClick={(e) => handleCheckColor(e, color)}>
-                                {color.name === 'Multicolor' ?
-                                    <img className="ColorExample" id={`color${i}`} style={{ pointerEvents: 'none' }} src={colorwheel} alt="Цвет" />
-                                    :
-                                    <span style={{ backgroundColor: color.hex, pointerEvents: 'none' }} className={`ColorExample ${color.name === 'Без цвета' ? 'NoColor' : ''}`}></span>
-                                }
-                                <span style={{ pointerEvents: 'none' }}>{color.name}</span>
+                    <div className="InputClue MT5">Выбор категории*</div>
+                    <div className="AdminInput">
+                        <div className="CategoryCheck" id="shoes" onClick={handleCategory}>
+                            <span className={`CategoryCheckbox ${category === 'shoes' ? 'BlackCheck' : ''}`} id="shoes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                            <span className="CategoryName" id="shoes">Обувь</span>
+                        </div>
+                        <div className="CategoryCheck" id="clothes" onClick={handleCategory}>
+                            <span className={`CategoryCheckbox ${category === 'clothes' ? 'BlackCheck' : ''}`} id="clothes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                            <span className="CategoryName" id="clothes">Одежда</span>
+                        </div>
+                        <div className="CategoryCheck" id="accessories" onClick={handleCategory}>
+                            <span className={`CategoryCheckbox ${category === 'accessories' ? 'BlackCheck' : ''}`} id="accessories"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                            <span className="CategoryName" id="accessories">Аксессуар</span>
+                        </div>
+                    </div>
+                    <div className="InputClue MT5">Артикул*</div>
+                    <input className="AdminInput" type="text" name="code" value={item.code} onChange={handleChange} />
+                    <div className="InputClue MT5">Бренд*</div>
+                    <input className="AdminInput" type="text" name="brand" value={item.brand} onChange={handleChange} />
+                    <div className="InputClue MT5">Наименование*</div>
+                    <input className="AdminInput" type="text" name="name" value={item.name} onChange={handleChange} />
+                    <div className="InputClue MT5">Количество*</div>
+                    <input className="AdminInput" type="text" name="count" value={item.count} onChange={handleChange} />
+                    {category === 'shoes' ?
+                        <>
+                            <div className="InputClue MT5">Размер EU*</div>
+                            <input className="AdminInput" type="text" name="size_eu" value={item.size_eu} onChange={handleChange} />
+                            <div className="InputClue MT5">Размер RU*</div>
+                            <input className="AdminInput" type="text" name="size_ru" value={item.size_ru} onChange={handleChange} />
+                            <div className="InputClue MT5">Размер US*</div>
+                            <input className="AdminInput" type="text" name="size_us" value={item.size_us} onChange={handleChange} />
+                            <div className="InputClue MT5">Размер UK*</div>
+                            <input className="AdminInput" type="text" name="size_uk" value={item.size_uk} onChange={handleChange} />
+                            <div className="InputClue MT5">Размер СМ*</div>
+                            <input className="AdminInput" type="text" name="size_sm" value={item.size_sm} onChange={handleChange} />
+                        </>
+                        : (category === 'accessories' || category === 'clothes') &&
+                        <>
+                            <div className="InputClue MT5">Размер одежды/аксессуара*</div>
+                            <input className="AdminInput" type="text" name="size_clo" value={item.size_clo} onChange={handleChange} />
+                        </>
+                    }
+                    <div className="InputClue MT5">Цена*</div>
+                    <input className="AdminInput" type="text" name="price" value={item.price} onChange={handleChange} />
+                    <div className="InputClue MT5">Цена со скидкой</div>
+                    <input className="AdminInput" type="text" name="sale" value={item.sale} onChange={handleChange} />
+                    {category === 'shoes' &&
+                        <>
+                            <div className="InputClue MT5">Модель</div>
+                            <input className="AdminInput" type="text" name="model" value={item.model} onChange={handleChange} />
+                        </>
+                    }
+                    <div className="InputClue MT5">Цвет</div>
+                    <div className="AdminInput">
+                        <div className="AdminColors">
+                            {colorsList.map((color, i) => {
+                                return (
+                                    <div key={i} className={`ColorItem Color${i}`} id={i} onClick={(e) => handleCheckColor(e, color)}>
+                                        {color.name === 'Multicolor' ?
+                                            <img className="ColorExample" id={`color${i}`} style={{ pointerEvents: 'none' }} src={colorwheel} alt="Цвет" />
+                                            :
+                                            <span style={{ backgroundColor: color.hex, pointerEvents: 'none' }} className={`ColorExample ${color.name === 'Без цвета' ? 'NoColor' : ''}`}></span>
+                                        }
+                                        <span style={{ pointerEvents: 'none' }}>{color.name}</span>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    <div className="InputClue MT5">Описание</div>
+                    <textarea className="AdminInput AdminTextarea" type="text" name="description" value={item.description} onChange={handleChange} />
+                    <div className="InputClue MT5">Поисковые теги</div>
+                    <textarea className="AdminInput AdminTextarea" type="text" name="tags" value={item.tags} onChange={handleChange} />
+                    <div className="InputClue MT5">Обложка{itemChange ? '' : '*'}</div>
+                    {itemChange &&
+                        <div className="AdminInputImg">
+                            <img src={process.env.REACT_APP_API_URL + itemChange.img} alt="Обложка" />
+                        </div>
+                    }
+                    <div className="FileInput origfile">
+                        <input
+                            className="origfileInput"
+                            type="file"
+                            accept=".jpg, .jpeg, .JPG, .JPEG, .png, .PNG"
+                            multiple={false}
+                            id="origfile"
+                            name="file"
+                            onChange={(e) => {
+                                setFiles(e)
+                                handleChange(e)
+                            }}
+                        />
+                        <div className="FileInfo origfileUnset Showed">
+                            <div className="FileText">
+                                <BiImageAdd className="FileImg" size={30} />
+                                <div className="FileTextLoad">Обложка товара</div>
                             </div>
-                        )
-                    })}
-                </div>
-            </div>
-            <div className="InputClue MT5">Описание</div>
-            <textarea className="AdminInput AdminTextarea" type="text" name="description" value={item.description} onChange={handleChange} />
-            <div className="InputClue MT5">Поисковые теги</div>
-            <textarea className="AdminInput AdminTextarea" type="text" name="tags" value={item.tags} onChange={handleChange} />
-            <div className="InputClue MT5">Обложка{itemChange ? '' : '*'}</div>
-            {itemChange &&
-                <div className="AdminInputImg">
-                    <img src={process.env.REACT_APP_API_URL + itemChange.img} alt="Обложка" />
-                </div>
-            }
-            <div className="FileInput origfile">
-                <input
-                    className="origfileInput"
-                    type="file"
-                    accept=".jpg, .jpeg, .JPG, .JPEG, .png, .PNG"
-                    multiple={false}
-                    id="origfile"
-                    name="file"
-                    onChange={(e) => {
-                        setFiles(e)
-                        handleChange(e)
-                    }}
-                />
-                <div className="FileInfo origfileUnset Showed">
-                    <div className="FileText">
-                        <BiImageAdd className="FileImg" size={30} />
-                        <div className="FileTextLoad">Обложка товара</div>
-                    </div>
-                    <div className="FileClue">Нажмите на поле или перетащите файл</div>
-                    <div className="FileClue">Формат - png или jpeg (jpg)</div>
-                </div>
-                <div className="FileInfo origfileSet">
-                    <div className="FileText">
-                        <AiOutlineFileImage size={30} />
-                        <div className="FileTextLoad origfileName"></div>
-                    </div>
-                </div>
-            </div>
-            <div className="file FileClear origfileClear" id="origfile" name="file" onClick={clearFiles}>Очистить поле</div>
-            <div className="InputClue">Фотографии карточки</div>
-            {itemChange && oldImages.length > 0 &&
-                <div className="AdminInputImgRow">
-                    {oldImages.map((img, i) => {
-                        return (
-                            <div key={i} className="AdminInputImg">
-                                <img src={process.env.REACT_APP_API_URL + img.name} alt="Фото" />
-                                <div className="DeleteHover" onClick={() => deleteImage(img.id)}>
-                                    <FaTrash size={30} />
-                                </div>
+                            <div className="FileClue">Нажмите на поле или перетащите файл</div>
+                            <div className="FileClue">Формат - png или jpeg (jpg)</div>
+                        </div>
+                        <div className="FileInfo origfileSet">
+                            <div className="FileText">
+                                <AiOutlineFileImage size={30} />
+                                <div className="FileTextLoad origfileName"></div>
                             </div>
-                        )
-                    })}
-                </div>
-            }
-            <div className="FileInput origfiles">
-                <input
-                    className="origfilesInput"
-                    type="file"
-                    accept=".jpg, .jpeg, .JPG, .JPEG, .png, .PNG"
-                    multiple={true}
-                    id="origfiles"
-                    name="files"
-                    onChange={(e) => {
-                        setFiles(e)
-                        handleChange(e)
-                    }}
-                />
-                <div className="FileInfo origfilesUnset Showed">
-                    <div className="FileText">
-                        <BiImageAdd className="FileImg" size={30} />
-                        <div className="FileTextLoad">Фотографии карточки</div>
+                        </div>
                     </div>
-                    <div className="FileClue">Нажмите на поле или перетащите файлы</div>
-                    <div className="FileClue">Формат - png или jpeg (jpg)</div>
-                </div>
-                <div className="FileInfo origfilesSet">
-                    <div className="FileText">
-                        <AiOutlineFileImage size={30} />
-                        <div className="FileTextLoad origfilesName"></div>
+                    <div className="file FileClear origfileClear" id="origfile" name="file" onClick={clearFiles}>Очистить поле</div>
+                    <div className="InputClue">Фотографии карточки</div>
+                    {itemChange && oldImages.length > 0 &&
+                        <div className="AdminInputImgRow">
+                            {oldImages.map((img, i) => {
+                                return (
+                                    <div key={i} className="AdminInputImg">
+                                        <img src={process.env.REACT_APP_API_URL + img.name} alt="Фото" />
+                                        <div className="DeleteHover" onClick={() => deleteImage(img.id)}>
+                                            <FaTrash size={30} />
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    }
+                    <div className="FileInput origfiles">
+                        <input
+                            className="origfilesInput"
+                            type="file"
+                            accept=".jpg, .jpeg, .JPG, .JPEG, .png, .PNG"
+                            multiple={true}
+                            id="origfiles"
+                            name="files"
+                            onChange={(e) => {
+                                setFiles(e)
+                                handleChange(e)
+                            }}
+                        />
+                        <div className="FileInfo origfilesUnset Showed">
+                            <div className="FileText">
+                                <BiImageAdd className="FileImg" size={30} />
+                                <div className="FileTextLoad">Фотографии карточки</div>
+                            </div>
+                            <div className="FileClue">Нажмите на поле или перетащите файлы</div>
+                            <div className="FileClue">Формат - png или jpeg (jpg)</div>
+                        </div>
+                        <div className="FileInfo origfilesSet">
+                            <div className="FileText">
+                                <AiOutlineFileImage size={30} />
+                                <div className="FileTextLoad origfilesName"></div>
+                            </div>
+                            <div className="FileClue">Наведите курсор, чтобы увидеть названия файлов</div>
+                        </div>
                     </div>
-                    <div className="FileClue">Наведите курсор, чтобы увидеть названия файлов</div>
-                </div>
-            </div>
-            <div className="files FileClear origfilesClear" id="origfiles" name="files" onClick={clearFiles}>Очистить поле</div>
-            <div className="ImportantFields">* обязательные поля</div>
-            {itemChange ?
-                <button className={`AdminCreateBtn ${canChange() ? '' : 'NonActiveCreate'}`} onClick={click2}>Сохранить</button>
+                    <div className="files FileClear origfilesClear" id="origfiles" name="files" onClick={clearFiles}>Очистить поле</div>
+                    <div className="ImportantFields">* обязательные поля</div>
+                    {itemChange ?
+                        <button className={`AdminCreateBtn ${canChange() ? '' : 'NonActiveCreate'}`} onClick={click2}>Сохранить</button>
+                        :
+                        <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>Создать</button>
+                    }
+                    {/* <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>{itemChange ? 'Сохранить' : 'Создать'}</button> */}
+                </>
                 :
-                <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>Создать</button>
+                <>
+                    <div className="LoadingContainer2">
+                        <div className="Spinner">
+                            <div className="Ball"></div>
+                            <p className="Loading">ЗАГРУЗКА...</p>
+                        </div>
+                    </div>
+                </>
             }
-            {/* <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>{itemChange ? 'Сохранить' : 'Создать'}</button> */}
         </>
     )
 }
