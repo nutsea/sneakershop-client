@@ -993,7 +993,7 @@ const Catalogue = observer(() => {
                                     return (
                                         <div key={item.id[0]} className="CatalogueCard" onClick={() => navigateItem(item.id[0])}>
                                             <div className={`CatalogueImg ${filters ? 'H15' : 'H20'}`}><img src={`${process.env.REACT_APP_API_URL + item.img[0]}`} alt="" /></div>
-                                            <div className={`ItemSale ${item.sale[0] ? '' : 'Invisible'}`}>Sale</div>
+                                            <div className={`ItemSale ${item.sale[0] && item.counts[0] > 0 ? '' : 'Invisible'}`}>Sale</div>
                                             <div className="ItemName">{capitalizeWords(item.name[0])}</div>
                                             {hasNotNull(item.counts) ?
                                                 <>

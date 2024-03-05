@@ -56,7 +56,7 @@ const Main = () => {
                             return (
                                 <div key={item.id} className="ItemCard" onClick={() => navigateItem(item.id)}>
                                     <div className="ItemImg"><img src={`${process.env.REACT_APP_API_URL + item.img}`} alt="" /></div>
-                                    <div className={`ItemSale ${item.sale ? '' : 'Invisible'}`}>Sale</div>
+                                    <div className={`ItemSale ${item.sale && item.count > 0 ? '' : 'Invisible'}`}>Sale</div>
                                     <div className="ItemName">{capitalizeWords(item.name)}</div>
                                     {item.count > 0 ?
                                         <>

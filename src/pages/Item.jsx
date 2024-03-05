@@ -161,7 +161,7 @@ const Item = () => {
                     setSale(nonNullItems[0].sale)
                     setChosenItem(nonNullItems[0])
                 } else {
-                    setPrice('Доступен к заказу')
+                    setPrice('Доступен для заказа')
                     setSale(null)
                     setChosenItem(null)
                 }
@@ -278,7 +278,7 @@ const Item = () => {
 
     const hasNotNull = () => {
         for (let i of sameItems) {
-            if (i.count !== null) return true
+            if (i.count !== null && i.count > 0) return true
         }
         return false
     }
@@ -370,7 +370,7 @@ const Item = () => {
                             </div>
                         }
                         <div className="ItemInfo">
-                            <div className={`ItemSaleItem ${item.sale ? '' : 'Invisible'}`}>Sale</div>
+                            <div className={`ItemSaleItem ${item.sale && item.count > 0 ? '' : 'Invisible'}`}>Sale</div>
                             <div className="ItemNameItem">{capitalizeWords(item.name)}</div>
                             {(sale && hasNotNull()) ?
                                 <div className="ItemSaledPriceItem MT20">{chosenItem ? formatNumberWithSpaces(chosenItem.sale) : formatNumberWithSpaces(sale)} <span>₽</span></div>
@@ -378,7 +378,7 @@ const Item = () => {
                                 <></>
                             }
                             {hasNotNull() ?
-                                <div className={`ItemPriceItem MT10 FS20 Span16 FW400 ${item.sale && hasNotNull() ? 'Crossed' : ''}`}>{chosenItem ? formatNumberWithSpaces(chosenItem.price) : formatNumberWithSpaces(price)} <span>₽</span></div>
+                                <div className={`ItemPriceItem MT10 FS20 Span16 FW400 ${item.sale && item.count > 0 && hasNotNull() ? 'Crossed' : ''}`}>{chosenItem ? formatNumberWithSpaces(chosenItem.price) : formatNumberWithSpaces(price)} <span>₽</span></div>
                                 :
                                 <div className="ItemPriceItem MT20">Доступен для заказа</div>
                             }

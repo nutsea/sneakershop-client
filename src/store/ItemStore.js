@@ -61,6 +61,7 @@ export default class ItemStore {
     }
 
     setItems(items) {
+        console.log(items)
         this._items = items
     }
 
