@@ -28,6 +28,7 @@ export const App = observer(() => {
   const [sendNumber, setSendNumber] = useState('')
   const [orderDone, setOrderDone] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [cartCost, setCartCost] = useState(null)
 
   const navigate = useNavigate()
   const { cartItems } = useContext(Context)
@@ -40,6 +41,8 @@ export const App = observer(() => {
     window.scrollTo(0, scrollPos)
     document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
     document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
+    document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
+    document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
   }
 
   const handleName = (e) => {
@@ -175,7 +178,21 @@ export const App = observer(() => {
       window.scrollTo(0, scrollPos)
       document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
       document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
+      document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
+      document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
     }
+  }
+
+  const navResult = (id) => {
+    navigate(`/item/${id}`)
+    hideSearch()
+    document.querySelector('.HeaderBurger').classList.remove('ActiveBurger')
+    document.querySelector('.AppContent').classList.remove('Lock')
+    window.scrollTo(0, scrollPos)
+    document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
+    document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
+    document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
+    document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
   }
 
   const convertToCapital = (word) => {
@@ -240,6 +257,8 @@ export const App = observer(() => {
     setScrollPos(window.scrollY)
     document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
     document.querySelector('.AppContent').classList.add('Lock')
+    document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
+    document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
   }
 
   const showSearch = () => {
@@ -262,6 +281,7 @@ export const App = observer(() => {
 
   const hideCart = (e) => {
     if (e.target.id !== 'cart') {
+      setIsOrdering(false)
       if (orderDone) {
         localStorage.removeItem('cart')
         cartItems.setCart([])
@@ -297,10 +317,6 @@ export const App = observer(() => {
   }
 
   const handleOrder = () => {
-    // localStorage.removeItem('cart')
-    // cartItems.setCart([])
-    // cartItems.setCounts({})
-    // setIsOrdering(false)
     setOrderDone(true)
   }
 
@@ -352,19 +368,31 @@ export const App = observer(() => {
   }
 
   const deleteFromCart = (id) => {
+    console.log(id)
     let cartList = JSON.parse(localStorage.getItem('cart'))
     if (Array.isArray(cartList) && cartList.length > 0) {
       cartList = cartList.filter(item => item !== id)
       localStorage.setItem('cart', JSON.stringify(cartList))
       fetchCart(cartList).then(data => {
-        cartItems.setCart(data)
+        cartItems.setFullCart(data, cartList)
+        let countsOfItems = {}
+        let sum = 0
+        for (let key in countsOfItems) {
+          let item = data.filter(i => i.id === Number(key))
+          if (item[0])
+            sum += item[0].sale ? item[0].sale * countsOfItems[key] : item[0].price * countsOfItems[key]
+        }
+        if (sum > 0) {
+          if (document.querySelector('.CartCostSpan'))
+            document.querySelector('.CartCostSpan').innerHTML = sum + ' ₽'
+        } else {
+          if (document.querySelector('.CartCostSpan'))
+            document.querySelector('.CartCostSpan').innerHTML = ' '
+        }
       })
-      let countsOfItems = {}
-      for (let i of cartItems.cart) {
-        let count = cartList.filter(item => item === i.id).length
-        countsOfItems[i.id] = count
-      }
-      cartItems.setCounts(countsOfItems)
+    } else {
+      if (document.querySelector('.CartCostSpan'))
+        document.querySelector('.CartCostSpan').innerHTML = ' '
     }
   }
 
@@ -379,18 +407,24 @@ export const App = observer(() => {
   }
 
   useEffect(() => {
-    const cartList = JSON.parse(localStorage.getItem('cart'))
-    if (Array.isArray(cartList) && cartList.length > 0) {
-      fetchCart(cartList).then(data => {
-        cartItems.setCart(data)
-      })
-      let countsOfItems = {}
-      for (let i of cartItems.cart) {
-        let count = cartList.filter(item => item === i.id).length
-        countsOfItems[i.id] = count
-      }
-      cartItems.setCounts(countsOfItems)
-    }
+    // const cartList = JSON.parse(localStorage.getItem('cart'))
+    // if (Array.isArray(cartList) && cartList.length > 0) {
+    //   fetchCart(cartList).then(data => {
+    //     cartItems.setFullCart(data, cartList)
+    //     let countsOfItems = {}
+    //     for (let i of data) {
+    //       let count = cartList.filter(item => item === i.id).length
+    //       countsOfItems[i.id] = count
+    //     }
+    //     let sum = 0
+    //     for (let key in countsOfItems) {
+    //       let item = data.filter(i => i.id === Number(key))
+    //       if (item[0])
+    //         sum += item[0].sale ? item[0].sale * countsOfItems[key] : item[0].price * countsOfItems[key]
+    //     }
+    //     setCartCost(sum)
+    //   })
+    // }
     if (brands.length > 0) {
       let delimiter = Math.ceil(windowWidth / 300)
       let maxHeight = Math.ceil(brands.length / delimiter) * 26.68
@@ -404,11 +438,30 @@ export const App = observer(() => {
   }, [windowWidth, windowHeight, brands.length])
 
   useEffect(() => {
+    const cartList = JSON.parse(localStorage.getItem('cart'))
+    if (Array.isArray(cartList) && cartList.length > 0) {
+      fetchCart(cartList).then(data => {
+        cartItems.setFullCart(data, cartList)
+        let countsOfItems = {}
+        for (let i of data) {
+          let count = cartList.filter(item => item === i.id).length
+          countsOfItems[i.id] = count
+        }
+        let sum = 0
+        for (let key in countsOfItems) {
+          let item = data.filter(i => i.id === Number(key))
+          if (item[0])
+            sum += item[0].sale ? item[0].sale * countsOfItems[key] : item[0].price * countsOfItems[key]
+        }
+        setCartCost(sum)
+      })
+    }
     document.querySelector('.InfoTab').setAttribute('style', `transform: translateY(-214px)`)
     document.querySelector('.BrandsTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-224px)`)
     fetchBrands().then(data => {
       setBrands(alphabetSort(data))
     })
+    // eslint-disable-next-line
   }, [])
 
   const handleBurger = () => {
@@ -443,12 +496,6 @@ export const App = observer(() => {
             <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
             <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
             <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
-            {/* <li
-              onMouseEnter={showInfoTab}
-              onMouseLeave={hideInfoTab}
-            >
-              ИНФОРМАЦИЯ
-            </li> */}
           </nav>
           <div className="HeaderBtns">
             <div className="HeaderBtn" onClick={showSearch}><CiSearch size={30} /></div>
@@ -471,12 +518,6 @@ export const App = observer(() => {
               <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
               <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
               <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
-              {/* <li
-                onMouseEnter={showInfoTab}
-                onMouseLeave={hideInfoTab}
-              >
-                ИНФОРМАЦИЯ
-              </li> */}
             </nav>
           </div>
         </header>
@@ -522,7 +563,8 @@ export const App = observer(() => {
                 <div className={`SearchResults ${isSearch ? '' : 'None'}`} id='search'>
                   {searched.map((item, i) => {
                     return (
-                      <div key={i} className='SearchResult' onClick={() => navigate(`/item/${item.id}`)}>
+                      // <div key={i} className='SearchResult' onClick={() => navigate(`/item/${item.id}`)}>
+                      <div key={i} className='SearchResult' onClick={() => navResult(item.id)}>
                         <div className='SearchImg'>
                           <img src={process.env.REACT_APP_API_URL + item.img} alt="item" />
                         </div>
@@ -633,7 +675,7 @@ export const App = observer(() => {
           <div className="MobileCartBtnBox">
             <button className="MobileCartBtn" onClick={showCart}>
               <CiShoppingCart size={34} />
-              <span>20.990 ₽</span>
+              <span className='CartCostSpan'>{cartCost ? formatNumberWithSpaces(cartCost) + ' ₽' : ''}</span>
             </button>
           </div>
         }

@@ -7,6 +7,7 @@ import { MdDone } from "react-icons/md";
 
 import "../styles/Item.scss"
 import { Context } from "..";
+import { TfiClose } from "react-icons/tfi";
 
 const Item = () => {
     const { id } = useParams()
@@ -21,6 +22,130 @@ const Item = () => {
     const [chosenTab, setChosenTab] = useState('tab1')
     const { cartItems } = useContext(Context)
     const [scrollPos, setScrollPos] = useState(0)
+    const [clientName, setClientName] = useState('')
+    const [phoneNumber, setPhoneNumber] = useState('')
+    const [sendNumber, setSendNumber] = useState('')
+    const [isOrderDone, setIsOrderDone] = useState(false)
+
+    const handleName = (e) => {
+        setClientName(e.target.value)
+    }
+
+    const handlePhone = (e) => {
+        const formattedNumber = formatPhoneNumber(e)
+        const cleaned = ('' + e.target.value).replace(/\D/g, '')
+        setPhoneNumber(formattedNumber)
+        setSendNumber('7' + cleaned)
+    }
+
+
+    const formatPhoneNumber = (e) => {
+        const cleaned = ('' + e.target.value).replace(/\D/g, '')
+        setSendNumber('7' + cleaned)
+        const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})$/)
+        let formattedNumber
+        switch (cleaned.length) {
+            case 10:
+                formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}-${match[4]}`
+                break
+            case 9:
+                formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}-${match[4]}`
+                break
+            case 8:
+                formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}-`
+                break
+            case 7:
+                formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-${match[3]}`
+                break
+            case 6:
+                formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}-`
+                break
+            case 5:
+                formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}`
+                break
+            case 4:
+                formattedNumber = !match ? '' : `(${match[1]}) ${match[2]}`
+                break
+            case 3:
+                formattedNumber = !match ? '' : `(${match[1]}) `
+                break
+            case 2:
+                formattedNumber = !match ? '' : `(${match[1]}`
+                break
+            case 1:
+                formattedNumber = !match ? '' : `(${match[1]}`
+                break
+            case 0:
+                formattedNumber = !match ? '' : ``
+                break
+
+            default:
+                break
+        }
+
+        return formattedNumber;
+    }
+
+
+    const handleBackspace = (e) => {
+        if (e.keyCode === 8 || e.key === 'Backspace') {
+            e.preventDefault()
+            const cleaned = ('' + e.target.value).replace(/\D/g, '')
+            const match = cleaned.split('')
+            let formattedNumber
+            switch (cleaned.length) {
+                case 10:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-${match[6]}${match[7]}-${match[8]}`
+                    break
+                case 9:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-${match[6]}${match[7]}-`
+                    break
+                case 8:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-${match[6]}`
+                    break
+                case 7:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}${match[5]}-`
+                    break
+                case 6:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}${match[2]}) ${match[3]}${match[4]}`
+                    break
+                case 5:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}${match[2]}) ${match[3]}`
+                    break
+                case 4:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}${match[2]}) `
+                    break
+                case 3:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}${match[1]}`
+                    break
+                case 2:
+                    formattedNumber = !match ? '' :
+                        `(${match[0]}`
+                    break
+                case 1:
+                    formattedNumber = !match ? '' : ``
+                    break
+                case 0:
+                    formattedNumber = !match ? '' : ``
+                    break
+
+                default:
+                    break
+            }
+            const newCleaned = ('7' + formattedNumber).replace(/\D/g, '')
+            setPhoneNumber(formattedNumber)
+            setSendNumber(newCleaned)
+        }
+    }
+
 
     useEffect(() => {
         fetchItem(id).then((data) => {
@@ -121,15 +246,33 @@ const Item = () => {
             } else {
                 localStorage.setItem('cart', JSON.stringify([item.id]))
             }
-            fetchCart(cartList).then(data => {
-                cartItems.setCart(data)
-                let countsOfItems = {}
-                for (let i of data) {
-                    let count = cartList.filter(item => item === i.id).length
-                    countsOfItems[i.id] = count
-                }
-                cartItems.setCounts(countsOfItems)
-            })
+            const cartList2 = JSON.parse(localStorage.getItem('cart'))
+            if (Array.isArray(cartList2) && cartList.length > 0) {
+                fetchCart(cartList2).then(data => {
+                    cartItems.setFullCart(data, cartList2)
+                    let countsOfItems = {}
+                    for (let i of data) {
+                        let count = cartList2.filter(item => item === i.id).length
+                        countsOfItems[i.id] = count
+                    }
+                    let sum = 0
+                    for (let key in countsOfItems) {
+                        let item = data.filter(i => i.id === Number(key))
+                        if (item[0])
+                            sum += item[0].sale ? item[0].sale * countsOfItems[key] : item[0].price * countsOfItems[key]
+                    }
+                    if (document.querySelector('.CartCostSpan')) {
+                        document.querySelector('.CartCostSpan').innerHTML = formatNumberWithSpaces(sum) + ' ₽'
+                    }
+                    // setCartCost(sum)
+                })
+            }
+
+            // if (Array.isArray(cartList) && cartList.length > 0) {
+            //     fetchCart(cartList).then(data => {
+            //         cartItems.setCart(data, cartList)
+            //     })
+            // }
         }
     }
 
@@ -151,6 +294,7 @@ const Item = () => {
 
     const showSizesTable = () => {
         setScrollPos(window.scrollY)
+        document.querySelector('.SizesModal').setAttribute('style', `top: ${window.scrollY}px`)
         document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
         document.querySelector('.AppContent').classList.add('Lock')
         document.querySelector('.SizesModal').classList.add('VisibleSizes')
@@ -165,6 +309,26 @@ const Item = () => {
         }
     }
 
+    const clickToOrder = () => {
+        document.querySelector('.OrderItemModal').classList.add('VisibleOrderItem')
+        setScrollPos(window.scrollY)
+        document.querySelector('.OrderItemModal').setAttribute('style', `top: ${window.scrollY}px`)
+        document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
+        document.querySelector('.AppContent').classList.add('Lock')
+    }
+
+    const closeOrderModal = () => {
+        document.querySelector('.OrderItemModal').classList.remove('VisibleOrderItem')
+        document.querySelector('.AppContent').classList.remove('Lock')
+        window.scrollTo(0, scrollPos)
+        document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
+        document.querySelector('.OrderItemModal').setAttribute('style', `top: 0`)
+    }
+
+    const handleOrder = () => {
+        setIsOrderDone(true)
+    }
+
     return (
         <div className="MainContainer">
             {item && sameItems && price ?
@@ -177,8 +341,8 @@ const Item = () => {
                                 </div>
                                 {images && images.map((img, i) => {
                                     return (
-                                        <div className="SmallImg" onClick={() => handleClickImg(i + 1)}>
-                                            <img key={i} src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
+                                        <div key={i} className="SmallImg" onClick={() => handleClickImg(i + 1)}>
+                                            <img src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
                                         </div>
                                     )
                                 })}
@@ -431,9 +595,9 @@ const Item = () => {
                                 </div>
                             </div>
                             <div className="ItemBuy">
-                                <div className="BuyBtn" onClick={handleToCart}>
-                                    {chosenItem ?
-                                        <>
+                                {chosenItem ?
+                                    <>
+                                        <div className="BuyBtn" onClick={handleToCart}>
                                             {(chosenItem.size_clo || chosenItem.size_eu) &&
                                                 <>
                                                     <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo && chosenItem.size_clo !== 'null' ? chosenItem.size_clo.toUpperCase() : chosenItem.size_eu}</div>
@@ -441,11 +605,45 @@ const Item = () => {
                                                 </>
                                             }
                                             <div className="BuyText">ДОБАВИТЬ В КОРЗИНУ</div>
-                                        </>
-                                        :
+                                        </div>
+                                        <div className="BuyBtn BuyNow" onClick={clickToOrder}>
+                                            <div className="BuyText">КУПИТЬ</div>
+                                        </div>
+                                        <div className="OrderItemModal">
+                                            <TfiClose className="CloseOrderItem" size={30} onClick={closeOrderModal} style={{ cursor: 'pointer' }} />
+                                            {isOrderDone ?
+                                                <div className='OrderingCart'>
+                                                    <div className='OrderTitle'>Ваш заказ оформлен!</div>
+                                                    <button className='OrderConfirm' onClick={closeOrderModal}>Вернуться к покупкам</button>
+                                                </div>
+                                                :
+                                                <div className='OrderingCart'>
+                                                    <div className='OrderTitle'>Оформление заказа</div>
+                                                    <input className='OrderInput' type="text" placeholder='ФИО' value={clientName} onChange={handleName} />
+                                                    <div className='OrderInput' style={{ backgroundColor: 'white' }}>
+                                                        <span>+7</span>
+                                                        <input
+                                                            type="text"
+                                                            placeholder='(999) 999-99-99'
+                                                            maxLength="15"
+                                                            value={phoneNumber}
+                                                            onChange={(e) => {
+                                                                // handlePhoneChange(e)
+                                                                handlePhone(e)
+                                                            }}
+                                                            onKeyDown={handleBackspace}
+                                                        />
+                                                    </div>
+                                                    <button className={`OrderConfirm ${clientName.length > 0 && sendNumber.length === 11 ? '' : 'NonActiveOrder'}`} id='cart' onClick={() => handleOrder()}>Отправить</button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </>
+                                    :
+                                    <div className="BuyBtn" onClick={handleToCart}>
                                         <div className="BuyText">ЗАПРОСИТЬ</div>
-                                    }
-                                </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -505,7 +703,12 @@ const Item = () => {
                     </div>
                 </>
                 :
-                <></>
+                <div className="LoadingContainer2">
+                    <div className="Spinner">
+                        <div className="Ball"></div>
+                        <p className="Loading">ЗАГРУЗКА...</p>
+                    </div>
+                </div>
             }
         </div>
     )
