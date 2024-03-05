@@ -594,5 +594,10 @@
 @media (max-width: 550px) {
     .SizeBtn {
         width: calc(25% - 5px);
+        font-size: 14px;
+
+        span {
+            font-size: 12px;
+        }
     }
 }
