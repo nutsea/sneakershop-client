@@ -101,7 +101,7 @@ const AdminInput = ({ itemChange }) => {
 
         let images = []
 
-        if (name === 'price' || name === 'sale' || name === 'size_eu' || name === 'size_ru' || name === 'size_us' || name === 'size_uk' || name === 'size_sm') {
+        if (name === 'price' || name === 'sale' || name === 'count' || name === 'size_eu' || name === 'size_ru' || name === 'size_us' || name === 'size_uk' || name === 'size_sm') {
             newValue = ('' + newValue).replace(/\D/g, '')
         }
 
