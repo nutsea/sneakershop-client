@@ -6,14 +6,14 @@ import Admin from "./pages/Admin"
 import Main from "./pages/Main"
 import News from "./pages/News"
 
-const AppRoutes = ({type}) => {
+const AppRoutes = ({ type, startSearch, openCart }) => {
     return (
         <Routes>
-            <Route path="/" element = { <Main /> } />
-            <Route path="/catalogue/:category?/:brandlink?/:search?/:sale?/:new?" element = { <Catalogue /> } />
-            <Route path="/item/:id" element = { <Item /> } />
-            <Route path="/admin" element = { <Admin /> } />
-            <Route path="/news" element = { <News /> } />
+            <Route path="/" element={<Main />} />
+            <Route path="/catalogue/:category?/:brandlink?/:search?/:sale?/:new?" element={<Catalogue />} />
+            <Route path="/item/:id" element={<Item startSearch={startSearch} openCart={openCart} />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/news" element={<News />} />
         </Routes>
     )
 }

@@ -73,6 +73,7 @@
     position: absolute;
     width: 100%;
     height: fit-content;
+    height: 70px;
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -81,7 +82,7 @@
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transition: opacity .3s ease;
+    transition: height .6s ease;
 
     span {
         padding: 10px 35px;
@@ -95,7 +96,8 @@
 }
 
 .HiddenList {
-    opacity: 0;
+    // opacity: 0;
+    height: 0;
     pointer-events: none;
 }
 

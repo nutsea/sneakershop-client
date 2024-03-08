@@ -661,7 +661,7 @@ export const App = observer(() => {
           </div>
         }
         <div className="AppContent">
-          <AppRoutes />
+          <AppRoutes startSearch={showSearch} openCart={showCart} />
           <footer></footer>
         </div>
         <div className={`GoToTop ${isTop ? 'InvisibleTop' : ''}`} onClick={handleTop}><IoIosArrowUp size={20} style={{ marginBottom: 2 }} /></div>

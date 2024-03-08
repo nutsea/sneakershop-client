@@ -8,10 +8,11 @@ import { Context } from "..";
 import { TfiClose } from "react-icons/tfi";
 import { LuCopy } from "react-icons/lu";
 import { IoIosArrowForward } from "react-icons/io";
+import { MdArrowOutward } from "react-icons/md";
 
 import arrow from '../assets/arr.png'
 
-const Item = () => {
+const Item = ({ startSearch, openCart }) => {
     const { id } = useParams()
     const [item, setItem] = useState(null)
     const [sameItems, setSameItems] = useState(null)
@@ -29,6 +30,12 @@ const Item = () => {
     const [sendNumber, setSendNumber] = useState('')
     const [isOrderDone, setIsOrderDone] = useState(false)
     const navigate = useNavigate()
+
+    const handleSearch = () => {
+        if (startSearch) {
+            startSearch()
+        }
+    }
 
     const handleNavigate = (e) => {
         navigate(e.target.id)
@@ -260,6 +267,7 @@ const Item = () => {
             } else {
                 localStorage.setItem('cart', JSON.stringify([item.id]))
             }
+            openCart()
             const cartList2 = JSON.parse(localStorage.getItem('cart'))
             if (Array.isArray(cartList2) && cartList.length > 0) {
                 fetchCart(cartList2).then(data => {
@@ -278,15 +286,8 @@ const Item = () => {
                     if (document.querySelector('.CartCostSpan')) {
                         document.querySelector('.CartCostSpan').innerHTML = formatNumberWithSpaces(sum) + ' ₽'
                     }
-                    // setCartCost(sum)
                 })
             }
-
-            // if (Array.isArray(cartList) && cartList.length > 0) {
-            //     fetchCart(cartList).then(data => {
-            //         cartItems.setCart(data, cartList)
-            //     })
-            // }
         }
     }
 
@@ -740,6 +741,14 @@ const Item = () => {
                                 <span className="DetSub">Бренд</span>
                                 <span className="DetInfo" id={`/catalogue/all/${item.brand}`} onClick={handleNavigate} style={{ cursor: 'pointer' }}>{item.brand.toUpperCase()} <IoIosArrowForward style={{ marginLeft: 10 }} /></span>
                             </div>
+                        </div>
+                    </div>
+                    <div className="GoShopping">
+                        <div className="GoSub">ПРОДОЛЖИТЬ ПОКУПКИ</div>
+                        <div className="GoPar">Найдите то, что вы хотите, в один клик. Всего один клик, не стесняйтесь продолжить</div>
+                        <div className="GoBtns">
+                            <button onClick={handleSearch}>ПОИСК</button>
+                            <button id={`/catalogue/${item.category}`} onClick={handleNavigate}>ВЕРНУТЬСЯ В КАТЕГОРИЮ <MdArrowOutward /></button>
                         </div>
                     </div>
                 </>
