@@ -106,8 +106,8 @@ const Admin = () => {
                 :
                 <div className="AdminPanel">
                     <div className="AdminTabs">
-                        <div className={`AdminTab ${tab === 'creating' ? 'ChosenTab' : ''}`} id="creating" onClick={chooseTab}>Создание</div>
-                        <div className={`AdminTab ${tab === 'table' ? 'ChosenTab' : ''}`} id="table" onClick={chooseTab}>Просмотр</div>
+                        <div className={`AdminTab ${tab === 'creating' ? 'ChosenTabAdmin' : ''}`} id="creating" onClick={chooseTab}>Создание</div>
+                        <div className={`AdminTab ${tab === 'table' ? 'ChosenTabAdmin' : ''}`} id="table" onClick={chooseTab}>Просмотр</div>
                     </div>
                     {tab === 'creating' ?
                         <>

@@ -17,6 +17,7 @@
 
 .MainSub {
     font-size: 40px;
+    font-weight: 600;
 }
 
 .AllModels {
@@ -48,10 +49,10 @@
     
     img {
         width: 100%;
-        transition: transform .3s ease;
+        transition: transform .7s ease;
 
         &:hover {
-            transform: scale(1.1);
+            transform: scale(1.04);
         }
     }
 }

@@ -56,7 +56,6 @@ export const App = observer(() => {
     setSendNumber('7' + cleaned)
   }
 
-
   const formatPhoneNumber = (e) => {
     const cleaned = ('' + e.target.value).replace(/\D/g, '')
     setSendNumber('7' + cleaned)
@@ -407,24 +406,6 @@ export const App = observer(() => {
   }
 
   useEffect(() => {
-    // const cartList = JSON.parse(localStorage.getItem('cart'))
-    // if (Array.isArray(cartList) && cartList.length > 0) {
-    //   fetchCart(cartList).then(data => {
-    //     cartItems.setFullCart(data, cartList)
-    //     let countsOfItems = {}
-    //     for (let i of data) {
-    //       let count = cartList.filter(item => item === i.id).length
-    //       countsOfItems[i.id] = count
-    //     }
-    //     let sum = 0
-    //     for (let key in countsOfItems) {
-    //       let item = data.filter(i => i.id === Number(key))
-    //       if (item[0])
-    //         sum += item[0].sale ? item[0].sale * countsOfItems[key] : item[0].price * countsOfItems[key]
-    //     }
-    //     setCartCost(sum)
-    //   })
-    // }
     if (brands.length > 0) {
       let delimiter = Math.ceil(windowWidth / 300)
       let maxHeight = Math.ceil(brands.length / delimiter) * 26.68
@@ -485,7 +466,6 @@ export const App = observer(() => {
         <header className="AppHeader">
           <div className="HeaderLogo" id='/' onClick={handleNavigate}>EV</div>
           <nav className="HeaderNav PCNav">
-            <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
             <li id='/news' onClick={handleNavigate}>НОВИНКИ</li>
             <li
               onMouseEnter={showBrandsTab}
@@ -496,6 +476,7 @@ export const App = observer(() => {
             <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
             <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
             <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
+            <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
           </nav>
           <div className="HeaderBtns">
             <div className="HeaderBtn" onClick={showSearch}><CiSearch size={30} /></div>
@@ -507,7 +488,6 @@ export const App = observer(() => {
           </div>
           <div className='BurgerMenu'>
             <nav className="HeaderBurgerNav">
-              <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
               <li id='/news' onClick={handleNavigate}>НОВИНКИ</li>
               <li
                 onMouseEnter={showBrandsTab}
@@ -518,6 +498,7 @@ export const App = observer(() => {
               <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
               <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
               <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
+              <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
             </nav>
           </div>
         </header>

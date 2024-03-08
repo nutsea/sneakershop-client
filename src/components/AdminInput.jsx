@@ -34,8 +34,6 @@ const colorsList = [
 
 const AdminInput = ({ itemChange }) => {
     const [category, setCategory] = useState('')
-    // eslint-disable-next-lineА
-    // const [items, setItems] = useState()
     const [item, setItem] = useState({
         code: '',
         brand: '',
@@ -102,7 +100,14 @@ const AdminInput = ({ itemChange }) => {
 
         let images = []
 
-        if (name === 'price' || name === 'sale' || name === 'count' || name === 'size_eu' || name === 'size_ru' || name === 'size_us' || name === 'size_uk' || name === 'size_sm') {
+        if (name === 'size_eu' || name === 'size_ru' || name === 'size_us' || name === 'size_uk' || name === 'size_sm') {
+            newValue = ('' + newValue).replace(/[^0-9.]/g, '')
+            if (newValue.split('.').length > 2) {
+                newValue = newValue.split('.').slice(0, 2).join('.')
+            }
+        }
+
+        if (name === 'price' || name === 'sale' || name === 'count') {
             newValue = ('' + newValue).replace(/\D/g, '')
         }
 
@@ -131,12 +136,22 @@ const AdminInput = ({ itemChange }) => {
     }
 
     const handleCheckColor = (e, color) => {
-        document.querySelector('.CheckedColor')?.classList.remove('CheckedColor')
-        document.querySelector(`.Color${e.target.id}`).classList.add('CheckedColor')
-        setItem(prevItem => ({
-            ...prevItem,
-            color: color.color,
-        }))
+        const oldColors = item.color
+        const checker = document.querySelector(`.Color${e.target.id}`)
+        if (checker.classList.contains('CheckedColor')) {
+            checker.classList.remove('CheckedColor')
+            setItem(prevItem => ({
+                ...prevItem,
+                color: oldColors.replace(color.color, '').replace('  ', ' '),
+            }))
+            return
+        } else {
+            checker.classList.add('CheckedColor')
+            setItem(prevItem => ({
+                ...prevItem,
+                color: oldColors + ' ' + color.color,
+            }))
+        }
     }
 
 
@@ -167,7 +182,6 @@ const AdminInput = ({ itemChange }) => {
     }
 
     const click = () => {
-        console.log(item)
         if (canCreate()) {
             if (item.files) {
                 nullify()
@@ -175,8 +189,6 @@ const AdminInput = ({ itemChange }) => {
                 createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
                     .then(data => {
                         setIsLoading(false)
-                        // fetchCallback()
-                        // fetchItemsAdmin().then(data => setItems(data))
                     })
             } else {
                 nullify()
@@ -184,8 +196,6 @@ const AdminInput = ({ itemChange }) => {
                 createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
                     .then(data => {
                         setIsLoading(false)
-                        // fetchCallback()
-                        // fetchItemsAdmin().then(data => setItems(data))
                     })
             }
         }
@@ -199,7 +209,7 @@ const AdminInput = ({ itemChange }) => {
             if (item.files) {
                 nullify()
                 setIsLoading(true)
-                changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
+                changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.files, item.tags)
                     .then(data => {
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
@@ -207,7 +217,7 @@ const AdminInput = ({ itemChange }) => {
             } else {
                 nullify()
                 setIsLoading(true)
-                changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
+                changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.tags)
                     .then(data => {
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()

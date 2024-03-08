@@ -8,13 +8,12 @@
 
 .ItemImgContainer {
     user-select: none;
-    width: 65%;
-    height: 40vw;
+    width: 70%;
+    height: 45vw;
     overflow: hidden;
     display: flex;
     align-items: center;
     position: relative;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
 
     img {
@@ -23,8 +22,8 @@
 }
 
 .Thin {
-    width: calc(65% - 200px);
-    height: 30vw;
+    width: calc(70% - 80px);
+    height: 35vw;
 }
 
 .InvisibleImg {
@@ -43,15 +42,32 @@
 }
 
 .LeftImg {
-    left: 0;
+    left: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+
+    img {
+        width: 100%;
+    }
 }
 
 .RightImg {
-    right: 0;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+
+    img {
+        width: 100%;
+    }
 }
 
 .ItemInfo {
-    width: 32%;
+    width: 28%;
 }
 
 .SizeTypes2 {
@@ -112,7 +128,6 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    // justify-content: space-between;
     margin-left: -5px;
     margin-top: -5px;
 }
@@ -163,7 +178,7 @@
     color: white !important;
 
     .RedPrice {
-        color: rgba(255, 255, 255, 0.7) !important;
+        color: rgba(255, 255, 255, 0.7);
     }
 }
 
@@ -171,12 +186,20 @@
     margin-top: 50px;
 }
 
+.QualityItem {
+    width: calc(100% - 20px);
+    padding: 5px 10px;
+    background-image: linear-gradient(to right, rgb(255, 212, 220), rgb(187, 210, 255));
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
 .BuyBtn {
     width: calc(100% - 80px);
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 10px 36px;
+    padding: 10px 38px;
     background-color: white;
     color: rgb(21, 21, 21);
     border-radius: 5px;
@@ -202,12 +225,11 @@
 .BuyNow {
     background-color: rgb(21, 21, 21);
     border: solid 2px rgb(21, 21, 21);
-    padding: 10px 36px;
+    padding: 10px 38px;
     color: white;
 }
 
 .OrderItemModal {
-    // display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -241,7 +263,6 @@
     margin: 0 20px;
     height: 15px;
     width: 0.5px;
-    // background-color: rgba(255, 255, 255, 0.5);
     background-color: rgba(0, 0, 0, 0.5);
     transition: background-color .3s ease;
 }
@@ -252,25 +273,62 @@
 
 .ItemDetails {
     width: 100%;
-    margin-top: 30px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
     font-family: Roboto, sans-serif;
 }
 
+.DetailsLeft {
+    width: calc(72% - 50px);
+    display: flex;
+    flex-direction: column;
+}
+
+.DetailsRight {
+    width: 28%;
+    display: flex;
+    flex-direction: column;
+}
+
+.DetailArt, .DetailBrand {
+    padding: 15px 0;
+    border-bottom: 1.5px solid rgba(21, 21, 21, 0.15);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.DetInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .ItemInfoTabs {
+    align-self: flex-start;
     display: flex;
     flex-direction: row;
     align-items: center;
     height: 40px;
-    width: fit-content;
+    width: 795px;
+    max-width: 100%;
     position: relative;
+    overflow-x: scroll;
+    overflow-y: visible;
+    font-family: 'Roboto', sans-serif;
+    margin-top: 30px;
+
+    &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+    }
 
     &::before {
         content: '';
         position: absolute;
-        top: 100%;
-        height: 0.5px;
+        top: calc(100% - 2px);
+        height: 1px;
         width: 100%;
         background-color: rgba(21, 21, 21, 0.15);
     }
@@ -280,9 +338,9 @@
     &::before {
         content: '';
         position: absolute;
-        top: 100%;
+        top: calc(100% - 2px);
         left: 0;
-        height: 0.5px;
+        height: 1px;
         width: 100%;
         background-color: rgb(21, 21, 21);
     }
@@ -290,6 +348,7 @@
 
 .ItemTab {
     height: 100%;
+    width: fit-content;
     position: relative;
     display: flex;
     align-items: center;
@@ -297,6 +356,7 @@
     padding: 0 15px;
     user-select: none;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .InvisibleTab {
@@ -317,6 +377,15 @@
     width: fit-content;
     position: relative;
     letter-spacing: 0.05em;
+}
+
+.NoTax {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.InvisibleSale {
+    display: none;
 }
 
 .ItemSaleItem {
@@ -345,14 +414,12 @@
 }
 
 .ItemImagesSmall {
-    width: 100px;
+    width: 50px;
 }
 
 .SmallImg {
     width: 100%;
-    height: 70px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    // border: solid 1px rgba(21, 21, 21, 0.1);
+    height: 40px;
     border-radius: 5px;
     overflow: hidden;
     display: flex;
@@ -438,23 +505,23 @@
 }
 
 @media (max-width: 1260px) {
-    .ItemImagesSmall {
-        width: 80px;
-    }
-
-    .SmallImg {
-        height: 60px;
-    }
-
     .ItemImgContainer {
-        width: 60%;
+        width: 65%;
     }
 
     .Thin {
-        width: calc(60% - 150px);
+        width: calc(65% - 100px);
     }
 
     .ItemInfo {
+        width: 37%;
+    }
+
+    .DetailsLeft {
+        width: calc(63% - 50px);
+    }
+
+    .DetailsRight {
         width: 37%;
     }
 }
@@ -462,6 +529,34 @@
 @media (max-width: 1030px) {
     .ItemPanel {
         flex-wrap: wrap;
+    }
+
+    .ItemDetails {
+        flex-direction: column;
+    }
+
+    .DetailsLeft {
+        width: 100%;
+    }
+
+    .DetailsRight {
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 100px;
+    }
+
+    .DetailArt, .DetailBrand {
+        flex-direction: column;
+    }
+
+    .DetSub {
+        opacity: 0.6;
+        margin-bottom: 10px;
+    }
+
+    .DetInfo {
+        width: 100%;
+        justify-content: space-between;
     }
 
     .ItemInfo {
@@ -474,7 +569,7 @@
     }
 
     .ItemImgContainer {
-        width: calc(100% - 150px);
+        width: calc(100% - 80px);
         height: 50vw;
     }
 
@@ -501,16 +596,13 @@
         margin-top: 20px;
     }
 
-    .ItemDetails {
+    .ItemInfoTabs {
         margin-top: 50px;
     }
 }
 
 @media (max-width: 760px) {
     .ItemInfoTabs {
-        flex-direction: column;
-        height: fit-content;
-        align-items: flex-start;
         margin-bottom: 20px;
 
         &::before {
@@ -520,7 +612,6 @@
 
     .ItemTab {
         height: 40px;
-        width: 100%;
 
         &::after {
             content: '';
@@ -540,7 +631,7 @@
     }
 
     .ItemImgContainer {
-        width: calc(100% - 100px);
+        width: calc(100% - 80px);
     }
 }
 
@@ -570,9 +661,6 @@
     .SmallImg {
         width: 50px;
         height: 35px;
-        // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border: solid 0.5px rgba(21, 21, 21, 0.1);
-        box-shadow: unset;
         border-radius: 5px;
         overflow: hidden;
         display: flex;

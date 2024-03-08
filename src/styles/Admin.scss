@@ -41,10 +41,8 @@
 
 .AdminPanel {
     margin-top: 20px;
-    // width: 500px;
     width: calc(100% - 40px);
     padding: 20px;
-    // height: 300px;
     background-color: white;
     border-radius: 25px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -62,7 +60,6 @@
 
 .AdminTab {
     padding: 5px 10px;
-    // background-color: rgba(21, 21, 21, 0.3);
     border: solid 1px rgba(21, 21, 21, 0.3);
     color: rgb(21, 21, 21);
     border-radius: 3px;
@@ -78,7 +75,7 @@
     margin-left: 5px;
 }
 
-.ChosenTab {
+.ChosenTabAdmin {
     background-color: rgb(21, 21, 21) !important;
     color: white;
 }
@@ -130,7 +127,6 @@
 .CategoryCheck {
     display: flex;
     flex-direction: row;
-    // margin-bottom: 5px;
     cursor: pointer;
     user-select: none;
     font-size: 14px;
@@ -470,7 +466,6 @@ table {
     font-weight: 500;
     font-size: 20px;
     font-family: 'Roboto', sans-serif;
-    // margin-bottom: 10px;
     margin: 15px 0 10px 0;
 }
 
@@ -486,9 +481,6 @@ table {
 
     img {
         width: 100%;
-        // height: 100px;
-        // object-fit: cover;
-        // border-radius: 5px;
     }
 }
 
@@ -496,7 +488,6 @@ table {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    // margin-top: -5px;
 }
 
 .AdminInputImg + .AdminInputImg  {

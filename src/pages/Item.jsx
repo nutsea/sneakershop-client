@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { fetchCart, fetchImages, fetchItem, fetchSame } from "../http/itemAPI"
-import { IoIosArrowRoundBack } from "react-icons/io";
-import { IoIosArrowRoundForward } from "react-icons/io";
 import { MdDone } from "react-icons/md";
 
 import "../styles/Item.scss"
 import { Context } from "..";
 import { TfiClose } from "react-icons/tfi";
+import { LuCopy } from "react-icons/lu";
+import { IoIosArrowForward } from "react-icons/io";
+
+import arrow from '../assets/arr.png'
 
 const Item = () => {
     const { id } = useParams()
@@ -19,13 +21,25 @@ const Item = () => {
     const [sizeType, setSizeType] = useState(null)
     const [images, setImages] = useState(null)
     const [nowImg, setNowImg] = useState(0)
-    const [chosenTab, setChosenTab] = useState('tab1')
+    const [chosenTab, setChosenTab] = useState('tab0')
     const { cartItems } = useContext(Context)
     const [scrollPos, setScrollPos] = useState(0)
     const [clientName, setClientName] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [sendNumber, setSendNumber] = useState('')
     const [isOrderDone, setIsOrderDone] = useState(false)
+    const navigate = useNavigate()
+
+    const handleNavigate = (e) => {
+        navigate(e.target.id)
+        document.querySelector('.HeaderBurger').classList.remove('ActiveBurger')
+        document.querySelector('.AppContent').classList.remove('Lock')
+        window.scrollTo(0, scrollPos)
+        document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
+        document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
+        document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
+        document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
+    }
 
     const handleName = (e) => {
         setClientName(e.target.value)
@@ -329,6 +343,10 @@ const Item = () => {
         setIsOrderDone(true)
     }
 
+    const toClipboard = () => {
+        navigator.clipboard.writeText(item.code)
+    }
+
     return (
         <div className="MainContainer">
             {item && sameItems && price ?
@@ -349,17 +367,20 @@ const Item = () => {
                             </div>
                         }
                         <div className={`ItemImgContainer ${images && images.length > 0 ? 'Thin' : ''}`}>
-                            <IoIosArrowRoundBack className="ImgBtn LeftImg" size={60} onClick={handleImgLeft} />
+                            <div className="ImgBtn LeftImg" onClick={handleImgLeft}><img src={arrow} alt="arrow" /></div>
                             <img className={`${nowImg === 0 ? '' : 'InvisibleImg'}`} src={process.env.REACT_APP_API_URL + item.img} alt={item.name} />
                             {images && images.map((img, i) => {
                                 return (
                                     <img key={i} className={`${nowImg === i + 1 ? '' : 'InvisibleImg'}`} src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
                                 )
                             })}
-                            <IoIosArrowRoundForward className="ImgBtn RightImg" size={60} onClick={handleImgRight} />
+                            <div className="ImgBtn RightImg" onClick={handleImgRight}><img src={arrow} alt="arrow" /></div>
                         </div>
                         {images && images.length > 0 &&
                             <div className="ItemImagesSmall2">
+                                <div className="SmallImg" onClick={() => handleClickImg(0)}>
+                                    <img src={process.env.REACT_APP_API_URL + item.img} alt={item.name} />
+                                </div>
                                 {images && images.map((img, i) => {
                                     return (
                                         <div className="SmallImg" onClick={() => handleClickImg(i + 1)}>
@@ -370,7 +391,11 @@ const Item = () => {
                             </div>
                         }
                         <div className="ItemInfo">
-                            <div className={`ItemSaleItem ${item.sale && item.count > 0 ? '' : 'Invisible'}`}>Sale</div>
+                            {chosenItem ?
+                                <div className={`ItemSaleItem ${chosenItem.sale && chosenItem.count > 0 ? '' : 'InvisibleSale'}`}>Sale</div>
+                                :
+                                <div className={`ItemSaleItem ${item.sale && item.count > 0 ? '' : 'InvisibleSale'}`}>Sale</div>
+                            }
                             <div className="ItemNameItem">{capitalizeWords(item.name)}</div>
                             {(sale && hasNotNull()) ?
                                 <div className="ItemSaledPriceItem MT20">{chosenItem ? formatNumberWithSpaces(chosenItem.sale) : formatNumberWithSpaces(sale)} <span>₽</span></div>
@@ -378,7 +403,10 @@ const Item = () => {
                                 <></>
                             }
                             {hasNotNull() ?
-                                <div className={`ItemPriceItem MT10 FS20 Span16 FW400 ${item.sale && item.count > 0 && hasNotNull() ? 'Crossed' : ''}`}>{chosenItem ? formatNumberWithSpaces(chosenItem.price) : formatNumberWithSpaces(price)} <span>₽</span></div>
+                                <>
+                                    <div className={`ItemPriceItem MT10 FS20 Span16 FW400 ${item.sale && item.count > 0 && hasNotNull() ? 'Crossed' : ''}`}>{chosenItem ? formatNumberWithSpaces(chosenItem.price) : formatNumberWithSpaces(price)} <span>₽</span></div>
+                                    <div className="NoTax">Все налоги и таможенные сборы включены. Стоимость доставки рассчитывается на этапе оформления заказа.</div>
+                                </>
                                 :
                                 <div className="ItemPriceItem MT20">Доступен для заказа</div>
                             }
@@ -404,7 +432,7 @@ const Item = () => {
                                                 <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
                                                     <span>EU {item.size_eu}</span>
                                                     {item.count !== 0 ?
-                                                        <span className="RedPrice">{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                        <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`} style={{ color: `${item.sale ? 'rgb(220, 0, 0)' : ''}` }}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                         :
                                                         <span className="GreyAsk">Запросить</span>
                                                     }
@@ -595,6 +623,7 @@ const Item = () => {
                                 </div>
                             </div>
                             <div className="ItemBuy">
+                                <div className="QualityItem">Товар прошел проверку на качество и оригинальность</div>
                                 {chosenItem ?
                                     <>
                                         <div className="BuyBtn" onClick={handleToCart}>
@@ -647,57 +676,69 @@ const Item = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="ItemInfoTabs">
+                        <div className="ItemTab ChosenTab" id="tab0" onClick={handleTab}>ОПИСАНИЕ</div>
+                        <div className="ItemTab" id="tab1" onClick={handleTab}>СПОСОБЫ ДОСТАВКИ</div>
+                        <div className="ItemTab" id="tab2" onClick={handleTab}>УСЛОВИЯ ВОЗВРАТА</div>
+                        <div className="ItemTab" id="tab3" onClick={handleTab}>СПОСОБЫ ОПЛАТ</div>
+                        <div className="ItemTab" id="tab4" onClick={handleTab}>FAQ</div>
+                    </div>
                     <div className="ItemDetails">
-                        <div className="ItemInfoTabs">
-                            <div className="ItemTab ChosenTab" id="tab0" onClick={handleTab}>ОПИСАНИЕ</div>
-                            <div className="ItemTab" id="tab1" onClick={handleTab}>СПОСОБЫ ДОСТАВКИ</div>
-                            <div className="ItemTab" id="tab2" onClick={handleTab}>УСЛОВИЯ ВОЗВРАТА</div>
-                            <div className="ItemTab" id="tab3" onClick={handleTab}>СПОСОБЫ ОПЛАТ</div>
-                            <div className="ItemTab" id="tab4" onClick={handleTab}>FAQ</div>
-                        </div>
-                        <div className="ItemInfoPars">
-                            <div className={`ItemInfoPar ${chosenTab === 'tab0' ? '' : 'InvisibleTab'}`}>
-                                <p>{item.description}</p>
-                            </div>
-                            <div className={`ItemInfoPar ${chosenTab === 'tab1' ? '' : 'InvisibleTab'}`}>
-                                <p className="Bold">Сейчас доступны следующие варианты доставки:</p>
-                                <p>- доставка в любой магазин EFIM VERETSKY.</p>
-                                <p>- доставка домой или в офис курьерской службой.</p>
-                                <p className="Bold">Доставка заказов по России</p>
-                                <p>Доставка по России производится по 100% предоплате и осуществляется следующими способами доставки:</p>
-                                <p>- Почта России. Срок доставки от 4 до 14 дней.</p>
-                                <p>- СДЕК. Сроки доставки 3-7 рабочих дней.</p>
-                                <p>- Боксберри. Сроки доставки 3-7 рабочих дней.</p>
-                                <p className="Bold">Самовывоз</p>
-                                <p>- Самовывоз доступен в нашем магазине по адресу … . Время работы: 10:00-22:00. О готовности заказа сообщит по телефону наш менеджер.</p>
-                                <p>В пункте самовывоза перед оплатой доступна примерка в присутствии сотрудника магазина.</p>
-                                <p>Если выбранный товар доступен только под заказ, то сроки доставки увеличиваются с 14 до 21 дня.</p>
-                                <p className="Bold">Команда магазина EFIM VERETSKY стремится обеспечить исключительное качество обслуживания клиентов. Мы работаем над тем, чтобы наши клиенты были самыми счастливыми, поэтому стараемся доставлять заказы максимально быстро и комфортно для Вас.</p>
-                            </div>
-                            <div className={`ItemInfoPar ${chosenTab === 'tab2' ? '' : 'InvisibleTab'}`}>
+                        <div className="DetailsLeft">
+                            <div className="ItemInfoPars">
+                                <div className={`ItemInfoPar ${chosenTab === 'tab0' ? '' : 'InvisibleTab'}`}>
+                                    <p>{item.description}</p>
+                                </div>
+                                <div className={`ItemInfoPar ${chosenTab === 'tab1' ? '' : 'InvisibleTab'}`}>
+                                    <p className="Bold">Сейчас доступны следующие варианты доставки:</p>
+                                    <p>- Доставка в любой магазин EFIM VERETSKY.</p>
+                                    <p>- Доставка домой или в офис курьерской службой.</p>
+                                    <p className="Bold">Доставка заказов по России</p>
+                                    <p>Доставка по России производится по 100% предоплате и осуществляется следующими способами доставки:</p>
+                                    <p>- Почта России. Срок доставки от 4 до 14 дней.</p>
+                                    <p>- СДЕК. Сроки доставки 3-7 рабочих дней.</p>
+                                    <p>- Боксберри. Сроки доставки 3-7 рабочих дней.</p>
+                                    <p className="Bold">Самовывоз</p>
+                                    <p>- Самовывоз доступен в нашем магазине по адресу … . Время работы: 10:00-22:00. О готовности заказа сообщит по телефону наш менеджер.</p>
+                                    <p>В пункте самовывоза перед оплатой доступна примерка в присутствии сотрудника магазина.</p>
+                                    <p>Если выбранный товар доступен только под заказ, то сроки доставки увеличиваются с 14 до 21 дня.</p>
+                                    <p className="Bold">Команда магазина EFIM VERETSKY стремится обеспечить исключительное качество обслуживания клиентов. Мы работаем над тем, чтобы наши клиенты были самыми счастливыми, поэтому стараемся доставлять заказы максимально быстро и комфортно для Вас.</p>
+                                </div>
+                                <div className={`ItemInfoPar ${chosenTab === 'tab2' ? '' : 'InvisibleTab'}`}>
 
+                                </div>
+                                <div className={`ItemInfoPar ${chosenTab === 'tab3' ? '' : 'InvisibleTab'}`}>
+                                    <p>Мы принимаем оплату следующими способами.</p>
+                                    <p className="Bold">- Банковскими картами:</p>
+                                    <p>Visa, Mastercard, МИР.</p>
+                                    <p className="Bold">- Электронными платежами:</p>
+                                    <p>Всеми популярными способами (Visa, MasterCard, МИР, а также СБП и др.)</p>
+                                    <p className="Bold">- Наличными средствами:</p>
+                                    <p>Оплата заказа производится наличными в рублях в магазине или курьеру, в момент передачи заказа</p>
+                                    <p className="Bold">- Оплата переводом по реквизитам</p>
+                                </div>
+                                <div className={`ItemInfoPar ${chosenTab === 'tab4' ? '' : 'InvisibleTab'}`}>
+                                    <p className="Bold">- Чем занимается Ваш интернет-магазин?</p>
+                                    <p>Мы занимаемся поиском и продажей оригинальных кроссовок и вещей для широкой аудитории. Мы заинтересованы сделать кроссовки более доступными для всех потребителей, и верим,что для каждого найдется пара, независимо от бренда, стиля, размера и функции.</p>
+                                    <p className="Bold">- Вы продаёте оригинальные товары?</p>
+                                    <p>Мы продаем исключительно новые и 100% оригинальные товары. Мы не принимаем и не работаем с подделками, товарами с «серого рынка» или заводскими вариантами. Мы гарантируем подлинность каждого проданного товара. Каждый из товаров, представленных в EV, проходит тщательную проверку подлинности нашими экспертами.</p>
+                                    <p className="Bold">- Почему цена зависит от размера?</p>
+                                    <p>Все модели и размеры выпускаются в ограниченном количестве, стоимость каждого размера зависит от спроса на него на рынке.</p>
+                                    <p className="Bold">- Какие размеры указаны на сайте?</p>
+                                    <p>Вся обувь на сайте представлена в US размерах. Для удобства в таблице размеров показано соответствие US размеров с UK, EUR, RU размерами и длиной стопы. Вы можете самостоятельно определить свой размер, воспользовавшись таблицей размеров на странице товара.</p>
+                                    <p className="Bold">- Гарантирована ли безопасность моих данных?</p>
+                                    <p>Мы гарантируем полную безопасность ваших персональных данных. Если у вас есть вопросы, пожалуйста, ознакомьтесь с нашей Политикой конфиденциальности.</p>
+                                </div>
                             </div>
-                            <div className={`ItemInfoPar ${chosenTab === 'tab3' ? '' : 'InvisibleTab'}`}>
-                                <p>Мы принимаем оплату следующими способами.</p>
-                                <p className="Bold">- Банковскими картами:</p>
-                                <p>Visa, Mastercard, МИР.</p>
-                                <p className="Bold">- Электронными платежами:</p>
-                                <p>Всеми популярными способами (Visa, MasterCard, МИР, а также СБП и др.)</p>
-                                <p className="Bold">- Наличными средствами:</p>
-                                <p>Оплата заказа производится наличными в рублях в магазине или курьеру, в момент передачи заказа</p>
-                                <p className="Bold">- Оплата переводом по реквизитам</p>
+                        </div>
+                        <div className="DetailsRight">
+                            <div className="DetailArt">
+                                <span className="DetSub">Артикул</span>
+                                <span className="DetInfo">{item.code} <LuCopy style={{ marginLeft: 10, cursor: 'pointer' }} onClick={toClipboard} /></span>
                             </div>
-                            <div className={`ItemInfoPar ${chosenTab === 'tab4' ? '' : 'InvisibleTab'}`}>
-                                <p className="Bold">- Чем занимается Ваш интернет-магазин?</p>
-                                <p>Мы занимаемся поиском и продажей оригинальных кроссовок и вещей для широкой аудитории. Мы заинтересованы сделать кроссовки более доступными для всех потребителей, и верим,что для каждого найдется пара, независимо от бренда, стиля, размера и функции.</p>
-                                <p className="Bold">- Вы продаёте оригинальные товары?</p>
-                                <p>Мы продаем исключительно новые и 100% оригинальные товары. Мы не принимаем и не работаем с подделками, товарами с «серого рынка» или заводскими вариантами. Мы гарантируем подлинность каждого проданного товара. Каждый из товаров, представленных в EV, проходит тщательную проверку подлинности нашими экспертами.</p>
-                                <p className="Bold">- Почему цена зависит от размера?</p>
-                                <p>Все модели и размеры выпускаются в ограниченном количестве, стоимость каждого размера зависит от спроса на него на рынке.</p>
-                                <p className="Bold">- Какие размеры указаны на сайте?</p>
-                                <p>Вся обувь на сайте представлена в US размерах. Для удобства в таблице размеров показано соответствие US размеров с UK, EUR, RU размерами и длиной стопы. Вы можете самостоятельно определить свой размер, воспользовавшись таблицей размеров на странице товара.</p>
-                                <p className="Bold">- Гарантирована ли безопасность моих данных?</p>
-                                <p>Мы гарантируем полную безопасность ваших персональных данных. Если у вас есть вопросы, пожалуйста, ознакомьтесь с нашей Политикой конфиденциальности.</p>
+                            <div className="DetailBrand">
+                                <span className="DetSub">Бренд</span>
+                                <span className="DetInfo" id={`/catalogue/all/${item.brand}`} onClick={handleNavigate} style={{ cursor: 'pointer' }}>{item.brand.toUpperCase()} <IoIosArrowForward style={{ marginLeft: 10 }} /></span>
                             </div>
                         </div>
                     </div>
