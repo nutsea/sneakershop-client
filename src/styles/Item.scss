@@ -1,3 +1,19 @@
+.ItemLinks {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 15px;
+}
+
+.ItemLink + .ItemLink {
+    margin-left: 5px;
+}
+
+.Pointer {
+    cursor: pointer;
+}
+
 .ItemPanel {
     width: 100%;
     display: flex;
@@ -26,8 +42,14 @@
     height: 35vw;
 }
 
+.ImgOpacity {
+    opacity: 1;
+    transition: opacity .6s ease;
+}
+
 .InvisibleImg {
-    display: none !important;
+    position: absolute;
+    opacity: 0;
 }
 
 .ImgBtn {
@@ -165,6 +187,10 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.RedSale {
+    color: rgb(170, 0, 0);
 }
 
 .GreyAsk {
@@ -434,6 +460,10 @@
 
 .SmallImg+.SmallImg {
     margin-top: 20px;
+}
+
+.NowImg {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .SizesInfo {

@@ -183,6 +183,7 @@ export const changeItem = async (id, code, brand, name, description, price, sale
 }
 
 export const changeItemWithFiles = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags) => {
+    console.log(files)
     return new Promise(async (resolve, reject) => {
         try {
             await changeItem(id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags)

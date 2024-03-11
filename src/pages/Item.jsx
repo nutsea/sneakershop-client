@@ -352,15 +352,20 @@ const Item = ({ startSearch, openCart }) => {
         <div className="MainContainer">
             {item && sameItems && price ?
                 <>
+                    <div className="ItemLinks">
+                        <div className="ItemLink Pointer" id="/catalogue" onClick={handleNavigate}>Каталог /</div>
+                        <div className="ItemLink Pointer" id={`/catalogue/${item.category}`} onClick={handleNavigate}>{item.category === 'shoes' ? 'Обувь' : (item.category === 'clothes') ? 'Одежда' : 'Аксессуары'} /</div>
+                        <div className="ItemLink">{capitalizeWords(item.name)}</div>
+                    </div>
                     <div className="ItemPanel">
                         {images && images.length > 0 &&
                             <div className="ItemImagesSmall">
-                                <div className="SmallImg" onClick={() => handleClickImg(0)}>
+                                <div className={`SmallImg ${nowImg} ${nowImg === 0 ? 'NowImg' : ''}`} onClick={() => handleClickImg(0)}>
                                     <img src={process.env.REACT_APP_API_URL + item.img} alt={item.name} />
                                 </div>
                                 {images && images.map((img, i) => {
                                     return (
-                                        <div key={i} className="SmallImg" onClick={() => handleClickImg(i + 1)}>
+                                        <div key={i} className={`SmallImg ${nowImg === i + 1 ? 'NowImg' : ''}`} onClick={() => handleClickImg(i + 1)}>
                                             <img src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
                                         </div>
                                     )
@@ -369,22 +374,22 @@ const Item = ({ startSearch, openCart }) => {
                         }
                         <div className={`ItemImgContainer ${images && images.length > 0 ? 'Thin' : ''}`}>
                             <div className="ImgBtn LeftImg" onClick={handleImgLeft}><img src={arrow} alt="arrow" /></div>
-                            <img className={`${nowImg === 0 ? '' : 'InvisibleImg'}`} src={process.env.REACT_APP_API_URL + item.img} alt={item.name} />
+                            <img className={`ImgOpacity ${nowImg === 0 ? '' : 'InvisibleImg'}`} src={process.env.REACT_APP_API_URL + item.img} alt={item.name} />
                             {images && images.map((img, i) => {
                                 return (
-                                    <img key={i} className={`${nowImg === i + 1 ? '' : 'InvisibleImg'}`} src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
+                                    <img key={i} className={`ImgOpacity ${nowImg === i + 1 ? '' : 'InvisibleImg'}`} src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
                                 )
                             })}
                             <div className="ImgBtn RightImg" onClick={handleImgRight}><img src={arrow} alt="arrow" /></div>
                         </div>
                         {images && images.length > 0 &&
                             <div className="ItemImagesSmall2">
-                                <div className="SmallImg" onClick={() => handleClickImg(0)}>
+                                <div className={`SmallImg ${nowImg} ${nowImg === 0 ? 'NowImg' : ''}`} onClick={() => handleClickImg(0)}>
                                     <img src={process.env.REACT_APP_API_URL + item.img} alt={item.name} />
                                 </div>
                                 {images && images.map((img, i) => {
                                     return (
-                                        <div className="SmallImg" onClick={() => handleClickImg(i + 1)}>
+                                        <div className={`SmallImg ${nowImg === i + 1 ? 'NowImg' : ''}`} onClick={() => handleClickImg(i + 1)}>
                                             <img key={i} src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
                                         </div>
                                     )
@@ -433,7 +438,7 @@ const Item = ({ startSearch, openCart }) => {
                                                 <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
                                                     <span>EU {item.size_eu}</span>
                                                     {item.count !== 0 ?
-                                                        <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`} style={{ color: `${item.sale ? 'rgb(220, 0, 0)' : ''}` }}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                        <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                         :
                                                         <span className="GreyAsk">Запросить</span>
                                                     }
@@ -448,7 +453,7 @@ const Item = ({ startSearch, openCart }) => {
                                                     <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
                                                         <span>RU {item.size_ru}</span>
                                                         {item.count !== 0 ?
-                                                            <span className="RedPrice">{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                            <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                             :
                                                             <span className="GreyAsk">Запросить</span>
                                                         }
@@ -463,7 +468,7 @@ const Item = ({ startSearch, openCart }) => {
                                                         <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
                                                             <span>US {item.size_us}</span>
                                                             {item.count !== 0 ?
-                                                                <span className="RedPrice">{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                                <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                                 :
                                                                 <span className="GreyAsk">Запросить</span>
                                                             }
@@ -478,7 +483,7 @@ const Item = ({ startSearch, openCart }) => {
                                                             <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
                                                                 <span>UK {item.size_uk}</span>
                                                                 {item.count !== 0 ?
-                                                                    <span className="RedPrice">{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                                    <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                                     :
                                                                     <span className="GreyAsk">Запросить</span>
                                                                 }
@@ -493,7 +498,7 @@ const Item = ({ startSearch, openCart }) => {
                                                                 <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
                                                                     <span>CM {item.size_sm}</span>
                                                                     {item.count !== 0 ?
-                                                                        <span className="RedPrice">{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                                        <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                                         :
                                                                         <span className="GreyAsk">Запросить</span>
                                                                     }
@@ -509,7 +514,7 @@ const Item = ({ startSearch, openCart }) => {
                                                                     <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
                                                                         <span>{item.size_clo}</span>
                                                                         {item.count !== 0 ?
-                                                                            <span className="RedPrice">{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                                            <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                                             :
                                                                             <span className="GreyAsk">Запросить</span>
                                                                         }

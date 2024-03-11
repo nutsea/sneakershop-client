@@ -57,6 +57,7 @@ const AdminInput = ({ itemChange }) => {
         files: null
     })
     const [oldImages, setOldImages] = useState([])
+    // const [newImages, setNewImages] = useState([])
     const [deleteImages, setDeleteImages] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
@@ -112,7 +113,6 @@ const AdminInput = ({ itemChange }) => {
         }
 
         if (name === 'file') {
-            console.log(files[0])
             images = files[0]
         }
 
@@ -122,9 +122,22 @@ const AdminInput = ({ itemChange }) => {
 
         setItem(prevItem => ({
             ...prevItem,
-            [name]: type === 'file' ? images : newValue,
+            [name]: (type === 'file' || type === 'files') ? images : newValue,
         }))
-        console.log(item)
+
+        // if (type === 'file' || type === 'files') {
+        //     setItem(prevItem => ({
+        //         ...prevItem,
+        //         [name]: images
+        //     }))
+        // } else if (type === 'files') {
+        //     setNewImages(images)
+        // } else {
+        //     setItem(prevItem => ({
+        //         ...prevItem,
+        //         [name]: newValue
+        //     }))
+        // }
     }
 
     const handleCategory = (e) => {
@@ -184,18 +197,18 @@ const AdminInput = ({ itemChange }) => {
     const click = () => {
         if (canCreate()) {
             if (item.files) {
-                nullify()
                 setIsLoading(true)
                 createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
-                    .then(data => {
+                .then(data => {
+                        nullify()
                         setIsLoading(false)
                     })
             } else {
-                nullify()
                 setIsLoading(true)
                 createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
-                    .then(data => {
-                        setIsLoading(false)
+                .then(data => {
+                    nullify()
+                    setIsLoading(false)
                     })
             }
         }
@@ -207,18 +220,18 @@ const AdminInput = ({ itemChange }) => {
                 destroyImages(deleteImages)
             }
             if (item.files) {
-                nullify()
                 setIsLoading(true)
                 changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.files, item.tags)
-                    .then(data => {
+                .then(data => {
+                        nullify()
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
                     })
             } else {
-                nullify()
                 setIsLoading(true)
                 changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.tags)
-                    .then(data => {
+                .then(data => {
+                        nullify()
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
                     })
@@ -249,16 +262,7 @@ const AdminInput = ({ itemChange }) => {
             files: null
         })
         setCategory('')
-        document.querySelector(`.origfileInput`).value = null
-        document.querySelector(`.origfileUnset`).classList.add('Showed')
-        document.querySelector(`.origfileSet`).classList.remove('Showed')
-        document.querySelector(`.origfileClear`).classList.remove('Showed')
-        document.querySelector(`.origfilesInput`).value = null
-        document.querySelector(`.origfilesUnset`).classList.add('Showed')
-        document.querySelector(`.origfilesSet`).classList.remove('Showed')
-        document.querySelector(`.origfilesClear`).classList.remove('Showed')
         setOldImages([])
-        document.querySelector('.CheckedColor')?.classList.remove('CheckedColor')
     }
 
     const deleteImage = (id) => {

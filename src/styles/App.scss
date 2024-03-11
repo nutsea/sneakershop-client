@@ -38,6 +38,8 @@
     flex-direction: row;
     font-weight: 500;
     font-size: 14px;
+    // width: calc(100% - 460px);
+    // justify-content: space-between;
 
     li {
         cursor: pointer;
@@ -65,7 +67,7 @@
     }
 
     li+li {
-        margin-left: 36px;
+        margin-left: 76px;
     }
 }
 

@@ -735,14 +735,22 @@ const Catalogue = observer(() => {
     }, [category, brandlink, search])
 
     useEffect(() => {
+        setFound(false)
         findItems()
         // eslint-disable-next-line
     }, [sizes, brands, models, colors, priceMin, priceMax, sortBy, sortDir, inStock, brandsSet, modelsSet, colorsSet, sizesEuSet, sizesRuSet, sizesUsSet, sizesUkSet, sizesSmSet, sizesCloSet])
 
     return (
         <div className="MainContainer">
+            {category === 'shoes' ?
+                <div className="CatalogueHead">КРОССОВКИ И КЕДЫ</div>
+                : (category === 'clothes') ?
+                    <div className="CatalogueHead">ОДЕЖДА</div>
+                    : (category === 'accessories') &&
+                    <div className="CatalogueHead">АКСЕССУАРЫ</div>
+            }
             <div className="CatalogueTop">
-                <div className="FoundCount">Найдено: {catalogue.count}</div>
+                <div className="FoundCount">Найдено: {found && catalogue.count}</div>
                 <div className="CatalogueFilters">
                     <div className="FilterList" onClick={showFilters}><span>ПОКАЗАТЬ ФИЛЬТР</span><LuSettings2 size={18} /></div>
                     <div className="FilterSort" id="filtersort" onClick={handleSortShow}>
