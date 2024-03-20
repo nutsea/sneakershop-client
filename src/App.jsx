@@ -13,6 +13,42 @@ import { useNavigate } from "react-router-dom"
 import { Context } from '.';
 import { observer } from 'mobx-react-lite';
 
+const shoesSub = [
+  { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+  { id: 2, name: 'КЕДЫ И КРОССОВКИ' },
+  { id: 3, name: 'БОТИНКИ И УГГИ' },
+  { id: 4, name: 'СЛАЙДЫ' },
+  { id: 5, name: 'ДЕТСКОЕ' },
+  { id: 6, name: 'ДРУГАЯ ОБУВЬ' },
+]
+
+const clothesSub = [
+  { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+  { id: 2, name: 'ЛОНГСЛИВЫ  СВИТЕРЫ' },
+  { id: 3, name: 'ФУТБОЛКИ' },
+  { id: 4, name: 'ШТАНЫ И ДЖИНСЫ' },
+  { id: 5, name: 'ШОРТЫ' },
+  { id: 6, name: 'ХУДИ И СВИТШОТЫ' },
+  { id: 7, name: 'КУРТКИ И ПУХОВИКИ' },
+  { id: 8, name: 'БЕЛЬЕ' },
+  { id: 9, name: 'ДРУГАЯ ОДЕЖДА' }
+]
+
+const accessoriesSub = [
+  { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+  { id: 2, name: 'ГОЛОВНЫЕ УБОРЫ' },
+  { id: 3, name: 'ПЕРЧАТКИ' },
+  { id: 4, name: 'РЮКЗАКИ И СУМКИ' },
+  { id: 5, name: 'КОШЕЛЬКИ' },
+  { id: 6, name: 'ОЧКИ' },
+  { id: 7, name: 'ШАПКИ' },
+  { id: 8, name: 'НОСКИ' },
+  { id: 9, name: 'ПРЕДМЕТЫ ИНТЕРЬЕРА' },
+  { id: 10, name: 'ДРУГИЕ АКСЕССУАРЫ' },
+  { id: 11, name: 'ФИГУРКИ' },
+  { id: 12, name: 'BEARBRICKS' },
+]
+
 export const App = observer(() => {
   const [brands, setBrands] = useState([])
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
@@ -43,6 +79,10 @@ export const App = observer(() => {
     document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
     document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
     document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
+  }
+
+  const handleSubCategory = (e) => {
+    navigate(e.target.id)
   }
 
   const handleName = (e) => {
@@ -241,6 +281,91 @@ export const App = observer(() => {
     }
   }
 
+  const showItemsTab = (id) => {
+    let delimiter = Math.ceil(windowWidth / 300)
+    let maxHeight
+    console.log(1)
+    switch (id) {
+      case 'shoes':
+        maxHeight = Math.ceil(shoesSub.length / delimiter) * 26.68
+        if (shoesSub.length > 0) {
+          if (maxHeight < windowHeight - 70 - 80) {
+            document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
+          } else {
+            document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
+          }
+        } else {
+          document.querySelector('.ShoesTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
+        }
+        break
+
+      case 'clothes':
+        maxHeight = Math.ceil(clothesSub.length / delimiter) * 26.68
+        if (clothesSub.length > 0) {
+          if (maxHeight < windowHeight - 70 - 80) {
+            document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
+          } else {
+            document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
+          }
+        } else {
+          document.querySelector('.ClothesTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
+        }
+        break
+
+      case 'accessories':
+        maxHeight = Math.ceil(accessoriesSub.length / delimiter) * 26.68
+        if (accessoriesSub.length > 0) {
+          if (maxHeight < windowHeight - 70 - 80) {
+            document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
+          } else {
+            document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
+          }
+        } else {
+          document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
+        }
+        break
+
+      default:
+        break
+    }
+  }
+
+  const hideItemsTab = (id) => {
+    let delimiter = Math.ceil(windowWidth / 300)
+    let maxHeight
+    switch (id) {
+      case 'shoes':
+        maxHeight = Math.ceil(shoesSub.length / delimiter) * 26.68
+        if (maxHeight < windowHeight - 70 - 80) {
+          document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+        } else {
+          document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+        }
+        break
+
+      case 'clothes':
+        maxHeight = Math.ceil(clothesSub.length / delimiter) * 26.68
+        if (maxHeight < windowHeight - 70 - 80) {
+          document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+        } else {
+          document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+        }
+        break
+
+      case 'accessories':
+        maxHeight = Math.ceil(accessoriesSub.length / delimiter) * 26.68
+        if (maxHeight < windowHeight - 70 - 80) {
+          document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+        } else {
+          document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+        }
+        break
+
+      default:
+        break
+    }
+  }
+
   const showInfoTab = () => {
     document.querySelector('.InfoTab').setAttribute('style', `transform: translateY(0px)`)
   }
@@ -415,6 +540,33 @@ export const App = observer(() => {
         document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
       }
     }
+    if (shoesSub.length > 0) {
+      let delimiter = Math.ceil(windowWidth / 300)
+      let maxHeight = Math.ceil(shoesSub.length / delimiter) * 26.68
+      if (maxHeight < windowHeight - 70 - 80) {
+        document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+      } else {
+        document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+      }
+    }
+    if (clothesSub.length > 0) {
+      let delimiter = Math.ceil(windowWidth / 300)
+      let maxHeight = Math.ceil(clothesSub.length / delimiter) * 26.68
+      if (maxHeight < windowHeight - 70 - 80) {
+        document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+      } else {
+        document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+      }
+    }
+    if (accessoriesSub.length > 0) {
+      let delimiter = Math.ceil(windowWidth / 300)
+      let maxHeight = Math.ceil(accessoriesSub.length / delimiter) * 26.68
+      if (maxHeight < windowHeight - 70 - 80) {
+        document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+      } else {
+        document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+      }
+    }
     // eslint-disable-next-line
   }, [windowWidth, windowHeight, brands.length])
 
@@ -473,9 +625,9 @@ export const App = observer(() => {
             >
               БРЕНДЫ
             </li>
-            <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
-            <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
-            <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
+            <li id="/catalogue/shoes" onClick={handleNavigate} onMouseEnter={() => showItemsTab('shoes')} onMouseLeave={() => hideItemsTab('shoes')}>ОБУВЬ</li>
+            <li id="/catalogue/clothes" onClick={handleNavigate} onMouseEnter={() => showItemsTab('clothes')} onMouseLeave={() => hideItemsTab('clothes')}>ОДЕЖДА</li>
+            <li id="/catalogue/accessories" onClick={handleNavigate} onMouseEnter={() => showItemsTab('accessories')} onMouseLeave={() => hideItemsTab('accessories')}>АКСЕССУАРЫ</li>
             <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
           </nav>
           <div className="HeaderBtns">
@@ -523,6 +675,39 @@ export const App = observer(() => {
               </div>
             </>
           }
+        </div>
+        <div
+          className='ShoesTab'
+          onMouseEnter={() => showItemsTab('shoes')}
+          onMouseLeave={() => hideItemsTab('shoes')}
+        >
+          {shoesSub.map((sub) => {
+            return (
+              <div key={sub.id} className="BrandBtn" id={`/catalogue/shoes/all/all/all/all/${sub.id}`} onClick={handleSubCategory}>{sub.name}</div>
+            )
+          })}
+        </div>
+        <div
+          className='ClothesTab'
+          onMouseEnter={() => showItemsTab('clothes')}
+          onMouseLeave={() => hideItemsTab('clothes')}
+        >
+          {clothesSub.map((sub) => {
+            return (
+              <div key={sub.id} className="BrandBtn" id={`/catalogue/clothes/all/all/all/all/${sub.id}`} onClick={handleSubCategory}>{sub.name}</div>
+            )
+          })}
+        </div>
+        <div
+          className='AccessoriesTab'
+          onMouseEnter={() => showItemsTab('accessories')}
+          onMouseLeave={() => hideItemsTab('accessories')}
+        >
+          {accessoriesSub.map((sub) => {
+            return (
+              <div key={sub.id} className="BrandBtn" id={`/catalogue/accessories/all/all/all/all/${sub.id}`} onClick={handleSubCategory}>{sub.name}</div>
+            )
+          })}
         </div>
         <div
           className="InfoTab"

@@ -39,7 +39,7 @@ const colorsList = [
 ]
 
 const Catalogue = observer(() => {
-    const { category, brandlink, search, sale } = useParams()
+    const { category, brandlink, search, sale, sub_category } = useParams()
     const { catalogue } = useContext(Context)
     const [sortBy, setSortBy] = useState('price')
     const [sortDir, setSortDir] = useState('down')
@@ -422,7 +422,8 @@ const Catalogue = observer(() => {
                 sizesEuSet.length > 0 || sizesRuSet.length > 0 || sizesUsSet.length > 0 || sizesUkSet.length > 0 || sizesSmSet.length > 0 ? true : false,
                 sizesCloSet.length > 0 ? true : false,
                 search,
-                sale
+                sale,
+                sub_category
             )
                 .then(data => {
                     catalogue.setItems(data.rows)

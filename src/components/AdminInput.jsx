@@ -32,8 +32,45 @@ const colorsList = [
     { name: 'Чёрный', hex: '#000000', color: 'black' },
 ]
 
+const shoesSub = [
+    { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+    { id: 2, name: 'КЕДЫ И КРОССОВКИ' },
+    { id: 3, name: 'БОТИНКИ И УГГИ' },
+    { id: 4, name: 'СЛАЙДЫ' },
+    { id: 5, name: 'ДЕТСКОЕ' },
+    { id: 6, name: 'ДРУГАЯ ОБУВЬ' },
+]
+
+const clothesSub = [
+    { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+    { id: 2, name: 'ЛОНГСЛИВЫ  СВИТЕРЫ' },
+    { id: 3, name: 'ФУТБОЛКИ' },
+    { id: 4, name: 'ШТАНЫ И ДЖИНСЫ' },
+    { id: 5, name: 'ШОРТЫ' },
+    { id: 6, name: 'ХУДИ И СВИТШОТЫ' },
+    { id: 7, name: 'КУРТКИ И ПУХОВИКИ' },
+    { id: 8, name: 'БЕЛЬЕ' },
+    { id: 9, name: 'ДРУГАЯ ОДЕЖДА' }
+]
+
+const accessoriesSub = [
+    { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+    { id: 2, name: 'ГОЛОВНЫЕ УБОРЫ' },
+    { id: 3, name: 'ПЕРЧАТКИ' },
+    { id: 4, name: 'РЮКЗАКИ И СУМКИ' },
+    { id: 5, name: 'КОШЕЛЬКИ' },
+    { id: 6, name: 'ОЧКИ' },
+    { id: 7, name: 'ШАПКИ' },
+    { id: 8, name: 'НОСКИ' },
+    { id: 9, name: 'ПРЕДМЕТЫ ИНТЕРЬЕРА' },
+    { id: 10, name: 'ДРУГИЕ АКСЕССУАРЫ' },
+    { id: 11, name: 'ФИГУРКИ' },
+    { id: 12, name: 'BEARBRICKS' },
+]
+
 const AdminInput = ({ itemChange }) => {
     const [category, setCategory] = useState('')
+    const [subCategory, setSubCategory] = useState('')
     const [item, setItem] = useState({
         code: '',
         brand: '',
@@ -49,6 +86,7 @@ const AdminInput = ({ itemChange }) => {
         size_sm: '',
         size_clo: '',
         category: '',
+        sub_category: '',
         model: '',
         color: '',
         tags: '',
@@ -124,27 +162,22 @@ const AdminInput = ({ itemChange }) => {
             ...prevItem,
             [name]: (type === 'file' || type === 'files') ? images : newValue,
         }))
-
-        // if (type === 'file' || type === 'files') {
-        //     setItem(prevItem => ({
-        //         ...prevItem,
-        //         [name]: images
-        //     }))
-        // } else if (type === 'files') {
-        //     setNewImages(images)
-        // } else {
-        //     setItem(prevItem => ({
-        //         ...prevItem,
-        //         [name]: newValue
-        //     }))
-        // }
     }
 
     const handleCategory = (e) => {
         setCategory(e.target.id)
+        setSubCategory('')
         setItem(prevItem => ({
             ...prevItem,
             category: e.target.id,
+        }))
+    }
+
+    const handleSubCategory = (e) => {
+        setSubCategory(e.target.id)
+        setItem(prevItem => ({
+            ...prevItem,
+            sub_category: e.target.id,
         }))
     }
 
@@ -157,7 +190,6 @@ const AdminInput = ({ itemChange }) => {
                 ...prevItem,
                 color: oldColors.replace(color.color, '').replace('  ', ' '),
             }))
-            return
         } else {
             checker.classList.add('CheckedColor')
             setItem(prevItem => ({
@@ -165,6 +197,7 @@ const AdminInput = ({ itemChange }) => {
                 color: oldColors + ' ' + color.color,
             }))
         }
+        console.log(item.color)
     }
 
 
@@ -198,17 +231,17 @@ const AdminInput = ({ itemChange }) => {
         if (canCreate()) {
             if (item.files) {
                 setIsLoading(true)
-                createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags)
-                .then(data => {
+                createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.sub_category, item.model, item.color, item.file, item.files, item.tags)
+                    .then(data => {
                         nullify()
                         setIsLoading(false)
                     })
             } else {
                 setIsLoading(true)
-                createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags)
-                .then(data => {
-                    nullify()
-                    setIsLoading(false)
+                createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.sub_category, item.model, item.color, item.file, item.tags)
+                    .then(data => {
+                        nullify()
+                        setIsLoading(false)
                     })
             }
         }
@@ -222,7 +255,7 @@ const AdminInput = ({ itemChange }) => {
             if (item.files) {
                 setIsLoading(true)
                 changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.files, item.tags)
-                .then(data => {
+                    .then(data => {
                         nullify()
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
@@ -230,7 +263,7 @@ const AdminInput = ({ itemChange }) => {
             } else {
                 setIsLoading(true)
                 changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.tags)
-                .then(data => {
+                    .then(data => {
                         nullify()
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
@@ -255,6 +288,7 @@ const AdminInput = ({ itemChange }) => {
             size_sm: '',
             size_clo: '',
             category: '',
+            sub_category: '',
             model: '',
             color: '',
             tags: '',
@@ -274,6 +308,13 @@ const AdminInput = ({ itemChange }) => {
         if (itemChange) {
             setItem(itemChange)
             setCategory(itemChange.category)
+            setSubCategory(itemChange.sub_category)
+            for (let i of itemChange.color.split(' ')) {
+                const checker = document.querySelector(`.Color${colorsList.findIndex(col => col.color === i)}`)
+                if (checker) {
+                    checker.classList.add('CheckedColor')
+                }
+            }
             fetchImages(itemChange.id).then(data => setOldImages(data))
         }
     }, [itemChange])
@@ -297,6 +338,47 @@ const AdminInput = ({ itemChange }) => {
                             <span className="CategoryName" id="accessories">Аксессуар</span>
                         </div>
                     </div>
+                    {category &&
+                        <>
+                            <div className="InputClue MT5">Выбор подкатегории</div>
+                            <div className="AdminInput">
+                                {category === 'shoes' ?
+                                    <>
+                                        {shoesSub.map((sub) => {
+                                            return (
+                                                <div className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
+                                                    <span className={`CategoryCheckbox ${Number(subCategory) === Number(sub.id) ? 'BlackCheck' : ''}`} id={sub.id}><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                                                    <span className="CategoryName" id={sub.id}>{sub.name}</span>
+                                                </div>
+                                            )
+                                        })}
+                                    </>
+                                    : (category === 'clothes') ?
+                                        <>
+                                            {clothesSub.map((sub) => {
+                                                return (
+                                                    <div className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
+                                                        <span className={`CategoryCheckbox ${Number(subCategory) === Number(sub.id) ? 'BlackCheck' : ''}`} id={sub.id}><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                                                        <span className="CategoryName" id={sub.id}>{sub.name}</span>
+                                                    </div>
+                                                )
+                                            })}
+                                        </>
+                                        : (category === 'accessories') &&
+                                        <>
+                                            {accessoriesSub.map((sub) => {
+                                                return (
+                                                    <div className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
+                                                        <span className={`CategoryCheckbox ${Number(subCategory) === Number(sub.id) ? 'BlackCheck' : ''}`} id={sub.id}><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                                                        <span className="CategoryName" id={sub.id}>{sub.name}</span>
+                                                    </div>
+                                                )
+                                            })}
+                                        </>
+                                }
+                            </div>
+                        </>
+                    }
                     <div className="InputClue MT5">Артикул*</div>
                     <input className="AdminInput" type="text" name="code" value={item.code} onChange={handleChange} />
                     <div className="InputClue MT5">Бренд*</div>
@@ -441,7 +523,6 @@ const AdminInput = ({ itemChange }) => {
                         :
                         <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>Создать</button>
                     }
-                    {/* <button className={`AdminCreateBtn ${canCreate() ? '' : 'NonActiveCreate'}`} onClick={click}>{itemChange ? 'Сохранить' : 'Создать'}</button> */}
                 </>
                 :
                 <>

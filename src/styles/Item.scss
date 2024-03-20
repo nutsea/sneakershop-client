@@ -513,6 +513,23 @@
     display: none;
 }
 
+.SizesText {
+    margin-top: 10px;
+    height: 120px;
+    overflow: hidden;
+    transition: height .6s ease;
+}
+
+@media (max-width: 1294px) {
+    .SizesText {
+        height: 150px;
+    }
+}
+
+.SizesHidden {
+    height: 0;
+}
+
 .SizesModal {
     position: fixed;
     top: 0;

@@ -53,8 +53,8 @@ export const fetchItemsAdmin = async () => {
     return data
 }
 
-export const fetchItems = async (category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search, sale) => {
-    const { data } = await $host.get('api/item/all', { params: { category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search, sale } })
+export const fetchItems = async (category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search, sale, sub_category) => {
+    const { data } = await $host.get('api/item/all', { params: { category, brands, models, colors, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, priceMin, priceMax, sort, limit, page, in_stock, isModelsSet, isShoesSet, isClothesSet, search, sale, sub_category } })
     return data
 }
 
@@ -89,7 +89,7 @@ export const fetchSearch = async (search) => {
     return data
 }
 
-export const createItem = async (code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags) => {
+export const createItem = async (code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category) => {
     const formData = new FormData()
     console.log(sale)
     formData.append('code', code)
@@ -110,6 +110,7 @@ export const createItem = async (code, brand, name, description, price, sale, co
     formData.append('color', color)
     formData.append('tags', tags)
     formData.append('img', img)
+    formData.append('sub_category', sub_category)
 
     const { data } = await $host.post('api/item', formData, {
         headers: {
@@ -119,10 +120,10 @@ export const createItem = async (code, brand, name, description, price, sale, co
     return data
 }
 
-export const createItemWithFiles = async (code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags) => {
+export const createItemWithFiles = async (code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags, sub_category) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await createItem(code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags)
+            await createItem(code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category)
                 .then(async (data) => {
                     let item_id = data.id
                     const formData = new FormData()
@@ -151,7 +152,7 @@ export const deleteChosen = async (idArr) => {
     return data
 }
 
-export const changeItem = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags) => {
+export const changeItem = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category) => {
     const formData = new FormData()
     console.log(sale)
     formData.append('id', id)
@@ -173,6 +174,7 @@ export const changeItem = async (id, code, brand, name, description, price, sale
     formData.append('color', color)
     formData.append('tags', tags)
     formData.append('img', img)
+    formData.append('sub_category', sub_category)
 
     const { data } = await $host.post('api/item/update', formData, {
         headers: {
@@ -182,11 +184,11 @@ export const changeItem = async (id, code, brand, name, description, price, sale
     return data
 }
 
-export const changeItemWithFiles = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags) => {
+export const changeItemWithFiles = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags, sub_category) => {
     console.log(files)
     return new Promise(async (resolve, reject) => {
         try {
-            await changeItem(id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags)
+            await changeItem(id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category)
                 .then(async (data) => {
                     let item_id = data.id
                     const formData = new FormData()

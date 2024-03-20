@@ -308,11 +308,12 @@ const Item = ({ startSearch, openCart }) => {
     }
 
     const showSizesTable = () => {
-        setScrollPos(window.scrollY)
-        document.querySelector('.SizesModal').setAttribute('style', `top: ${window.scrollY}px`)
-        document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
-        document.querySelector('.AppContent').classList.add('Lock')
-        document.querySelector('.SizesModal').classList.add('VisibleSizes')
+        // setScrollPos(window.scrollY)
+        // document.querySelector('.SizesModal').setAttribute('style', `top: ${window.scrollY}px`)
+        // document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
+        // document.querySelector('.AppContent').classList.add('Lock')
+        // document.querySelector('.SizesModal').classList.add('VisibleSizes')
+        document.querySelector('.SizesText').classList.toggle('SizesHidden')
     }
 
     const hideSizesTable = (e) => {
@@ -534,6 +535,11 @@ const Item = ({ startSearch, openCart }) => {
                             <div className="SizesInfo" onClick={showSizesTable}>
                                 <span className="BlackCircle">i</span>
                                 <span className="Underlined">Как выбрать размер?</span>
+                            </div>
+                            <div className="SizesText SizesHidden">
+                                Замер стопы: Нужно встать на лист бумаги и обвести стопу. 
+                                Далее замерить расстояние от большого пальца до крайней точки пятки. 
+                                Вы также можете ориентироваться по значению в сантиметрах на размерной бирке внутри вашей обуви.
                             </div>
                             <div className="SizesModal" onClick={hideSizesTable}>
                                 <div className="SizesTable" id="sizes">

@@ -24,7 +24,6 @@ const Main = () => {
         })
         fetchClothesRnd().then(data => {
             setClothes(data)
-            console.log(data)
         })
         fetchAccessoriesRnd().then(data => {
             setAccessories(data)
@@ -60,8 +59,10 @@ const Main = () => {
                                     <div className="ItemName">{capitalizeWords(item.name)}</div>
                                     {item.count > 0 ?
                                         <>
-                                            {item.sale &&
+                                            {(item.sale && item.sale) > 0 ?
                                                 <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(item.sale)} <span>₽</span></div>
+                                                :
+                                                <></>
                                             }
                                             <div className={`ItemPrice ${item.sale ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(item.price)} ₽</div>
                                         </>
@@ -87,7 +88,7 @@ const Main = () => {
                                     <div className="ItemName">{capitalizeWords(item.name)}</div>
                                     {item.count > 0 ?
                                         <>
-                                            {item.sale ?
+                                            {(item.sale && item.sale) > 0 ?
                                                 <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(item.sale)} <span>₽</span></div>
                                                 :
                                                 <></>
@@ -116,8 +117,10 @@ const Main = () => {
                                     <div className="ItemName">{capitalizeWords(item.name)}</div>
                                     {item.count > 0 ?
                                         <>
-                                            {item.sale &&
+                                            {(item.sale && item.sale) > 0 ?
                                                 <div className="ItemSaledPrice"><span>от</span> {formatNumberWithSpaces(item.sale)} <span>₽</span></div>
+                                                :
+                                                <></>
                                             }
                                             <div className={`ItemPrice ${item.sale ? 'Crossed' : ''}`}>от {formatNumberWithSpaces(item.price)} ₽</div>
                                         </>

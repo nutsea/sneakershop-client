@@ -38,8 +38,6 @@
     flex-direction: row;
     font-weight: 500;
     font-size: 14px;
-    // width: calc(100% - 460px);
-    // justify-content: space-between;
 
     li {
         cursor: pointer;
@@ -99,7 +97,7 @@
     }
 }
 
-.HeaderLiRed  {
+.HeaderLiRed {
     color: rgb(170, 0, 0);
     font-weight: 900;
 }
@@ -397,7 +395,10 @@
 }
 
 .BrandsTab,
-.InfoTab {
+.InfoTab,
+.ShoesTab,
+.ClothesTab,
+.AccessoriesTab {
     position: fixed;
     z-index: 9;
     top: 70px;
@@ -413,7 +414,10 @@
     transition: transform .3s ease;
 }
 
-.BrandsTab {
+.BrandsTab,
+.ShoesTab,
+.ClothesTab,
+.AccessoriesTab {
     flex-wrap: wrap;
     overflow-x: hidden;
 }
@@ -519,7 +523,7 @@
     }
 }
 
-.SearchResult + .SearchResult {
+.SearchResult+.SearchResult {
     margin-top: 20px;
 }
 
@@ -633,7 +637,7 @@
     }
 }
 
-.OrderInput + .OrderInput {
+.OrderInput+.OrderInput {
     margin-top: 10px;
 }
 
