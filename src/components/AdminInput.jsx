@@ -231,14 +231,14 @@ const AdminInput = ({ itemChange }) => {
         if (canCreate()) {
             if (item.files) {
                 setIsLoading(true)
-                createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.sub_category, item.model, item.color, item.file, item.files, item.tags)
+                createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags, item.sub_category,)
                     .then(data => {
                         nullify()
                         setIsLoading(false)
                     })
             } else {
                 setIsLoading(true)
-                createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.sub_category, item.model, item.color, item.file, item.tags)
+                createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags, item.sub_category,)
                     .then(data => {
                         nullify()
                         setIsLoading(false)
@@ -254,7 +254,7 @@ const AdminInput = ({ itemChange }) => {
             }
             if (item.files) {
                 setIsLoading(true)
-                changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.files, item.tags)
+                changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.model, item.color.trim(' '), item.file, item.files, item.tags, item.category,)
                     .then(data => {
                         nullify()
                         setIsLoading(false)
@@ -262,7 +262,7 @@ const AdminInput = ({ itemChange }) => {
                     })
             } else {
                 setIsLoading(true)
-                changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.tags)
+                changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.model, item.color.trim(' '), item.file, item.tags, item.category,)
                     .then(data => {
                         nullify()
                         setIsLoading(false)

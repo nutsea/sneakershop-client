@@ -515,14 +515,68 @@
 
 .SizesText {
     margin-top: 10px;
-    height: 120px;
+    height: 225px;
     overflow: hidden;
     transition: height .6s ease;
 }
 
-@media (max-width: 1294px) {
+@media (max-width: 1300px) {
     .SizesText {
-        height: 150px;
+        height: 250px;
+    }
+}
+
+@media (max-width: 1259px) {
+    .SizesText {
+        height: 200px;
+    }
+}
+
+@media (max-width: 1190px) {
+    .SizesText {
+        height: 220px;
+    }
+}
+
+@media (max-width: 1117px) {
+    .SizesText {
+        height: 240px;
+    }
+}
+
+@media (max-width: 1014px) {
+    .SizesText {
+        height: 160px;
+    }
+}
+
+@media (max-width: 620px) {
+    .SizesText {
+        height: 180px;
+    }
+}
+
+@media (max-width: 550px) {
+    .SizesText {
+        height: 200px;
+    }
+}
+
+@media (max-width: 1490px) {
+    .SizesText {
+        height: 240px;
+    }
+}
+
+@media (max-width: 378px) {
+    .SizesText {
+        height: 260px;
+    }
+}
+
+@media (max-width: 345px) {
+    .SizesText {
+        height: 280px;
     }
 }
 

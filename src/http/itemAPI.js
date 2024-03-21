@@ -129,6 +129,7 @@ export const createItemWithFiles = async (code, brand, name, description, price,
                     const formData = new FormData()
                     formData.append('item_id', item_id)
 
+                    console.log(img)
                     for (let i of files) {
                         formData.append('img', i)
                     }
