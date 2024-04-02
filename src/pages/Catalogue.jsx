@@ -38,6 +38,42 @@ const colorsList = [
     { name: 'Чёрный', hex: '#000000', color: 'black' },
 ]
 
+const shoesSub = [
+    { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+    { id: 2, name: 'КЕДЫ И КРОССОВКИ' },
+    { id: 3, name: 'БОТИНКИ И УГГИ' },
+    { id: 4, name: 'СЛАЙДЫ' },
+    { id: 5, name: 'ДЕТСКОЕ' },
+    { id: 6, name: 'ДРУГАЯ ОБУВЬ' },
+]
+
+const clothesSub = [
+    { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+    { id: 7, name: 'ЛОНГСЛИВЫ  СВИТЕРЫ' },
+    { id: 8, name: 'ФУТБОЛКИ' },
+    { id: 9, name: 'ШТАНЫ И ДЖИНСЫ' },
+    { id: 10, name: 'ШОРТЫ' },
+    { id: 11, name: 'ХУДИ И СВИТШОТЫ' },
+    { id: 12, name: 'КУРТКИ И ПУХОВИКИ' },
+    { id: 13, name: 'БЕЛЬЕ' },
+    { id: 14, name: 'ДРУГАЯ ОДЕЖДА' }
+]
+
+const accessoriesSub = [
+    { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
+    { id: 15, name: 'ГОЛОВНЫЕ УБОРЫ' },
+    { id: 16, name: 'ПЕРЧАТКИ' },
+    { id: 17, name: 'РЮКЗАКИ И СУМКИ' },
+    { id: 18, name: 'КОШЕЛЬКИ' },
+    { id: 19, name: 'ОЧКИ' },
+    { id: 20, name: 'ШАПКИ' },
+    { id: 21, name: 'НОСКИ' },
+    { id: 22, name: 'ПРЕДМЕТЫ ИНТЕРЬЕРА' },
+    { id: 23, name: 'ДРУГИЕ АКСЕССУАРЫ' },
+    { id: 24, name: 'ФИГУРКИ' },
+    { id: 25, name: 'BEARBRICKS' },
+]
+
 const Catalogue = observer(() => {
     const { category, brandlink, search, sale, sub_category } = useParams()
     const { catalogue } = useContext(Context)
@@ -53,6 +89,7 @@ const Catalogue = observer(() => {
     const [inStock, setInStock] = useState(false)
     const [brandsSet, setBrandsSet] = useState([])
     const [modelsSet, setModelsSet] = useState([])
+    const [subcatSet, setSubcatSet] = useState([])
     const [colorsSet, setColorsSet] = useState([])
     const [sizesEuSet, setSizesEuSet] = useState([])
     const [sizesRuSet, setSizesRuSet] = useState([])
@@ -81,7 +118,11 @@ const Catalogue = observer(() => {
     }
 
     function formatNumberWithSpaces(number) {
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+    }
+
+    function formatText(text) {
+        return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
     }
 
     const showFilters = () => {
@@ -129,6 +170,26 @@ const Catalogue = observer(() => {
             box.classList.add('FilterShown')
             const nonNullModels = models.filter(model => model !== null && model.model !== null)
             box.setAttribute('style', `height: ${nonNullModels.length * 29.34 + 22}px`)
+        } else {
+            box.classList.remove('FilterShown')
+            box.setAttribute('style', 'height: 22px')
+        }
+    }
+
+    const showSubcatFilter = () => {
+        const box = document.querySelector('.FilterSubcat')
+        if (!box.classList.contains('FilterShown')) {
+            box.classList.add('FilterShown')
+            if (category === 'shoes') {
+                box.setAttribute('style', `height: ${(shoesSub.length - 1) * 29.34 + 22}px`)
+            } else if (category === 'clothes') {
+                box.setAttribute('style', `height: ${(clothesSub.length - 1) * 29.34 + 22}px`)
+            } else if (category === 'accessories') {
+                box.setAttribute('style', `height: ${(accessoriesSub.length - 1) * 29.34 + 22}px`)
+            } else {
+                let height = (shoesSub.length + clothesSub.length + accessoriesSub.length - 4) * 29.34 + 56
+                box.setAttribute('style', `height: ${height}px`)
+            }
         } else {
             box.classList.remove('FilterShown')
             box.setAttribute('style', 'height: 22px')
@@ -336,6 +397,16 @@ const Catalogue = observer(() => {
         }
     }
 
+    const handleSubcat = (e, subcat) => {
+        document.querySelector(`.${e.target.id}`).classList.toggle('CheckedInput')
+        if (subcatSet.includes(subcat.id)) {
+            console.log(subcatSet[0] === subcat.id)
+            setSubcatSet(subcatSet.filter(s => s !== Number(subcat.id)))
+        } else {
+            setSubcatSet([...subcatSet, subcat.id])
+        }
+    }
+
     const handleColor = (e, color) => {
         document.querySelector(`.${e.target.id}`).classList.toggle('CheckedColor')
         if (colorsSet.includes(color)) {
@@ -400,6 +471,18 @@ const Catalogue = observer(() => {
     }
 
     const findItems = () => {
+        let subcatsSet2 = []
+        shoesSub.map(sub => {
+            subcatsSet2.push(sub.id)
+        })
+        clothesSub.map(sub => {
+            if (sub.id !== 1)
+                subcatsSet2.push(sub.id)
+        })
+        accessoriesSub.map(sub => {
+            if (sub.id !== 1)
+                subcatsSet2.push(sub.id)
+        })
         if (sizes.sizesEu && brands.length > 0 && models.length > 0 && colors.length > 0) {
             fetchItems(
                 category,
@@ -423,7 +506,7 @@ const Catalogue = observer(() => {
                 sizesCloSet.length > 0 ? true : false,
                 search,
                 sale,
-                sub_category
+                subcatSet.length > 0 ? subcatSet : subcatsSet2
             )
                 .then(data => {
                     catalogue.setItems(data.rows)
@@ -647,10 +730,10 @@ const Catalogue = observer(() => {
 
     function capitalizeWords(sentence) {
         return sentence
-            // .toLowerCase()
-            // .split(' ')
-            // .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            // .join(' ');
+        // .toLowerCase()
+        // .split(' ')
+        // .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        // .join(' ');
     }
 
     const clearFilters = () => {
@@ -716,6 +799,12 @@ const Catalogue = observer(() => {
         } else {
             setBrandsSet([])
         }
+        if (sub_category && sub_category !== 'all') {
+            console.log(sub_category)
+            setSubcatSet([Number(sub_category)])
+        } else {
+            setSubcatSet([])
+        }
         if (category === 'accessories' || category === 'clothes' || category === 'shoes') {
             fetchBrandsCategory(category).then(data => setBrands(data))
             fetchColorsCategory(category).then(data => setColors(data))
@@ -723,6 +812,18 @@ const Catalogue = observer(() => {
             fetchBrandsCategory().then(data => setBrands(data))
             fetchColorsCategory().then(data => setColors(data))
         }
+        if (document.querySelector('.FilterPrice')?.classList.contains('FilterShown')) showPriceFilter()
+        if (document.querySelector('.FilterBrand')?.classList.contains('FilterShown')) showBrandFilter()
+        if (document.querySelector('.FilterModel')?.classList.contains('FilterShown')) showModelFilter()
+        if (document.querySelector('.FilterSubcat')?.classList.contains('FilterShown')) showSubcatFilter()
+        if (document.querySelector('.FilterShoesSize')?.classList.contains('FilterShown')) showShoesSizeFilter()
+        if (document.querySelector('.FilterClothesSize')?.classList.contains('FilterShown')) showClothesSizeFilter()
+        if (document.querySelector('.FilterColor')?.classList.contains('FilterShown')) showColorsFilter()
+        if (document.querySelector('.FilterEu')?.classList.contains('FilterShown2')) showEuFilter()
+        if (document.querySelector('.FilterRu')?.classList.contains('FilterShown2')) showRuFilter()
+        if (document.querySelector('.FilterUs')?.classList.contains('FilterShown2')) showUsFilter()
+        if (document.querySelector('.FilterUk')?.classList.contains('FilterShown2')) showUkFilter()
+        if (document.querySelector('.FilterSm')?.classList.contains('FilterShown2')) showSmFilter()
         nullify()
         setFilters(false)
         if (window.innerWidth > 780) {
@@ -739,7 +840,7 @@ const Catalogue = observer(() => {
         setFound(false)
         findItems()
         // eslint-disable-next-line
-    }, [sizes, brands, models, colors, priceMin, priceMax, sortBy, sortDir, inStock, brandsSet, modelsSet, colorsSet, sizesEuSet, sizesRuSet, sizesUsSet, sizesUkSet, sizesSmSet, sizesCloSet])
+    }, [sizes, brands, models, colors, priceMin, priceMax, sortBy, sortDir, inStock, brandsSet, modelsSet, subcatSet, colorsSet, sizesEuSet, sizesRuSet, sizesUsSet, sizesUkSet, sizesSmSet, sizesCloSet])
 
     return (
         <div className="MainContainer">
@@ -833,6 +934,43 @@ const Catalogue = observer(() => {
                             <span className="FilterLine"></span>
                         </>
                     }
+                    <div className="FilterBox FilterSubcat">
+                        <div className="FilterItem" onClick={showSubcatFilter}>
+                            <span>Товарная категория</span>
+                            <span className="FilterPlus"></span>
+                        </div>
+                        {(category !== 'clothes' && category !== 'accessories') && shoesSub.map((sub, i) => {
+                            if (sub.id !== 1)
+                                return (
+                                    <div key={i} className="FilterChecker" id={`subcat${sub.id}`} onClick={(e) => handleSubcat(e, sub)}>
+                                        <div className={`InputCheckbox subcat${sub.id} ${Number(sub_category) === sub.id ? 'CheckedInput' : ''}`} id={`subcat${sub.id}`}><IoCheckmark color="white" style={{ pointerEvents: 'none' }} /></div>
+                                        <span id={`subcat${sub.id}`}>{formatText(sub.name)}</span>
+                                    </div>
+                                )
+                            else return null
+                        })}
+                        {(category !== 'shoes' && category !== 'accessories') && clothesSub.map((sub, i) => {
+                            if (sub.id !== 1)
+                                return (
+                                    <div key={i} className="FilterChecker" id={`subcat${sub.id}`} onClick={(e) => handleSubcat(e, sub)}>
+                                        <div className={`InputCheckbox subcat${sub.id} ${Number(sub_category) === sub.id ? 'CheckedInput' : ''}`} id={`subcat${sub.id}`}><IoCheckmark color="white" style={{ pointerEvents: 'none' }} /></div>
+                                        <span id={`subcat${sub.id}`}>{formatText(sub.name)}</span>
+                                    </div>
+                                )
+                            else return null
+                        })}
+                        {(category !== 'shoes' && category !== 'clothes') && accessoriesSub.map((sub, i) => {
+                            if (sub.id !== 1)
+                                return (
+                                    <div key={i} className="FilterChecker" id={`subcat${sub.id}`} onClick={(e) => handleSubcat(e, sub)}>
+                                        <div className={`InputCheckbox subcat${sub.id} ${Number(sub_category) === sub.id ? 'CheckedInput' : ''}`} id={`subcat${sub.id}`}><IoCheckmark color="white" style={{ pointerEvents: 'none' }} /></div>
+                                        <span id={`subcat${sub.id}`}>{formatText(sub.name)}</span>
+                                    </div>
+                                )
+                            else return null
+                        })}
+                    </div>
+                    <span className="FilterLine"></span>
                     <div className="FilterBox FilterColor">
                         <div className="FilterItem" onClick={showColorsFilter}>
                             <span>Цвет</span>

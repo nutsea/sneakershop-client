@@ -12,34 +12,34 @@ const shoesSub = [
     { id: 4, name: 'СЛАЙДЫ' },
     { id: 5, name: 'ДЕТСКОЕ' },
     { id: 6, name: 'ДРУГАЯ ОБУВЬ' },
-]
-
-const clothesSub = [
+  ]
+  
+  const clothesSub = [
     { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
-    { id: 2, name: 'ЛОНГСЛИВЫ  СВИТЕРЫ' },
-    { id: 3, name: 'ФУТБОЛКИ' },
-    { id: 4, name: 'ШТАНЫ И ДЖИНСЫ' },
-    { id: 5, name: 'ШОРТЫ' },
-    { id: 6, name: 'ХУДИ И СВИТШОТЫ' },
-    { id: 7, name: 'КУРТКИ И ПУХОВИКИ' },
-    { id: 8, name: 'БЕЛЬЕ' },
-    { id: 9, name: 'ДРУГАЯ ОДЕЖДА' }
-]
-
-const accessoriesSub = [
+    { id: 7, name: 'ЛОНГСЛИВЫ  СВИТЕРЫ' },
+    { id: 8, name: 'ФУТБОЛКИ' },
+    { id: 9, name: 'ШТАНЫ И ДЖИНСЫ' },
+    { id: 10, name: 'ШОРТЫ' },
+    { id: 11, name: 'ХУДИ И СВИТШОТЫ' },
+    { id: 12, name: 'КУРТКИ И ПУХОВИКИ' },
+    { id: 13, name: 'БЕЛЬЕ' },
+    { id: 14, name: 'ДРУГАЯ ОДЕЖДА' }
+  ]
+  
+  const accessoriesSub = [
     { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
-    { id: 2, name: 'ГОЛОВНЫЕ УБОРЫ' },
-    { id: 3, name: 'ПЕРЧАТКИ' },
-    { id: 4, name: 'РЮКЗАКИ И СУМКИ' },
-    { id: 5, name: 'КОШЕЛЬКИ' },
-    { id: 6, name: 'ОЧКИ' },
-    { id: 7, name: 'ШАПКИ' },
-    { id: 8, name: 'НОСКИ' },
-    { id: 9, name: 'ПРЕДМЕТЫ ИНТЕРЬЕРА' },
-    { id: 10, name: 'ДРУГИЕ АКСЕССУАРЫ' },
-    { id: 11, name: 'ФИГУРКИ' },
-    { id: 12, name: 'BEARBRICKS' },
-]
+    { id: 15, name: 'ГОЛОВНЫЕ УБОРЫ' },
+    { id: 16, name: 'ПЕРЧАТКИ' },
+    { id: 17, name: 'РЮКЗАКИ И СУМКИ' },
+    { id: 18, name: 'КОШЕЛЬКИ' },
+    { id: 19, name: 'ОЧКИ' },
+    { id: 20, name: 'ШАПКИ' },
+    { id: 21, name: 'НОСКИ' },
+    { id: 22, name: 'ПРЕДМЕТЫ ИНТЕРЬЕРА' },
+    { id: 23, name: 'ДРУГИЕ АКСЕССУАРЫ' },
+    { id: 24, name: 'ФИГУРКИ' },
+    { id: 25, name: 'BEARBRICKS' },
+  ]  
 
 const Admin = () => {
     const [isAdmin, setIsAdmin] = useState(false)
