@@ -648,7 +648,7 @@ const Item = ({ startSearch, openCart }) => {
                                         <div className="BuyBtn" onClick={handleToCart}>
                                             {(chosenItem.size_clo || chosenItem.size_eu) &&
                                                 <>
-                                                    <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo && chosenItem.size_clo !== 'null' ? chosenItem.size_clo.toUpperCase() : chosenItem.size_eu}</div>
+                                                    <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo && chosenItem.size_clo !== 'null' ? chosenItem.size_clo.toUpperCase() : (sizeType === 'eu') ? chosenItem.size_eu : (sizeType === 'ru') ? chosenItem.size_ru : (sizeType === 'us') ? chosenItem.size_us : (sizeType === 'uk') ? chosenItem.size_uk : chosenItem.size_sm}</div>
                                                     <div className="BuyLine"></div>
                                                 </>
                                             }
