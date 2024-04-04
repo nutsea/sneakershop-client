@@ -472,13 +472,16 @@ const Catalogue = observer(() => {
 
     const findItems = () => {
         let subcatsSet2 = []
+        // eslint-disable-next-line
         shoesSub.map(sub => {
             subcatsSet2.push(sub.id)
         })
+        // eslint-disable-next-line
         clothesSub.map(sub => {
             if (sub.id !== 1)
                 subcatsSet2.push(sub.id)
         })
+        // eslint-disable-next-line
         accessoriesSub.map(sub => {
             if (sub.id !== 1)
                 subcatsSet2.push(sub.id)
