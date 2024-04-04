@@ -155,7 +155,6 @@ export const deleteChosen = async (idArr) => {
 
 export const changeItem = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category) => {
     const formData = new FormData()
-    console.log(sale)
     formData.append('id', id)
     formData.append('code', code)
     formData.append('brand', brand)
@@ -176,6 +175,7 @@ export const changeItem = async (id, code, brand, name, description, price, sale
     formData.append('tags', tags)
     formData.append('img', img)
     formData.append('sub_category', sub_category)
+    console.log(sub_category)
 
     const { data } = await $host.post('api/item/update', formData, {
         headers: {
@@ -186,7 +186,6 @@ export const changeItem = async (id, code, brand, name, description, price, sale
 }
 
 export const changeItemWithFiles = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags, sub_category) => {
-    console.log(files)
     return new Promise(async (resolve, reject) => {
         try {
             await changeItem(id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category)
