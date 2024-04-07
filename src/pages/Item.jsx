@@ -46,6 +46,16 @@ const Item = ({ startSearch, openCart }) => {
         document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
         document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
         document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
+        hideBurgerBrands()
+    }
+
+    const hideBurgerBrands = () => {
+        const mainMenu = document.querySelector('.BurgerMain')
+        const brandsMenu = document.querySelector('.BurgerBrands')
+        const backBtn = document.querySelector('.BurgerBack')
+        mainMenu?.classList.remove('TranslateMenu')
+        brandsMenu?.classList.remove('TranslateMenu')
+        backBtn?.classList.remove('TranslateBtn')
     }
 
     const handleName = (e) => {

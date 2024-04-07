@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom"
 import { Context } from '.';
 import { observer } from 'mobx-react-lite';
 
+import arrow from './assets/next.png'
+
 const shoesSub = [
   { id: 1, name: 'СМОТРЕТЬ ВСЁ' },
   { id: 2, name: 'КЕДЫ И КРОССОВКИ' },
@@ -79,6 +81,7 @@ export const App = observer(() => {
     document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
     document.querySelector('.OrderItemModal')?.classList.remove('VisibleOrderItem')
     document.querySelector('.OrderItemModal')?.setAttribute('style', `top: 0`)
+    hideBurgerBrands()
   }
 
   const handleSubCategory = (e) => {
@@ -279,6 +282,7 @@ export const App = observer(() => {
     } else {
       document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
     }
+    hideBurgerBrands()
   }
 
   const showItemsTab = (id) => {
@@ -328,6 +332,24 @@ export const App = observer(() => {
       default:
         break
     }
+  }
+
+  const showBurgerBrands = () => {
+    const mainMenu = document.querySelector('.BurgerMain')
+    const brandsMenu = document.querySelector('.BurgerBrands')
+    const backBtn = document.querySelector('.BurgerBack')
+    mainMenu.classList.add('TranslateMenu')
+    brandsMenu.classList.add('TranslateMenu')
+    backBtn.classList.add('TranslateBtn')
+  }
+
+  const hideBurgerBrands = () => {
+    const mainMenu = document.querySelector('.BurgerMain')
+    const brandsMenu = document.querySelector('.BurgerBrands')
+    const backBtn = document.querySelector('.BurgerBack')
+    mainMenu?.classList.remove('TranslateMenu')
+    brandsMenu?.classList.remove('TranslateMenu')
+    backBtn?.classList.remove('TranslateBtn')
   }
 
   const hideItemsTab = (id) => {
@@ -639,19 +661,49 @@ export const App = observer(() => {
             </div>
           </div>
           <div className='BurgerMenu'>
-            <nav className="HeaderBurgerNav">
-              <li id='/news' onClick={handleNavigate}>НОВИНКИ</li>
-              <li
-                onMouseEnter={showBrandsTab}
-                onMouseLeave={hideBrandsTab}
-              >
-                БРЕНДЫ
-              </li>
-              <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
-              <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
-              <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
-              <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
-            </nav>
+            <div className='BurgerScroll BurgerMain'>
+              <nav className="HeaderBurgerNav">
+                <li id='/news' onClick={handleNavigate}>НОВИНКИ</li>
+                <li
+                  onClick={showBurgerBrands}
+                >
+                  БРЕНДЫ
+                </li>
+                <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
+                <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
+                <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
+                <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+              </nav>
+            </div>
+            <div className='BurgerBack' onClick={hideBurgerBrands}><img src={arrow} alt="" /></div>
+            <div className='BurgerScroll BurgerBrands'>
+              <nav className="HeaderBurgerNav">
+                {brands.length > 0 ?
+                  <>
+                    {brands.length > 0 && brands.map((brand, i) =>
+                      <li key={i} id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>{convertToCapital(brand.brand)}</li>
+                    )}
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                  </>
+                  :
+                  <>
+                    <div className="LoadingContainer2">
+                      <div className="Spinner">
+                        <div className="Ball"></div>
+                        <p className="Loading">ЗАГРУЗКА...</p>
+                      </div>
+                    </div>
+                  </>
+                }
+              </nav>
+            </div>
           </div>
         </header>
         <div
@@ -729,7 +781,6 @@ export const App = observer(() => {
                 <div className={`SearchResults ${isSearch ? '' : 'None'}`} id='search'>
                   {searched.map((item, i) => {
                     return (
-                      // <div key={i} className='SearchResult' onClick={() => navigate(`/item/${item.id}`)}>
                       <div key={i} className='SearchResult' onClick={() => navResult(item.id)}>
                         <div className='SearchImg'>
                           <img src={process.env.REACT_APP_API_URL + item.img} alt="item" />
