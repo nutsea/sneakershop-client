@@ -73,8 +73,8 @@ export const fetchSame = async (code) => {
     return data
 }
 
-export const fetchImages = async (id) => {
-    const { data } = await $host.get('api/image', { params: { id } })
+export const fetchImages = async (code) => {
+    const { data } = await $host.get('api/image', { params: { code } })
     return data
 }
 
@@ -89,22 +89,22 @@ export const fetchSearch = async (search) => {
     return data
 }
 
-export const createItem = async (code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category) => {
+export const createItem = async (sizes_count, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, tags, sub_category) => {
     const formData = new FormData()
-    console.log(sale)
+    formData.append('sizes_count', sizes_count)
     formData.append('code', code)
     formData.append('brand', brand)
     formData.append('name', name)
     formData.append('description', description)
-    formData.append('price', Number(price))
-    formData.append('sale', Number(sale))
-    formData.append('count', Number(count))
-    formData.append('size_eu', Number(size_eu))
-    formData.append('size_ru', Number(size_ru))
-    formData.append('size_us', Number(size_us))
-    formData.append('size_uk', Number(size_uk))
-    formData.append('size_sm', Number(size_sm))
-    formData.append('size_clo', size_clo)
+    formData.append('prices', JSON.stringify(prices))
+    formData.append('sales', JSON.stringify(sales))
+    formData.append('counts', JSON.stringify(counts))
+    formData.append('sizes_eu', JSON.stringify(sizes_eu))
+    formData.append('sizes_ru', JSON.stringify(sizes_ru))
+    formData.append('sizes_us', JSON.stringify(sizes_us))
+    formData.append('sizes_uk', JSON.stringify(sizes_uk))
+    formData.append('sizes_sm', JSON.stringify(sizes_sm))
+    formData.append('sizes_clo', JSON.stringify(sizes_clo))
     formData.append('category', category)
     formData.append('model', model)
     formData.append('color', color)
@@ -120,16 +120,75 @@ export const createItem = async (code, brand, name, description, price, sale, co
     return data
 }
 
-export const createItemWithFiles = async (code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags, sub_category) => {
+export const createItemWithFiles = async (sizes_count, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, files, tags, sub_category) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await createItem(code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category)
+            await createItem(sizes_count, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, tags, sub_category)
                 .then(async (data) => {
-                    let item_id = data.id
+                    let item_id = data[0].code
                     const formData = new FormData()
                     formData.append('item_id', item_id)
 
-                    console.log(img)
+                    for (let i of files) {
+                        formData.append('img', i)
+                    }
+
+                    const { data: data2 } = await $host.post('api/image', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+
+                    resolve(data2)
+                })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+export const createSame = async (sizes_count, add_sizes_count, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, tags, sub_category, old_filename) => {
+    const formData = new FormData()
+    formData.append('sizes_count', sizes_count)
+    formData.append('add_sizes_count', add_sizes_count)
+    formData.append('code', code)
+    formData.append('brand', brand)
+    formData.append('name', name)
+    formData.append('description', description)
+    formData.append('prices', JSON.stringify(prices))
+    formData.append('sales', JSON.stringify(sales))
+    formData.append('counts', JSON.stringify(counts))
+    formData.append('sizes_eu', JSON.stringify(sizes_eu))
+    formData.append('sizes_ru', JSON.stringify(sizes_ru))
+    formData.append('sizes_us', JSON.stringify(sizes_us))
+    formData.append('sizes_uk', JSON.stringify(sizes_uk))
+    formData.append('sizes_sm', JSON.stringify(sizes_sm))
+    formData.append('sizes_clo', JSON.stringify(sizes_clo))
+    formData.append('category', category)
+    formData.append('model', model)
+    formData.append('color', color)
+    formData.append('tags', tags)
+    formData.append('img', img)
+    formData.append('sub_category', sub_category)
+    formData.append('old_filename', old_filename)
+
+    const { data } = await $host.post('api/item/createsame', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    return data
+}
+
+export const createSameWithFiles = async (sizes_count, add_sizes_count, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, files, tags, sub_category, old_filename) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await createItem(sizes_count, add_sizes_count, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, tags, sub_category, old_filename)
+                .then(async (data) => {
+                    let item_id = data[0].code
+                    const formData = new FormData()
+                    formData.append('item_id', item_id)
+
                     for (let i of files) {
                         formData.append('img', i)
                     }
@@ -153,29 +212,29 @@ export const deleteChosen = async (idArr) => {
     return data
 }
 
-export const changeItem = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category) => {
+export const changeItem = async (sizes_count, ids, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, tags, sub_category) => {
     const formData = new FormData()
-    formData.append('id', id)
+    formData.append('sizes_count', sizes_count)
+    formData.append('ids', JSON.stringify(ids))
     formData.append('code', code)
     formData.append('brand', brand)
     formData.append('name', name)
     formData.append('description', description)
-    formData.append('price', Number(price))
-    formData.append('sale', Number(sale))
-    formData.append('count', Number(count))
-    formData.append('size_eu', Number(size_eu))
-    formData.append('size_ru', Number(size_ru))
-    formData.append('size_us', Number(size_us))
-    formData.append('size_uk', Number(size_uk))
-    formData.append('size_sm', Number(size_sm))
-    formData.append('size_clo', size_clo)
+    formData.append('prices', JSON.stringify(prices))
+    formData.append('sales', JSON.stringify(sales))
+    formData.append('counts', JSON.stringify(counts))
+    formData.append('sizes_eu', JSON.stringify(sizes_eu))
+    formData.append('sizes_ru', JSON.stringify(sizes_ru))
+    formData.append('sizes_us', JSON.stringify(sizes_us))
+    formData.append('sizes_uk', JSON.stringify(sizes_uk))
+    formData.append('sizes_sm', JSON.stringify(sizes_sm))
+    formData.append('sizes_clo', JSON.stringify(sizes_clo))
     formData.append('category', category)
     formData.append('model', model)
     formData.append('color', color)
     formData.append('tags', tags)
     formData.append('img', img)
     formData.append('sub_category', sub_category)
-    console.log(sub_category)
 
     const { data } = await $host.post('api/item/update', formData, {
         headers: {
@@ -185,12 +244,12 @@ export const changeItem = async (id, code, brand, name, description, price, sale
     return data
 }
 
-export const changeItemWithFiles = async (id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, files, tags, sub_category) => {
+export const changeItemWithFiles = async (sizes_count, ids, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, files, tags, sub_category) => {
     return new Promise(async (resolve, reject) => {
         try {
-            await changeItem(id, code, brand, name, description, price, sale, count, size_eu, size_ru, size_us, size_uk, size_sm, size_clo, category, model, color, img, tags, sub_category)
+            await changeItem(sizes_count, ids, code, brand, name, description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, category, model, color, img, tags, sub_category)
                 .then(async (data) => {
-                    let item_id = data.id
+                    let item_id = data[0].code
                     const formData = new FormData()
                     formData.append('item_id', item_id)
 
@@ -213,7 +272,6 @@ export const changeItemWithFiles = async (id, code, brand, name, description, pr
 }
 
 export const destroyImages = async (toDelete) => {
-    console.log(toDelete)
     const { data } = await $host.delete('api/image', { params: { toDelete } })
     return data
 }

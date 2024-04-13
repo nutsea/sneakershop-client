@@ -77,7 +77,6 @@ const Admin = () => {
         if (password === process.env.REACT_APP_ADMIN) {
             setIsAdmin(true)
             const date = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
-            console.log(date)
             localStorage.setItem('isAdmin', true)
             localStorage.setItem('date', date)
         }
@@ -89,7 +88,6 @@ const Admin = () => {
 
     const handleCheckItem = (e) => {
         document.querySelector(`.Item${e.target.id}`).classList.toggle('CheckedItem')
-        console.log(deleteIds)
         if (!deleteIds.includes(e.target.id)) {
             setDeleteIds([...deleteIds, e.target.id])
         } else {
@@ -106,9 +104,7 @@ const Admin = () => {
         })
     }
 
-    // настроить загрузку файлов
     const fetchCallback = () => {
-        console.log('called')
         fetchItemsAdmin().then(data => {
             data.sort(sortByCreatedAt)
             setItems(data)
@@ -136,7 +132,6 @@ const Admin = () => {
     }
 
     useEffect(() => {
-        // localStorage.removeItem('isAdmin')
         const date = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
         if (localStorage.getItem('isAdmin') && localStorage.getItem('date') === date) {
             setIsAdmin(true)

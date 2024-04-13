@@ -15,6 +15,29 @@
     font-size: 14px;
 }
 
+.AddSizeBtn {
+    padding: 10px;
+    margin: 0 0 10px 0;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: rgb(21, 21, 21);
+    color: white;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+        background-color: rgb(21, 21, 21, 0.8);
+    }
+
+    &:active {
+        transform: scale(0.99);
+    }
+}
+
 .AdminBtn {
     width: 300px;
     padding: 10px;
@@ -90,6 +113,18 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
     font-size: 14px;
+}
+
+.RowInput {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: -10px;
+}
+
+.SizeCol {
+    width: 150px;
+    margin-left: 10px;
 }
 
 .AdminTextarea {

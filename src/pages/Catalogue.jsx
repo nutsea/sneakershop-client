@@ -733,10 +733,6 @@ const Catalogue = observer(() => {
 
     function capitalizeWords(sentence) {
         return sentence
-        // .toLowerCase()
-        // .split(' ')
-        // .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        // .join(' ');
     }
 
     const clearFilters = () => {
@@ -1174,7 +1170,6 @@ const Catalogue = observer(() => {
                     }
                     {pages > 5 ?
                         <div className="E-pagination">
-                            {/* <button id="left" className="E-pag E-left E-margin-0 E-inactive" onClick={handlePagination}>➔</button> */}
                             <button id="left" className="E-pag E-left E-margin-0 E-inactive E-arr" onClick={handlePagination}><IoIosArrowRoundForward className="IconEvent" size={35} /></button>
                             <button id="first" className="E-pag E-this" onClick={handlePagination}>1</button>
                             <div className="Hide-1-2 Removed">. . .</div>
@@ -1183,12 +1178,10 @@ const Catalogue = observer(() => {
                             <button id="mid3" className="E-pag E-mid-3" onClick={handlePagination}>4</button>
                             <div className="Hide-29-30">. . .</div>
                             <button id="last" className="E-pag E-last" onClick={handlePagination}>{pages}</button>
-                            {/* <button id="right" className="E-pag" onClick={handlePagination}>➔</button> */}
                             <button id="right" className="E-pag E-arr" onClick={handlePagination}><IoIosArrowRoundForward className="IconEvent" size={35} /></button>
                         </div>
                         : (pages > 1) &&
                         <div className="E-pagination">
-                            {/* <button id="left" className="E-pag E-left E-margin-0 E-inactive" onClick={handlePagination}>➔</button> */}
                             <button id="left" className="E-pag E-left E-margin-0 E-inactive E-arr" onClick={handlePagination}><IoIosArrowRoundForward className="IconEvent" size={35} /></button>
                             <button id="first" className="E-pag E-this" onClick={handlePagination}>1</button>
                             <button id="mid1" className="E-pag E-mid-1" onClick={handlePagination}>2</button>
@@ -1201,7 +1194,6 @@ const Catalogue = observer(() => {
                             {pages > 4 &&
                                 <button id="last" className="E-pag E-last" onClick={handlePagination}>5</button>
                             }
-                            {/* <button id="right" className="E-pag" onClick={handlePagination}>➔</button> */}
                             <button id="right" className="E-pag E-arr" onClick={handlePagination}><IoIosArrowRoundForward className="IconEvent" size={35} /></button>
                         </div>
                     }

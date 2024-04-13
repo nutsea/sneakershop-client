@@ -66,6 +66,7 @@ export const App = observer(() => {
   const [sendNumber, setSendNumber] = useState('')
   const [orderDone, setOrderDone] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  // eslint-disable-next-line
   const [cartCost, setCartCost] = useState(null)
 
   const navigate = useNavigate()
@@ -265,12 +266,12 @@ export const App = observer(() => {
     let maxHeight = Math.ceil(brands.length / delimiter) * 26.68
     if (brands.length > 0) {
       if (maxHeight < windowHeight - 70 - 80) {
-        document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
+        document.querySelector('.BrandsTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
       } else {
-        document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
+        document.querySelector('.BrandsTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
       }
     } else {
-      document.querySelector('.BrandsTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
+      document.querySelector('.BrandsTab')?.setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
     }
   }
 
@@ -278,9 +279,9 @@ export const App = observer(() => {
     let delimiter = Math.ceil(windowWidth / 300)
     let maxHeight = Math.ceil(brands.length / delimiter) * 26.68
     if (maxHeight < windowHeight - 70 - 80) {
-      document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+      document.querySelector('.BrandsTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
     } else {
-      document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+      document.querySelector('.BrandsTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
     }
     hideBurgerBrands()
   }
@@ -294,12 +295,12 @@ export const App = observer(() => {
         maxHeight = Math.ceil(shoesSub.length / delimiter) * 26.68
         if (shoesSub.length > 0) {
           if (maxHeight < windowHeight - 70 - 80) {
-            document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
+            document.querySelector('.ShoesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
           } else {
-            document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
+            document.querySelector('.ShoesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
           }
         } else {
-          document.querySelector('.ShoesTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
+          document.querySelector('.ShoesTab')?.setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
         }
         break
 
@@ -307,12 +308,12 @@ export const App = observer(() => {
         maxHeight = Math.ceil(clothesSub.length / delimiter) * 26.68
         if (clothesSub.length > 0) {
           if (maxHeight < windowHeight - 70 - 80) {
-            document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
+            document.querySelector('.ClothesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
           } else {
-            document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
+            document.querySelector('.ClothesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
           }
         } else {
-          document.querySelector('.ClothesTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
+          document.querySelector('.ClothesTab')?.setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
         }
         break
 
@@ -320,12 +321,12 @@ export const App = observer(() => {
         maxHeight = Math.ceil(accessoriesSub.length / delimiter) * 26.68
         if (accessoriesSub.length > 0) {
           if (maxHeight < windowHeight - 70 - 80) {
-            document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
+            document.querySelector('.AccessoriesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(0px)`)
           } else {
-            document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
+            document.querySelector('.AccessoriesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(0px)`)
           }
         } else {
-          document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
+          document.querySelector('.AccessoriesTab')?.setAttribute('style', `max-height: fit-content; flex-wrap: wrap; transform: translateY(-70px)`)
         }
         break
 
@@ -359,27 +360,27 @@ export const App = observer(() => {
       case 'shoes':
         maxHeight = Math.ceil(shoesSub.length / delimiter) * 26.68
         if (maxHeight < windowHeight - 70 - 80) {
-          document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+          document.querySelector('.ShoesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
         } else {
-          document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+          document.querySelector('.ShoesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
         }
         break
 
       case 'clothes':
         maxHeight = Math.ceil(clothesSub.length / delimiter) * 26.68
         if (maxHeight < windowHeight - 70 - 80) {
-          document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+          document.querySelector('.ClothesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
         } else {
-          document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+          document.querySelector('.ClothesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
         }
         break
 
       case 'accessories':
         maxHeight = Math.ceil(accessoriesSub.length / delimiter) * 26.68
         if (maxHeight < windowHeight - 70 - 80) {
-          document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+          document.querySelector('.AccessoriesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
         } else {
-          document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+          document.querySelector('.AccessoriesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
         }
         break
 
@@ -398,7 +399,7 @@ export const App = observer(() => {
 
   const showCart = () => {
     document.querySelector('.CartContainer').classList.remove('Opacity0')
-    document.querySelector('.CartContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(5px);')
+    document.querySelector('.CartContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(30px);')
     document.querySelector('.CartBlock').setAttribute('style', 'transform: translateX(0);')
     setScrollPos(window.scrollY)
     document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
@@ -409,7 +410,7 @@ export const App = observer(() => {
 
   const showSearch = () => {
     document.querySelector('.SearchContainer').classList.remove('Opacity0')
-    document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(5px);')
+    document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(30px);')
     document.querySelector('.SearchBlock').setAttribute('style', 'transform: translateY(0);')
     setScrollPos(window.scrollY)
     document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
@@ -557,36 +558,36 @@ export const App = observer(() => {
       let delimiter = Math.ceil(windowWidth / 300)
       let maxHeight = Math.ceil(brands.length / delimiter) * 26.68
       if (maxHeight < windowHeight - 70 - 80) {
-        document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+        document.querySelector('.BrandsTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
       } else {
-        document.querySelector('.BrandsTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+        document.querySelector('.BrandsTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
       }
     }
     if (shoesSub.length > 0) {
       let delimiter = Math.ceil(windowWidth / 300)
       let maxHeight = Math.ceil(shoesSub.length / delimiter) * 26.68
       if (maxHeight < windowHeight - 70 - 80) {
-        document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+        document.querySelector('.ShoesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
       } else {
-        document.querySelector('.ShoesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+        document.querySelector('.ShoesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
       }
     }
     if (clothesSub.length > 0) {
       let delimiter = Math.ceil(windowWidth / 300)
       let maxHeight = Math.ceil(clothesSub.length / delimiter) * 26.68
       if (maxHeight < windowHeight - 70 - 80) {
-        document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+        document.querySelector('.ClothesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
       } else {
-        document.querySelector('.ClothesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+        document.querySelector('.ClothesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
       }
     }
     if (accessoriesSub.length > 0) {
       let delimiter = Math.ceil(windowWidth / 300)
       let maxHeight = Math.ceil(accessoriesSub.length / delimiter) * 26.68
       if (maxHeight < windowHeight - 70 - 80) {
-        document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
+        document.querySelector('.AccessoriesTab')?.setAttribute('style', `max-height: ${maxHeight}px; flex-wrap: wrap; transform: translateY(-${maxHeight + 80}px)`)
       } else {
-        document.querySelector('.AccessoriesTab').setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
+        document.querySelector('.AccessoriesTab')?.setAttribute('style', `max-height: ${windowHeight - 70 - 80}px; flex-wrap: nowrap; transform: translateY(-${windowHeight - 70}px)`)
       }
     }
     // eslint-disable-next-line
@@ -632,6 +633,7 @@ export const App = observer(() => {
       document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
       document.querySelector('.BurgerMenu').classList.remove('ActiveBurgerMenu')
     }
+    hideBurgerBrands()
   }
 
   return (
@@ -663,20 +665,16 @@ export const App = observer(() => {
           <div className='BurgerMenu'>
             <div className='BurgerScroll BurgerMain'>
               <nav className="HeaderBurgerNav">
-                <li id='/news' onClick={handleNavigate}>НОВИНКИ</li>
-                <li
-                  onClick={showBurgerBrands}
-                >
-                  БРЕНДЫ
-                </li>
-                <li id="/catalogue/shoes" onClick={handleNavigate}>ОБУВЬ</li>
-                <li id="/catalogue/clothes" onClick={handleNavigate}>ОДЕЖДА</li>
-                <li id="/catalogue/accessories" onClick={handleNavigate}>АКСЕССУАРЫ</li>
-                <li className='HeaderLiRed' id='/catalogue/all/all/all/sale' onClick={handleNavigate}>SALE</li>
+                <li className='BurgerNavBtn' id='/news' onClick={handleNavigate}><span>НОВИНКИ</span><img src={arrow} alt="" /></li>
+                <li className='BurgerNavBtn' onClick={showBurgerBrands}><span>БРЕНДЫ</span><img src={arrow} alt="" /></li>
+                <li className='BurgerNavBtn' id="/catalogue/shoes" onClick={handleNavigate}><span>ОБУВЬ</span><img src={arrow} alt="" /></li>
+                <li className='BurgerNavBtn' id="/catalogue/clothes" onClick={handleNavigate}><span>ОДЕЖДА</span><img src={arrow} alt="" /></li>
+                <li className='BurgerNavBtn' id="/catalogue/accessories" onClick={handleNavigate}><span>АКСЕССУАРЫ</span><img src={arrow} alt="" /></li>
+                <li className='HeaderLiRed BurgerNavBtn' id='/catalogue/all/all/all/sale' onClick={handleNavigate}><span>SALE</span><img src={arrow} alt="" /></li>
+                {/* <li></li>
                 <li></li>
                 <li></li>
-                <li></li>
-                <li></li>
+                <li></li> */}
               </nav>
             </div>
             <div className='BurgerBack' onClick={hideBurgerBrands}><img src={arrow} alt="" /></div>
@@ -684,13 +682,50 @@ export const App = observer(() => {
               <nav className="HeaderBurgerNav">
                 {brands.length > 0 ?
                   <>
-                    {brands.length > 0 && brands.map((brand, i) =>
-                      <li key={i} id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>{convertToCapital(brand.brand)}</li>
-                    )}
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+                    {/* {brands.length > 0 && brands.map((brand, i) =>
+                      // <li key={i} id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>{convertToCapital(brand.brand)}</li>
+                      <li key={i} id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>{brand.brand}</li>
+                    )} */}
+                    {/* {brands.length > 0 && brands.map((brand, i) => (
+                      <div key={i}>
+                        {i === 0 || brand.brand[0] !== brands[i - 1].brand[0] ? (
+                          <div className={`${i === 0 ? '' : 'BrandLetterSection'}`}>
+                            <div className='BrandLetter'>{brand.brand[0].toUpperCase()}</div>
+                            <li key={i} className='BrandTop30' id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>
+                              {brand.brand}
+                            </li>
+                          </div>
+                        ) : (
+                          <li key={i} className='BrandTop30' id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>
+                            {brand.brand}
+                          </li>
+                        )}
+                      </div>
+                    ))} */}
+                    {brands.length > 0 && brands.map((brand, i) => (
+                      <div key={i}>
+                        {(i === 0 || !isNaN(parseInt(brand.brand[0]))) && (parseInt(brand.brand[0]) !== parseInt(brands[i - 1]?.brand[0])) ? (
+                          <div>
+                            <div className='BrandLetter'>0-9</div>
+                            <li key={i} className='BrandTop30' id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>
+                              {brand.brand}
+                            </li>
+                          </div>
+                        ) : isNaN(parseInt(brand.brand[0])) && (brand.brand[0] !== brands[i - 1]?.brand[0]) ? (
+                          <div className={`${i === 0 ? '' : 'BrandLetterSection'}`}>
+                            <div className='BrandLetter'>{brand.brand[0].toUpperCase()}</div>
+                            <li key={i} className='BrandTop30' id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>
+                              {brand.brand}
+                            </li>
+                          </div>
+                        ) : (
+                          <li key={i} className='BrandTop30' id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>
+                            {brand.brand}
+                          </li>
+                        )}
+                      </div>
+                    ))}
+                    <li style={{ height: '200px' }}></li>
                   </>
                   :
                   <>
@@ -841,7 +876,7 @@ export const App = observer(() => {
                         })}
                       </div>
                       <div className='CartOrder' id='cart'>
-                        <div className='CartSum' id='cart'>Итого: <span id='cart'>{cartItemsSum()} ₽</span></div>
+                        <div className='CartSum' id='cart'>ИТОГО: <span id='cart'>{cartItemsSum()} ₽</span></div>
                         <div className='CartSend' id='cart' onClick={() => setIsOrdering(true)}>ОФОРМИТЬ ЗАКАЗ</div>
                       </div>
                     </>
@@ -892,7 +927,8 @@ export const App = observer(() => {
           <div className="MobileCartBtnBox">
             <button className="MobileCartBtn" onClick={showCart}>
               <CiShoppingCart size={34} />
-              <span className='CartCostSpan'>{cartCost ? formatNumberWithSpaces(cartCost) + ' ₽' : ''}</span>
+              <div className="CartCount">{cartItems.counts && countsSum()}</div>
+              {/* <span className='CartCostSpan'>{cartCost ? formatNumberWithSpaces(cartCost) + ' ₽' : ''}</span> */}
             </button>
           </div>
         }

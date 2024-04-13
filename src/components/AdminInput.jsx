@@ -5,7 +5,7 @@ import colorwheel from '../assets/colorwheel.png'
 import { IoCheckmark } from 'react-icons/io5'
 import { FaTrash } from "react-icons/fa";
 
-import { changeItem, changeItemWithFiles, createItem, createItemWithFiles, destroyImages, fetchImages } from "../http/itemAPI";
+import { changeItem, changeItemWithFiles, createItem, createItemWithFiles, createSame, createSameWithFiles, destroyImages, fetchImages, fetchSame } from "../http/itemAPI";
 
 const colorsList = [
     { name: 'Multicolor', hex: '#ffffff', color: 'multicolor' },
@@ -94,8 +94,19 @@ const AdminInput = ({ itemChange }) => {
         file: null,
         files: null
     })
+    const [counts, setCounts] = useState(Array.from({ length: 30 }, () => ''))
+    const [prices, setPrices] = useState(Array.from({ length: 30 }, () => ''))
+    const [sales, setSales] = useState(Array.from({ length: 30 }, () => ''))
+    const [sizes_eu, setSizes_eu] = useState(Array.from({ length: 30 }, () => ''))
+    const [sizes_ru, setSizes_ru] = useState(Array.from({ length: 30 }, () => ''))
+    const [sizes_us, setSizes_us] = useState(Array.from({ length: 30 }, () => ''))
+    const [sizes_uk, setSizes_uk] = useState(Array.from({ length: 30 }, () => ''))
+    const [sizes_sm, setSizes_sm] = useState(Array.from({ length: 30 }, () => ''))
+    const [sizes_clo, setSizes_clo] = useState(Array.from({ length: 30 }, () => ''))
+    const [idsToChange, setIdsToChange] = useState(Array.from({ length: 30 }, () => ''))
+    const [sizesCount, setSizesCount] = useState(1)
+    const [addSizesCount, setAddSizesCount] = useState(0)
     const [oldImages, setOldImages] = useState([])
-    // const [newImages, setNewImages] = useState([])
     const [deleteImages, setDeleteImages] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
@@ -133,7 +144,7 @@ const AdminInput = ({ itemChange }) => {
     }
 
     const handleChange = (e) => {
-        const { name, value, type, files } = e.target
+        const { name, value, type, files, id } = e.target
 
         let newValue = value
 
@@ -148,6 +159,67 @@ const AdminInput = ({ itemChange }) => {
 
         if (name === 'price' || name === 'sale' || name === 'count') {
             newValue = ('' + newValue).replace(/\D/g, '')
+        }
+
+        let tempArr
+
+        switch (name) {
+            case 'size_eu':
+                tempArr = sizes_eu
+                tempArr[id] = newValue
+                setSizes_eu(tempArr)
+                break
+
+            case 'size_ru':
+                tempArr = sizes_ru
+                tempArr[id] = newValue
+                setSizes_ru(tempArr)
+                break
+
+            case 'size_us':
+                tempArr = sizes_us
+                tempArr[id] = newValue
+                setSizes_us(tempArr)
+                break
+
+            case 'size_uk':
+                tempArr = sizes_uk
+                tempArr[id] = newValue
+                setSizes_uk(tempArr)
+                break
+
+            case 'size_sm':
+                tempArr = sizes_sm
+                tempArr[id] = newValue
+                setSizes_sm(tempArr)
+                break
+
+            case 'size_clo':
+                tempArr = sizes_clo
+                tempArr[id] = newValue
+                setSizes_clo(tempArr)
+                break
+
+            case 'price':
+                tempArr = prices
+                tempArr[id] = newValue
+                setPrices(tempArr)
+                break
+
+            case 'sale':
+                tempArr = sales
+                tempArr[id] = newValue
+                setSales(tempArr)
+                break
+
+            case 'count':
+                tempArr = counts
+                tempArr[id] = newValue
+                setCounts(tempArr)
+                break
+
+            default:
+                break
         }
 
         if (name === 'file') {
@@ -170,7 +242,14 @@ const AdminInput = ({ itemChange }) => {
         setItem(prevItem => ({
             ...prevItem,
             category: e.target.id,
+            model: ''
         }))
+        setSizes_eu(Array.from({ length: 30 }, () => ''))
+        setSizes_ru(Array.from({ length: 30 }, () => ''))
+        setSizes_us(Array.from({ length: 30 }, () => ''))
+        setSizes_uk(Array.from({ length: 30 }, () => ''))
+        setSizes_sm(Array.from({ length: 30 }, () => ''))
+        setSizes_clo(Array.from({ length: 30 }, () => ''))
     }
 
     const handleSubCategory = (e) => {
@@ -197,13 +276,12 @@ const AdminInput = ({ itemChange }) => {
                 color: oldColors + ' ' + color.color,
             }))
         }
-        console.log(item.color)
     }
 
 
     const canCreate = () => {
-        if (item.category && item.code && item.brand && item.name && item.count && item.price && item.file) {
-            if (item.category === 'shoes' && item.size_eu && item.size_ru && item.size_us && item.size_uk && item.size_sm) {
+        if (item.category && item.code && item.brand && item.name && item.file) {
+            if (item.category === 'shoes') {
                 return true
             } else {
                 if (item.category === 'clothes' || item.category === 'accessories') {
@@ -215,8 +293,8 @@ const AdminInput = ({ itemChange }) => {
     }
 
     const canChange = () => {
-        if (item.category && item.code && item.brand && item.name && item.count && item.price) {
-            if (item.category === 'shoes' && item.size_eu && item.size_ru && item.size_us && item.size_uk && item.size_sm) {
+        if (item.category && item.code && item.brand && item.name) {
+            if (item.category === 'shoes') {
                 return true
             } else {
                 if (item.category === 'clothes' || item.category === 'accessories') {
@@ -231,15 +309,15 @@ const AdminInput = ({ itemChange }) => {
         if (canCreate()) {
             if (item.files) {
                 setIsLoading(true)
-                createItemWithFiles(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.files, item.tags, item.sub_category)
-                    .then(data => {
+                createItemWithFiles(sizesCount, item.code, item.brand, item.name, item.description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, item.category, item.model, item.color, item.file, item.files, item.tags, item.sub_category)
+                    .then(() => {
                         nullify()
                         setIsLoading(false)
                     })
             } else {
                 setIsLoading(true)
-                createItem(item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color, item.file, item.tags, item.sub_category)
-                    .then(data => {
+                createItem(sizesCount, item.code, item.brand, item.name, item.description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, item.category, item.model, item.color, item.file, item.tags, item.sub_category)
+                    .then(() => {
                         nullify()
                         setIsLoading(false)
                     })
@@ -254,20 +332,24 @@ const AdminInput = ({ itemChange }) => {
             }
             if (item.files) {
                 setIsLoading(true)
-                changeItemWithFiles(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.files, item.tags, item.sub_category)
-                    .then(data => {
+                changeItemWithFiles(sizesCount, idsToChange, item.code, item.brand, item.name, item.description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, item.category, item.model, item.color.trim(' '), item.file, item.files, item.tags, item.sub_category)
+                    .then(() => {
                         nullify()
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
                     })
+                if (addSizesCount > 0)
+                    createSameWithFiles(sizesCount, addSizesCount, item.code, item.brand, item.name, item.description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, item.category, item.model, item.color, item.file, item.files, item.tags, item.sub_category, item.img)
             } else {
                 setIsLoading(true)
-                changeItem(item.id, item.code, item.brand, item.name, item.description, item.price, item.sale, item.count, item.size_eu, item.size_ru, item.size_us, item.size_uk, item.size_sm, item.size_clo, item.category, item.model, item.color.trim(' '), item.file, item.tags, item.sub_category)
-                    .then(data => {
+                changeItem(sizesCount, idsToChange, item.code, item.brand, item.name, item.description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, item.category, item.model, item.color.trim(' '), item.file, item.tags, item.sub_category)
+                    .then(() => {
                         nullify()
                         setIsLoading(false)
                         document.querySelector('.BackToTable')?.click()
                     })
+                if (addSizesCount > 0)
+                    createSame(sizesCount, addSizesCount, item.code, item.brand, item.name, item.description, prices, sales, counts, sizes_eu, sizes_ru, sizes_us, sizes_uk, sizes_sm, sizes_clo, item.category, item.model, item.color, item.file, item.tags, item.sub_category, item.img)
             }
         }
     }
@@ -295,6 +377,15 @@ const AdminInput = ({ itemChange }) => {
             file: null,
             files: null
         })
+        setCounts(Array.from({ length: 30 }, () => ''))
+        setPrices(Array.from({ length: 30 }, () => ''))
+        setSales(Array.from({ length: 30 }, () => ''))
+        setSizes_eu(Array.from({ length: 30 }, () => ''))
+        setSizes_ru(Array.from({ length: 30 }, () => ''))
+        setSizes_us(Array.from({ length: 30 }, () => ''))
+        setSizes_uk(Array.from({ length: 30 }, () => ''))
+        setSizes_sm(Array.from({ length: 30 }, () => ''))
+        setSizes_clo(Array.from({ length: 30 }, () => ''))
         setCategory('')
         setOldImages([])
     }
@@ -304,9 +395,28 @@ const AdminInput = ({ itemChange }) => {
         setOldImages(prev => prev.filter(img => img.id !== id))
     }
 
+    const addSize = () => {
+        if (!itemChange) setSizesCount(sizesCount + 1)
+        else setAddSizesCount(addSizesCount + 1)
+    }
+
     useEffect(() => {
         if (itemChange) {
             setItem(itemChange)
+            fetchSame(itemChange.code)
+                .then(data => {
+                    setSizesCount(data.length)
+                    setIdsToChange(data.map(item => item.id))
+                    setCounts(Array.from({ length: 30 }, (_, index) => data[index]?.count ?? ''))
+                    setPrices(Array.from({ length: 30 }, (_, index) => data[index]?.price ?? ''))
+                    setSales(Array.from({ length: 30 }, (_, index) => data[index]?.sale ?? ''))
+                    setSizes_eu(Array.from({ length: 30 }, (_, index) => data[index]?.size_eu ?? ''))
+                    setSizes_ru(Array.from({ length: 30 }, (_, index) => data[index]?.size_ru ?? ''))
+                    setSizes_us(Array.from({ length: 30 }, (_, index) => data[index]?.size_us ?? ''))
+                    setSizes_uk(Array.from({ length: 30 }, (_, index) => data[index]?.size_uk ?? ''))
+                    setSizes_sm(Array.from({ length: 30 }, (_, index) => data[index]?.size_sm ?? ''))
+                    setSizes_clo(Array.from({ length: 30 }, (_, index) => data[index]?.size_clo ?? ''))
+                })
             setCategory(itemChange.category)
             setSubCategory(itemChange.sub_category)
             for (let i of itemChange.color.split(' ')) {
@@ -315,7 +425,7 @@ const AdminInput = ({ itemChange }) => {
                     checker.classList.add('CheckedColor')
                 }
             }
-            fetchImages(itemChange.id).then(data => setOldImages(data))
+            fetchImages(itemChange.code).then(data => setOldImages(data))
         }
     }, [itemChange])
 
@@ -323,30 +433,34 @@ const AdminInput = ({ itemChange }) => {
         <>
             {!isLoading ?
                 <>
-                    <div className="InputClue MT5">Выбор категории*</div>
-                    <div className="AdminInput">
-                        <div className="CategoryCheck" id="shoes" onClick={handleCategory}>
-                            <span className={`CategoryCheckbox ${category === 'shoes' ? 'BlackCheck' : ''}`} id="shoes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
-                            <span className="CategoryName" id="shoes">Обувь</span>
-                        </div>
-                        <div className="CategoryCheck" id="clothes" onClick={handleCategory}>
-                            <span className={`CategoryCheckbox ${category === 'clothes' ? 'BlackCheck' : ''}`} id="clothes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
-                            <span className="CategoryName" id="clothes">Одежда</span>
-                        </div>
-                        <div className="CategoryCheck" id="accessories" onClick={handleCategory}>
-                            <span className={`CategoryCheckbox ${category === 'accessories' ? 'BlackCheck' : ''}`} id="accessories"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
-                            <span className="CategoryName" id="accessories">Аксессуар</span>
-                        </div>
-                    </div>
+                    {!itemChange &&
+                        <>
+                            <div className="InputClue MT5">Выбор категории*</div>
+                            <div className="AdminInput">
+                                <div className="CategoryCheck" id="shoes" onClick={handleCategory}>
+                                    <span className={`CategoryCheckbox ${category === 'shoes' ? 'BlackCheck' : ''}`} id="shoes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                                    <span className="CategoryName" id="shoes">Обувь</span>
+                                </div>
+                                <div className="CategoryCheck" id="clothes" onClick={handleCategory}>
+                                    <span className={`CategoryCheckbox ${category === 'clothes' ? 'BlackCheck' : ''}`} id="clothes"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                                    <span className="CategoryName" id="clothes">Одежда</span>
+                                </div>
+                                <div className="CategoryCheck" id="accessories" onClick={handleCategory}>
+                                    <span className={`CategoryCheckbox ${category === 'accessories' ? 'BlackCheck' : ''}`} id="accessories"><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
+                                    <span className="CategoryName" id="accessories">Аксессуар</span>
+                                </div>
+                            </div>
+                        </>
+                    }
                     {category &&
                         <>
                             <div className="InputClue MT5">Выбор подкатегории</div>
                             <div className="AdminInput">
                                 {category === 'shoes' ?
                                     <>
-                                        {shoesSub.map((sub) => {
+                                        {shoesSub.map((sub, i) => {
                                             return (
-                                                <div className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
+                                                <div key={i} className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
                                                     <span className={`CategoryCheckbox ${Number(subCategory) === Number(sub.id) ? 'BlackCheck' : ''}`} id={sub.id}><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
                                                     <span className="CategoryName" id={sub.id}>{sub.name}</span>
                                                 </div>
@@ -355,9 +469,9 @@ const AdminInput = ({ itemChange }) => {
                                     </>
                                     : (category === 'clothes') ?
                                         <>
-                                            {clothesSub.map((sub) => {
+                                            {clothesSub.map((sub, i) => {
                                                 return (
-                                                    <div className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
+                                                    <div key={i} className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
                                                         <span className={`CategoryCheckbox ${Number(subCategory) === Number(sub.id) ? 'BlackCheck' : ''}`} id={sub.id}><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
                                                         <span className="CategoryName" id={sub.id}>{sub.name}</span>
                                                     </div>
@@ -366,9 +480,9 @@ const AdminInput = ({ itemChange }) => {
                                         </>
                                         : (category === 'accessories') &&
                                         <>
-                                            {accessoriesSub.map((sub) => {
+                                            {accessoriesSub.map((sub, i) => {
                                                 return (
-                                                    <div className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
+                                                    <div key={i} className="CategoryCheck" id={sub.id} onClick={handleSubCategory}>
                                                         <span className={`CategoryCheckbox ${Number(subCategory) === Number(sub.id) ? 'BlackCheck' : ''}`} id={sub.id}><IoCheckmark style={{ pointerEvents: 'none', color: 'white' }} /></span>
                                                         <span className="CategoryName" id={sub.id}>{sub.name}</span>
                                                     </div>
@@ -379,37 +493,70 @@ const AdminInput = ({ itemChange }) => {
                             </div>
                         </>
                     }
+                    {Array.from({ length: sizesCount + addSizesCount }, (_, i) => (
+                        <div style={{ width: '100%' }} key={i}>
+                            <div className="InputClue MT5">Размер {i + 1}</div>
+                            <div className="AdminInput">
+                                <div className="RowInput">
+                                    {category === 'shoes' ?
+                                        <>
+                                            <div className="SizeCol">
+                                                <div className="InputClue MT5">Размер EU*</div>
+                                                <input className="AdminInput" type="text" name="size_eu" id={i} value={sizes_eu[i]} onChange={handleChange} />
+                                            </div>
+                                            <div className="SizeCol">
+                                                <div className="InputClue MT5">Размер RU*</div>
+                                                <input className="AdminInput" type="text" name="size_ru" id={i} value={sizes_ru[i]} onChange={handleChange} />
+                                            </div>
+                                            <div className="SizeCol">
+                                                <div className="InputClue MT5">Размер US*</div>
+                                                <input className="AdminInput" type="text" name="size_us" id={i} value={sizes_us[i]} onChange={handleChange} />
+                                            </div>
+                                            <div className="SizeCol">
+                                                <div className="InputClue MT5">Размер UK*</div>
+                                                <input className="AdminInput" type="text" name="size_uk" id={i} value={sizes_uk[i]} onChange={handleChange} />
+                                            </div>
+                                            <div className="SizeCol">
+                                                <div className="InputClue MT5">Размер СМ*</div>
+                                                <input className="AdminInput" type="text" name="size_sm" id={i} value={sizes_sm[i]} onChange={handleChange} />
+                                            </div>
+                                        </>
+                                        : (category === 'accessories' || category === 'clothes') &&
+                                        <>
+                                            <div className="SizeCol">
+                                                <div className="InputClue MT5">Размер*</div>
+                                                <input className="AdminInput" type="text" name="size_clo" id={i} value={sizes_clo[i]} onChange={handleChange} />
+                                            </div>
+                                        </>
+                                    }
+                                    <div className="SizeCol">
+                                        <div className="InputClue MT5">Количество*</div>
+                                        <input className="AdminInput" type="text" name="count" id={i} value={counts[i]} onChange={handleChange} />
+                                    </div>
+                                    <div className="SizeCol">
+                                        <div className="InputClue MT5">Цена*</div>
+                                        <input className="AdminInput" type="text" name="price" id={i} value={prices[i]} onChange={handleChange} />
+                                    </div>
+                                    <div className="SizeCol">
+                                        <div className="InputClue MT5">Цена со скидкой</div>
+                                        <input className="AdminInput" type="text" name="sale" id={i} value={sales[i]} onChange={handleChange} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    <div
+                        className="AddSizeBtn"
+                        onClick={addSize}
+                    >
+                        Добавить размер
+                    </div>
                     <div className="InputClue MT5">Артикул*</div>
                     <input className="AdminInput" type="text" name="code" value={item.code} onChange={handleChange} />
                     <div className="InputClue MT5">Бренд*</div>
                     <input className="AdminInput" type="text" name="brand" value={item.brand} onChange={handleChange} />
                     <div className="InputClue MT5">Наименование*</div>
                     <input className="AdminInput" type="text" name="name" value={item.name} onChange={handleChange} />
-                    <div className="InputClue MT5">Количество*</div>
-                    <input className="AdminInput" type="text" name="count" value={item.count} onChange={handleChange} />
-                    {category === 'shoes' ?
-                        <>
-                            <div className="InputClue MT5">Размер EU*</div>
-                            <input className="AdminInput" type="text" name="size_eu" value={item.size_eu} onChange={handleChange} />
-                            <div className="InputClue MT5">Размер RU*</div>
-                            <input className="AdminInput" type="text" name="size_ru" value={item.size_ru} onChange={handleChange} />
-                            <div className="InputClue MT5">Размер US*</div>
-                            <input className="AdminInput" type="text" name="size_us" value={item.size_us} onChange={handleChange} />
-                            <div className="InputClue MT5">Размер UK*</div>
-                            <input className="AdminInput" type="text" name="size_uk" value={item.size_uk} onChange={handleChange} />
-                            <div className="InputClue MT5">Размер СМ*</div>
-                            <input className="AdminInput" type="text" name="size_sm" value={item.size_sm} onChange={handleChange} />
-                        </>
-                        : (category === 'accessories' || category === 'clothes') &&
-                        <>
-                            <div className="InputClue MT5">Размер одежды/аксессуара*</div>
-                            <input className="AdminInput" type="text" name="size_clo" value={item.size_clo} onChange={handleChange} />
-                        </>
-                    }
-                    <div className="InputClue MT5">Цена*</div>
-                    <input className="AdminInput" type="text" name="price" value={item.price} onChange={handleChange} />
-                    <div className="InputClue MT5">Цена со скидкой</div>
-                    <input className="AdminInput" type="text" name="sale" value={item.sale} onChange={handleChange} />
                     {category === 'shoes' &&
                         <>
                             <div className="InputClue MT5">Модель</div>

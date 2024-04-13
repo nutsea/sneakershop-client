@@ -181,7 +181,7 @@ const Item = ({ startSearch, openCart }) => {
     useEffect(() => {
         fetchItem(id).then((data) => {
             setItem(data)
-            fetchImages(data.id).then((imgs) => {
+            fetchImages(data.code).then((imgs) => {
                 setImages(imgs)
             })
             fetchSame(data.code).then((data2) => {
@@ -211,10 +211,6 @@ const Item = ({ startSearch, openCart }) => {
 
     function capitalizeWords(sentence) {
         return sentence
-        // .toLowerCase()
-        // .split(' ')
-        // .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        // .join(' ');
     }
 
     const chooseSize = (e) => {
@@ -279,7 +275,7 @@ const Item = ({ startSearch, openCart }) => {
             }
             openCart()
             const cartList2 = JSON.parse(localStorage.getItem('cart'))
-            if (Array.isArray(cartList2) && cartList.length > 0) {
+            if (Array.isArray(cartList2) && cartList2.length > 0) {
                 fetchCart(cartList2).then(data => {
                     cartItems.setFullCart(data, cartList2)
                     let countsOfItems = {}
@@ -318,11 +314,6 @@ const Item = ({ startSearch, openCart }) => {
     }
 
     const showSizesTable = () => {
-        // setScrollPos(window.scrollY)
-        // document.querySelector('.SizesModal').setAttribute('style', `top: ${window.scrollY}px`)
-        // document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
-        // document.querySelector('.AppContent').classList.add('Lock')
-        // document.querySelector('.SizesModal').classList.add('VisibleSizes')
         document.querySelector('.SizesText').classList.toggle('SizesHidden')
     }
 
@@ -427,7 +418,7 @@ const Item = ({ startSearch, openCart }) => {
                                 :
                                 <div className="ItemPriceItem MT20">Доступен для заказа</div>
                             }
-                            {item.size_clo && item.size_clo !== 'null' ?
+                            {item.size_clo && item.size_clo !== '0' ?
                                 <div className="SizeTypes2 Centered">Размеры</div>
                                 :
                                 (item.size_eu &&
@@ -658,7 +649,7 @@ const Item = ({ startSearch, openCart }) => {
                                         <div className="BuyBtn" onClick={handleToCart}>
                                             {(chosenItem.size_clo || chosenItem.size_eu) &&
                                                 <>
-                                                    <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo && chosenItem.size_clo !== 'null' ? chosenItem.size_clo.toUpperCase() : (sizeType === 'eu') ? chosenItem.size_eu : (sizeType === 'ru') ? chosenItem.size_ru : (sizeType === 'us') ? chosenItem.size_us : (sizeType === 'uk') ? chosenItem.size_uk : chosenItem.size_sm}</div>
+                                                    <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo && chosenItem.size_clo !== '0' ? chosenItem.size_clo.toUpperCase() : (sizeType === 'eu') ? chosenItem.size_eu : (sizeType === 'ru') ? chosenItem.size_ru : (sizeType === 'us') ? chosenItem.size_us : (sizeType === 'uk') ? chosenItem.size_uk : chosenItem.size_sm}</div>
                                                     <div className="BuyLine"></div>
                                                 </>
                                             }
@@ -686,7 +677,6 @@ const Item = ({ startSearch, openCart }) => {
                                                             maxLength="15"
                                                             value={phoneNumber}
                                                             onChange={(e) => {
-                                                                // handlePhoneChange(e)
                                                                 handlePhone(e)
                                                             }}
                                                             onKeyDown={handleBackspace}
