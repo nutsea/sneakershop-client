@@ -620,10 +620,9 @@ export const App = observer(() => {
 
   useEffect(() => {
     let cartList = JSON.parse(localStorage.getItem('cart'))
-    console.log(cartList)
-    cartList = cartList.filter(j => j.size_type)
-    localStorage.setItem('cart', JSON.stringify(cartList))
     if (Array.isArray(cartList) && cartList.length > 0) {
+      cartList = cartList.filter(j => j.size_type)
+      localStorage.setItem('cart', JSON.stringify(cartList))
       fetchCart(cartList).then(data => {
         cartItems.setFullCart(data, cartList)
         let countsOfItems = {}
