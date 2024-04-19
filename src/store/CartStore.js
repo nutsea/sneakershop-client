@@ -1,5 +1,21 @@
 import { makeAutoObservable } from 'mobx'
 
+function mergeObjectsWithCount(arr) {
+    const counts = {};
+
+    arr.forEach(obj => {
+        const key = JSON.stringify(obj);
+        counts[key] = (counts[key] || 0) + 1;
+    });
+
+    const result = Object.entries(counts).map(([key, count]) => {
+        const obj = JSON.parse(key);
+        return { ...obj, count };
+    });
+
+    return result;
+}
+
 export default class CartStore {
     constructor() {
         this._cart = []
@@ -21,12 +37,22 @@ export default class CartStore {
     }
 
     setFullCart(cart, cartList) {
-        this._cart = cart
+        let newCart = mergeObjectsWithCount(cartList)
         let countsOfItems = {}
         for (let i of cart) {
-            let count = cartList.filter(item => item === i.id).length
+            let count = cartList.filter(item => item.id === i.id).length
             countsOfItems[i.id] = count
         }
+
+        for (let i of newCart) {
+            let same = cart.find(item => item.id === i.id)
+            i.size = same[`size_${i.size_type}`]
+            i.img = same.img
+            i.price = same.price
+            i.sale = same.sale
+            i.name = same.name
+        }
+        this._cart = newCart
         this._counts = countsOfItems
     }
 

@@ -80,7 +80,14 @@ export const fetchImages = async (code) => {
 
 export const fetchCart = async (idArr) => {
     if (idArr.length === 0) return []
-    const { data } = await $host.get('api/item/cart', { params: { idArr } })
+    const formattedArr = idArr.map(item => {
+        if (typeof item === 'string') {
+            return item.replace(/\b(?:eu|ru|us|sm|clo)\b/g, '');
+        } else {
+            return item;
+        }
+    });
+    const { data } = await $host.get('api/item/cart', { params: { idArr: formattedArr } })
     return data
 }
 

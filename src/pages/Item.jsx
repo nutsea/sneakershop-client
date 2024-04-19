@@ -11,14 +11,16 @@ import { IoIosArrowForward } from "react-icons/io";
 import { MdArrowOutward } from "react-icons/md";
 
 import arrow from '../assets/arr.png'
+import { observer } from "mobx-react-lite";
 
-const Item = ({ startSearch, openCart }) => {
+const Item = observer(({ startSearch, openCart }) => {
     const { id } = useParams()
     const [item, setItem] = useState(null)
     const [sameItems, setSameItems] = useState(null)
     const [price, setPrice] = useState(0)
     const [sale, setSale] = useState(0)
     const [chosenItem, setChosenItem] = useState(null)
+    const [sizeTypes, setSizeTypes] = useState(null)
     const [sizeType, setSizeType] = useState(null)
     const [images, setImages] = useState(null)
     const [nowImg, setNowImg] = useState(0)
@@ -29,6 +31,7 @@ const Item = ({ startSearch, openCart }) => {
     const [phoneNumber, setPhoneNumber] = useState('')
     const [sendNumber, setSendNumber] = useState('')
     const [isOrderDone, setIsOrderDone] = useState(false)
+    const [sizesCountState, setSizesCountState] = useState(5)
     const navigate = useNavigate()
 
     const handleSearch = () => {
@@ -197,7 +200,44 @@ const Item = ({ startSearch, openCart }) => {
                     setChosenItem(null)
                 }
                 if (data.category === 'shoes') {
-                    setSizeType('eu')
+                    let size_types = {
+                        size_eu: null,
+                        size_ru: null,
+                        size_us: null,
+                        size_uk: null,
+                        size_sm: null,
+                    }
+                    for (let i of data2) {
+                        if (i.size_sm) {
+                            size_types.size_sm = 1
+                            setSizeType('sm')
+                        }
+                        if (i.size_uk) {
+                            size_types.size_uk = 1
+                            setSizeType('uk')
+                        }
+                        if (i.size_us) {
+                            size_types.size_us = 1
+                            setSizeType('us')
+                        }
+                        if (i.size_ru) {
+                            size_types.size_ru = 1
+                            setSizeType('ru')
+                        }
+                        if (i.size_eu) {
+                            size_types.size_eu = 1
+                            setSizeType('eu')
+                        }
+                    }
+                    setSizeTypes(size_types)
+                    let count = 0
+                    for (let key in size_types) {
+                        if (size_types.hasOwnProperty(key) && size_types[key] !== null) {
+                            count++
+                        }
+                    }
+                    console.log(size_types, count)
+                    setSizesCountState(count)
                 } else {
                     setSizeType(null)
                 }
@@ -215,30 +255,6 @@ const Item = ({ startSearch, openCart }) => {
 
     const chooseSize = (e) => {
         setSizeType(e.target.id)
-        switch (e.target.id) {
-            case 'eu':
-                document.querySelector('.SizeUnderline').style.left = '0%'
-                break
-
-            case 'ru':
-                document.querySelector('.SizeUnderline').style.left = '20%'
-                break
-
-            case 'us':
-                document.querySelector('.SizeUnderline').style.left = '40%'
-                break
-
-            case 'uk':
-                document.querySelector('.SizeUnderline').style.left = '60%'
-                break
-
-            case 'sm':
-                document.querySelector('.SizeUnderline').style.left = '80%'
-                break
-
-            default:
-                break
-        }
     }
 
     const sortByEu = (array) => {
@@ -268,10 +284,10 @@ const Item = ({ startSearch, openCart }) => {
         if (chosenItem) {
             let cartList = JSON.parse(localStorage.getItem('cart'))
             if (Array.isArray(cartList)) {
-                cartList.push(chosenItem.id)
+                cartList.push({ size_type: sizeType || 'clo', id: chosenItem.id })
                 localStorage.setItem('cart', JSON.stringify(cartList))
             } else {
-                localStorage.setItem('cart', JSON.stringify([item.id]))
+                localStorage.setItem('cart', JSON.stringify([{ size_type: sizeType || 'clo', id: item.id }]))
             }
             openCart()
             const cartList2 = JSON.parse(localStorage.getItem('cart'))
@@ -315,15 +331,6 @@ const Item = ({ startSearch, openCart }) => {
 
     const showSizesTable = () => {
         document.querySelector('.SizesText').classList.toggle('SizesHidden')
-    }
-
-    const hideSizesTable = (e) => {
-        if (e.target.id !== 'sizes') {
-            document.querySelector('.AppContent').classList.remove('Lock')
-            window.scrollTo(0, scrollPos)
-            document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
-            document.querySelector('.SizesModal').classList.remove('VisibleSizes')
-        }
     }
 
     const clickToOrder = () => {
@@ -391,8 +398,8 @@ const Item = ({ startSearch, openCart }) => {
                                 </div>
                                 {images && images.map((img, i) => {
                                     return (
-                                        <div className={`SmallImg ${nowImg === i + 1 ? 'NowImg' : ''}`} onClick={() => handleClickImg(i + 1)}>
-                                            <img key={i} src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
+                                        <div key={i} className={`SmallImg ${nowImg === i + 1 ? 'NowImg' : ''}`} onClick={() => handleClickImg(i + 1)}>
+                                            <img src={process.env.REACT_APP_API_URL + img.name} alt={item.name} />
                                         </div>
                                     )
                                 })}
@@ -405,14 +412,14 @@ const Item = ({ startSearch, openCart }) => {
                                 <div className={`ItemSaleItem ${item.sale && item.count > 0 ? '' : 'InvisibleSale'}`}>Sale</div>
                             }
                             <div className="ItemNameItem">{capitalizeWords(item.name)}</div>
-                            {(sale && hasNotNull()) ?
+                            {(chosenItem && chosenItem.sale && hasNotNull()) ?
                                 <div className="ItemSaledPriceItem MT20">{chosenItem ? formatNumberWithSpaces(chosenItem.sale) : formatNumberWithSpaces(sale)} <span>₽</span></div>
                                 :
                                 <></>
                             }
                             {hasNotNull() ?
                                 <>
-                                    <div className={`ItemPriceItem MT10 FS20 Span16 FW400 ${item.sale && item.count > 0 && hasNotNull() ? 'Crossed' : ''}`}>{chosenItem ? formatNumberWithSpaces(chosenItem.price) : formatNumberWithSpaces(price)} <span>₽</span></div>
+                                    <div className={`ItemPriceItem MT10 FS20 Span16 FW400 ${chosenItem.sale && item.count > 0 && hasNotNull() ? 'Crossed' : ''}`}>{chosenItem ? formatNumberWithSpaces(chosenItem.price) : formatNumberWithSpaces(price)} <span>₽</span></div>
                                     <div className="NoTax">Все налоги и таможенные сборы включены. Стоимость доставки рассчитывается на этапе оформления заказа.</div>
                                 </>
                                 :
@@ -421,39 +428,32 @@ const Item = ({ startSearch, openCart }) => {
                             {item.size_clo && item.size_clo !== '0' ?
                                 <div className="SizeTypes2 Centered">Размеры</div>
                                 :
-                                (item.size_eu &&
-                                    <div className="SizeTypes2">
-                                        <div className={`SizeType ${sizeType === 'eu' ? 'ChosenSize' : ''}`} id="eu" onClick={chooseSize}>EU</div>
-                                        <div className={`SizeType ${sizeType === 'ru' ? 'ChosenSize' : ''}`} id="ru" onClick={chooseSize}>RU</div>
-                                        <div className={`SizeType ${sizeType === 'us' ? 'ChosenSize' : ''}`} id="us" onClick={chooseSize}>US</div>
-                                        <div className={`SizeType ${sizeType === 'uk' ? 'ChosenSize' : ''}`} id="uk" onClick={chooseSize}>UK</div>
-                                        <div className={`SizeType ${sizeType === 'sm' ? 'ChosenSize' : ''}`} id="sm" onClick={chooseSize}>CM</div>
-                                        <span className="SizeUnderline"></span>
-                                    </div>
-                                )
+                                <div className="SizeTypes2">
+                                    {sizeTypes.size_eu &&
+                                        <div style={{ width: `${sizesCountState !== 1 ? 100 / (sizesCountState - 1) : 100}%` }} className={`SizeType ${sizeType === 'eu' ? 'ChosenSize' : ''}`} id="eu" onClick={chooseSize}>EU</div>
+                                    }
+                                    {sizeTypes.size_ru &&
+                                        <div style={{ width: `${sizesCountState !== 1 ? 100 / (sizesCountState - 1) : 100}%` }} className={`SizeType 11 ${sizeType === 'ru' ? 'ChosenSize' : ''}`} id="ru" onClick={chooseSize}>RU</div>
+                                    }
+                                    {sizeTypes.size_us &&
+                                        <div style={{ width: `${sizesCountState !== 1 ? 100 / (sizesCountState - 1) : 100}%` }} className={`SizeType ${sizeType === 'us' ? 'ChosenSize' : ''}`} id="us" onClick={chooseSize}>US</div>
+                                    }
+                                    {sizeTypes.size_uk &&
+                                        <div style={{ width: `${sizesCountState !== 1 ? 100 / (sizesCountState - 1) : 100}%` }} className={`SizeType ${sizeType === 'uk' ? 'ChosenSize' : ''}`} id="uk" onClick={chooseSize}>UK</div>
+                                    }
+                                    {sizeTypes.size_sm &&
+                                        <div style={{ width: `${sizesCountState !== 1 ? 100 / (sizesCountState - 1) : 100}%` }} className={`SizeType ${sizeType === 'sm' ? 'ChosenSize' : ''}`} id="sm" onClick={chooseSize}>CM</div>
+                                    }
+                                </div>
                             }
                             <div className="SizesGrid">
                                 {sizeType === 'eu' ?
                                     <>
                                         {sameItems.map((item, i) => {
-                                            return (
-                                                <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
-                                                    <span>EU {item.size_eu}</span>
-                                                    {item.count !== 0 ?
-                                                        <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
-                                                        :
-                                                        <span className="GreyAsk">Запросить</span>
-                                                    }
-                                                </div>
-                                            )
-                                        })}
-                                    </>
-                                    : (sizeType === 'ru' ?
-                                        <>
-                                            {sameItems.map((item, i) => {
+                                            if (item.size_eu) {
                                                 return (
                                                     <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
-                                                        <span>RU {item.size_ru}</span>
+                                                        <span>EU {item.size_eu}</span>
                                                         {item.count !== 0 ?
                                                             <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                             :
@@ -461,14 +461,19 @@ const Item = ({ startSearch, openCart }) => {
                                                         }
                                                     </div>
                                                 )
-                                            })}
-                                        </>
-                                        : (sizeType === 'us' ?
-                                            <>
-                                                {sameItems.map((item, i) => {
+                                            } else return null
+                                        })}
+                                        {!sizeTypes.size_eu &&
+                                            <div style={{ marginLeft: 5 }}>В выбранной сетке нет размеров</div>
+                                        }
+                                    </>
+                                    : (sizeType === 'ru' ?
+                                        <>
+                                            {sameItems.map((item, i) => {
+                                                if (item.size_ru) {
                                                     return (
                                                         <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
-                                                            <span>US {item.size_us}</span>
+                                                            <span>RU {item.size_ru}</span>
                                                             {item.count !== 0 ?
                                                                 <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                                 :
@@ -476,14 +481,19 @@ const Item = ({ startSearch, openCart }) => {
                                                             }
                                                         </div>
                                                     )
-                                                })}
-                                            </>
-                                            : (sizeType === 'uk' ?
-                                                <>
-                                                    {sameItems.map((item, i) => {
+                                                } else return null
+                                            })}
+                                            {!sizeTypes.size_ru &&
+                                                <div style={{ marginLeft: 5 }}>В выбранной сетке нет размеров</div>
+                                            }
+                                        </>
+                                        : (sizeType === 'us' ?
+                                            <>
+                                                {sameItems.map((item, i) => {
+                                                    if (item.size_us) {
                                                         return (
                                                             <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
-                                                                <span>UK {item.size_uk}</span>
+                                                                <span>US {item.size_us}</span>
                                                                 {item.count !== 0 ?
                                                                     <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                                     :
@@ -491,14 +501,19 @@ const Item = ({ startSearch, openCart }) => {
                                                                 }
                                                             </div>
                                                         )
-                                                    })}
-                                                </>
-                                                : (sizeType === 'sm' ?
-                                                    <>
-                                                        {sameItems.map((item, i) => {
+                                                    } else return null
+                                                })}
+                                                {!sizeTypes.size_us &&
+                                                    <div style={{ marginLeft: 5 }}>В выбранной сетке нет размеров</div>
+                                                }
+                                            </>
+                                            : (sizeType === 'uk' ?
+                                                <>
+                                                    {sameItems.map((item, i) => {
+                                                        if (item.size_uk) {
                                                             return (
                                                                 <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
-                                                                    <span>CM {item.size_sm}</span>
+                                                                    <span>UK {item.size_uk}</span>
                                                                     {item.count !== 0 ?
                                                                         <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
                                                                         :
@@ -506,7 +521,31 @@ const Item = ({ startSearch, openCart }) => {
                                                                     }
                                                                 </div>
                                                             )
+                                                        } else return null
+                                                    })}
+                                                    {!sizeTypes.size_uk &&
+                                                        <div style={{ marginLeft: 5 }}>В выбранной сетке нет размеров</div>
+                                                    }
+                                                </>
+                                                : (sizeType === 'sm' ?
+                                                    <>
+                                                        {sameItems.map((item, i) => {
+                                                            if (item.size_sm) {
+                                                                return (
+                                                                    <div key={i} className={`SizeBtn ${chosenItem === item ? 'ChosenBtn' : ''} ${item.count !== 0 ? 'BGGrey' : ''}`} onClick={() => handleChooseSize(item)}>
+                                                                        <span>CM {item.size_sm}</span>
+                                                                        {item.count !== 0 ?
+                                                                            <span className={`RedPrice ${item.sale ? 'RedSale' : ''}`}>{item.sale ? formatNumberWithSpaces(item.sale) : formatNumberWithSpaces(item.price)} ₽ <MdDone className="GreenCheck" /></span>
+                                                                            :
+                                                                            <span className="GreyAsk">Запросить</span>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                            } else return null
                                                         })}
+                                                        {!sizeTypes.size_sm &&
+                                                            <div style={{ marginLeft: 5 }}>В выбранной сетке нет размеров</div>
+                                                        }
                                                     </>
                                                     :
                                                     <>
@@ -533,121 +572,32 @@ const Item = ({ startSearch, openCart }) => {
                                     )
                                 }
                             </div>
-                            <div className="SizesInfo" onClick={showSizesTable}>
-                                <span className="BlackCircle">i</span>
-                                <span className="Underlined">Как выбрать размер?</span>
-                            </div>
-                            <div className="SizesText SizesHidden">
-                                <p>
-                                    • Нужно встать на лист бумаги и обвести стопу. Далее замерить
-                                    расстояние от большого пальца до крайней точки пятки. Вы также можете
-                                    ориентироваться по значению в сантиметрах на размерной бирке внутри вашей обуви.
-                                </p>
-                                <p>
-                                    •Отличие европейского от российского размера:
-                                    Европейский больше российского на один размер.
-                                    Если у вас 38 RU, нужно выбирать 39 EU.
-                                </p>
-                            </div>
-                            <div className="SizesModal" onClick={hideSizesTable}>
-                                <div className="SizesTable" id="sizes">
-                                    <div id="sizes">Таблица размеров</div>
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td>EU</td>
-                                                <td>RU</td>
-                                                <td>US</td>
-                                                <td>UK</td>
-                                                <td>CM</td>
-                                            </tr>
-                                            <tr>
-                                                <td>36</td>
-                                                <td>35</td>
-                                                <td>4</td>
-                                                <td>3</td>
-                                                <td>23</td>
-                                            </tr>
-                                            <tr>
-                                                <td>37</td>
-                                                <td>36</td>
-                                                <td>5</td>
-                                                <td>4</td>
-                                                <td>23</td>
-                                            </tr>
-                                            <tr>
-                                                <td>38</td>
-                                                <td>37</td>
-                                                <td>6</td>
-                                                <td>5</td>
-                                                <td>24</td>
-                                            </tr>
-                                            <tr>
-                                                <td>39</td>
-                                                <td>38</td>
-                                                <td>7</td>
-                                                <td>6</td>
-                                                <td>25</td>
-                                            </tr>
-                                            <tr>
-                                                <td>40</td>
-                                                <td>39</td>
-                                                <td>8</td>
-                                                <td>7</td>
-                                                <td>26</td>
-                                            </tr>
-                                            <tr>
-                                                <td>41</td>
-                                                <td>40</td>
-                                                <td>9</td>
-                                                <td>8</td>
-                                                <td>27</td>
-                                            </tr>
-                                            <tr>
-                                                <td>42</td>
-                                                <td>41</td>
-                                                <td>10</td>
-                                                <td>9</td>
-                                                <td>28</td>
-                                            </tr>
-                                            <tr>
-                                                <td>43</td>
-                                                <td>42</td>
-                                                <td>11</td>
-                                                <td>10</td>
-                                                <td>29</td>
-                                            </tr>
-                                            <tr>
-                                                <td>44</td>
-                                                <td>43</td>
-                                                <td>12</td>
-                                                <td>11</td>
-                                                <td>30</td>
-                                            </tr>
-                                            <tr>
-                                                <td>45</td>
-                                                <td>44</td>
-                                                <td>13</td>
-                                                <td>12</td>
-                                                <td>31</td>
-                                            </tr>
-                                            <tr>
-                                                <td>46</td>
-                                                <td>45</td>
-                                                <td>14</td>
-                                                <td>13</td>
-                                                <td>32</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            {item.category === 'shoes' &&
+                                <>
+                                    <div className="SizesInfo" onClick={showSizesTable}>
+                                        <span className="BlackCircle">i</span>
+                                        <span className="Underlined">Как выбрать размер?</span>
+                                    </div>
+                                    <div className="SizesText SizesHidden">
+                                        <p>
+                                            • Нужно встать на лист бумаги и обвести стопу. Далее замерить
+                                            расстояние от большого пальца до крайней точки пятки. Вы также можете
+                                            ориентироваться по значению в сантиметрах на размерной бирке внутри вашей обуви.
+                                        </p>
+                                        <p>
+                                            • Отличие европейского от российского размера:
+                                            Европейский больше российского на один размер.
+                                            Если у вас 38 RU, нужно выбирать 39 EU.
+                                        </p>
+                                    </div>
+                                </>
+                            }
                             <div className="ItemBuy">
                                 <div className="QualityItem">Товар прошел проверку на качество и оригинальность</div>
                                 {chosenItem ?
                                     <>
                                         <div className="BuyBtn" onClick={handleToCart}>
-                                            {(chosenItem.size_clo || chosenItem.size_eu) &&
+                                            {(chosenItem.size_clo || sizesCountState > 0) &&
                                                 <>
                                                     <div className="BuySize">{sizeType && (sizeType !== 'sm' ? sizeType.toUpperCase() : 'СМ')} {chosenItem.size_clo && chosenItem.size_clo !== '0' ? chosenItem.size_clo.toUpperCase() : (sizeType === 'eu') ? chosenItem.size_eu : (sizeType === 'ru') ? chosenItem.size_ru : (sizeType === 'us') ? chosenItem.size_us : (sizeType === 'uk') ? chosenItem.size_uk : chosenItem.size_sm}</div>
                                                     <div className="BuyLine"></div>
@@ -780,6 +730,6 @@ const Item = ({ startSearch, openCart }) => {
             }
         </div>
     )
-}
+})
 
 export default Item

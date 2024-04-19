@@ -289,7 +289,6 @@ export const App = observer(() => {
   const showItemsTab = (id) => {
     let delimiter = Math.ceil(windowWidth / 300)
     let maxHeight
-    console.log(1)
     switch (id) {
       case 'shoes':
         maxHeight = Math.ceil(shoesSub.length / delimiter) * 26.68
@@ -489,36 +488,67 @@ export const App = observer(() => {
     return sum
   }
 
-  const countPlus = (id) => {
-    let count = cartItems.counts[id]
-    cartItems.setCounts({ ...cartItems.counts, [id]: count + 1 })
-    const cartList = JSON.parse(localStorage.getItem('cart'))
+  const countPlus = (item) => {
+    let cartList = JSON.parse(localStorage.getItem('cart')) || []
     if (Array.isArray(cartList)) {
-      cartList.push(id)
+      cartList.push({ size_type: item.size_type, id: item.id })
       localStorage.setItem('cart', JSON.stringify(cartList))
     } else {
-      localStorage.setItem('cart', JSON.stringify([id]))
+      cartList.push({ size_type: item.size_type, id: item.id })
+      localStorage.setItem('cart', JSON.stringify([{ size_type: item.size_type, id: item.id }]))
     }
-  }
-
-  const countMinus = (id) => {
-    let count = cartItems.counts[id]
-    if (count > 1) {
-      cartItems.setCounts({ ...cartItems.counts, [id]: count - 1 })
-      const cartList = JSON.parse(localStorage.getItem('cart'))
-      if (Array.isArray(cartList)) {
-        let index = cartList.indexOf(id)
-        cartList.splice(index, 1)
-        localStorage.setItem('cart', JSON.stringify(cartList))
+    fetchCart(cartList).then(data => {
+      cartItems.setFullCart(data, cartList)
+      let countsOfItems = {}
+      for (let i of data) {
+        let count = cartList.filter(item => item === i.id).length
+        countsOfItems[i.id] = count
       }
-    }
+      let sum = 0
+      for (let key in countsOfItems) {
+        let item = data.filter(i => i.id === Number(key))
+        if (item[0])
+          sum += item[0].sale ? item[0].sale * countsOfItems[key] : item[0].price * countsOfItems[key]
+      }
+      setCartCost(sum)
+    })
   }
 
-  const deleteFromCart = (id) => {
-    console.log(id)
+  const countMinus = (size_type, id) => {
+    let cartList = JSON.parse(localStorage.getItem('cart'))
+    if (Array.isArray(cartList)) {
+      const indexToRemove = cartList.findIndex(i => (id === i.id && size_type === i.size_type));
+      if (indexToRemove !== -1) {
+        cartList.splice(indexToRemove, 1);
+      }
+      localStorage.setItem('cart', JSON.stringify(cartList))
+    }
+    fetchCart(cartList).then(data => {
+      cartItems.setFullCart(data, cartList)
+      let countsOfItems = {}
+      for (let i of data) {
+        let count = cartList.filter(item => item === i.id).length
+        countsOfItems[i.id] = count
+      }
+      let sum = 0
+      for (let key in countsOfItems) {
+        let item = data.filter(i => i.id === Number(key))
+        if (item[0])
+          sum += item[0].sale ? item[0].sale * countsOfItems[key] : item[0].price * countsOfItems[key]
+      }
+      setCartCost(sum)
+    })
+  }
+
+  const deleteFromCart = (item) => {
     let cartList = JSON.parse(localStorage.getItem('cart'))
     if (Array.isArray(cartList) && cartList.length > 0) {
-      cartList = cartList.filter(item => item !== id)
+      for (let i of cartList) {
+        if (i.id === item.id && i.size_type === item.size_type) {
+          console.log(i, ' ', item.size_type)
+        }
+      }
+      cartList = cartList.filter(i => !(Number(i.id) === Number(item.id) && i.size_type === item.size_type))
       localStorage.setItem('cart', JSON.stringify(cartList))
       fetchCart(cartList).then(data => {
         cartItems.setFullCart(data, cartList)
@@ -665,16 +695,12 @@ export const App = observer(() => {
           <div className='BurgerMenu'>
             <div className='BurgerScroll BurgerMain'>
               <nav className="HeaderBurgerNav">
-                <li className='BurgerNavBtn' id='/news' onClick={handleNavigate}><span>НОВИНКИ</span><img src={arrow} alt="" /></li>
+                <li className='BurgerNavBtn' id='/news' onClick={handleNavigate}><span id='/news'>НОВИНКИ</span><img src={arrow} id='/news' alt="" /></li>
                 <li className='BurgerNavBtn' onClick={showBurgerBrands}><span>БРЕНДЫ</span><img src={arrow} alt="" /></li>
-                <li className='BurgerNavBtn' id="/catalogue/shoes" onClick={handleNavigate}><span>ОБУВЬ</span><img src={arrow} alt="" /></li>
-                <li className='BurgerNavBtn' id="/catalogue/clothes" onClick={handleNavigate}><span>ОДЕЖДА</span><img src={arrow} alt="" /></li>
+                <li className='BurgerNavBtn' id="/catalogue/shoes" onClick={handleNavigate}><span id="/catalogue/shoes">ОБУВЬ</span><img src={arrow} id="/catalogue/shoes" alt="" /></li>
+                <li className='BurgerNavBtn' id="/catalogue/clothes" onClick={handleNavigate}><span id="/catalogue/clothes">ОДЕЖДА</span><img src={arrow} id="/catalogue/clothes" alt="" /></li>
                 <li className='BurgerNavBtn' id="/catalogue/accessories" onClick={handleNavigate}><span>АКСЕССУАРЫ</span><img src={arrow} alt="" /></li>
-                <li className='HeaderLiRed BurgerNavBtn' id='/catalogue/all/all/all/sale' onClick={handleNavigate}><span>SALE</span><img src={arrow} alt="" /></li>
-                {/* <li></li>
-                <li></li>
-                <li></li>
-                <li></li> */}
+                <li className='HeaderLiRed BurgerNavBtn' id='/catalogue/all/all/all/sale' onClick={handleNavigate}><span id='/catalogue/all/all/all/sale'>SALE</span><img src={arrow} id='/catalogue/all/all/all/sale' alt="" /></li>
               </nav>
             </div>
             <div className='BurgerBack' onClick={hideBurgerBrands}><img src={arrow} alt="" /></div>
@@ -682,26 +708,6 @@ export const App = observer(() => {
               <nav className="HeaderBurgerNav">
                 {brands.length > 0 ?
                   <>
-                    {/* {brands.length > 0 && brands.map((brand, i) =>
-                      // <li key={i} id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>{convertToCapital(brand.brand)}</li>
-                      <li key={i} id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>{brand.brand}</li>
-                    )} */}
-                    {/* {brands.length > 0 && brands.map((brand, i) => (
-                      <div key={i}>
-                        {i === 0 || brand.brand[0] !== brands[i - 1].brand[0] ? (
-                          <div className={`${i === 0 ? '' : 'BrandLetterSection'}`}>
-                            <div className='BrandLetter'>{brand.brand[0].toUpperCase()}</div>
-                            <li key={i} className='BrandTop30' id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>
-                              {brand.brand}
-                            </li>
-                          </div>
-                        ) : (
-                          <li key={i} className='BrandTop30' id={`/catalogue/all/${brand.brand}`} onClick={handleNavigate}>
-                            {brand.brand}
-                          </li>
-                        )}
-                      </div>
-                    ))} */}
                     {brands.length > 0 && brands.map((brand, i) => (
                       <div key={i}>
                         {(i === 0 || !isNaN(parseInt(brand.brand[0]))) && (parseInt(brand.brand[0]) !== parseInt(brands[i - 1]?.brand[0])) ? (
@@ -855,21 +861,21 @@ export const App = observer(() => {
                               </div>
                               <div className='CartInfo' id="cart">
                                 <div className='CartName' id="cart">{item.name.toUpperCase()}</div>
-                                <div className='CartSize2' id="cart">{item.size_ru ? `RU ${item.size_ru}` : (item.size_clo ? item.size_clo.toUpperCase() : '')}</div>
+                                <div className='CartSize2' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size && item.size.toUpperCase()}</div>
                                 <div className='CartItemCount' id="cart">
-                                  <div className='CartPlus' id="cart" onClick={() => countMinus(item.id)}>
+                                  <div className='CartPlus' id="cart" onClick={() => countMinus(item.size_type, item.id)}>
                                     <AiOutlineMinus size={20} style={{ pointerEvents: 'none' }} />
                                   </div>
-                                  <span className='CartDigit' id="cart">{cartItems.counts[item.id]}</span>
-                                  <div className='CartMinus' id="cart" onClick={() => countPlus(item.id)}>
+                                  <span className='CartDigit' id="cart">{item.count}</span>
+                                  <div className='CartMinus' id="cart" onClick={() => countPlus(item)}>
                                     <AiOutlinePlus size={20} style={{ pointerEvents: 'none' }} />
                                   </div>
                                 </div>
                               </div>
-                              <div className='CartSize' id="cart">{item.size_ru ? `RU ${item.size_ru}` : (item.size_clo ? item.size_clo.toUpperCase() : '')}</div>
+                              <div className='CartSize' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size && item.size.toUpperCase()}</div>
                               <div className='CartItemEnd' id='cart'>
-                                <div className='CartCost' id="cart">{item.sale ? formatNumberWithSpaces(cartItems.counts[item.id] * item.sale) : formatNumberWithSpaces(cartItems.counts[item.id] * item.price)} ₽</div>
-                                <div className='ItemDelete' id='cart' onClick={() => deleteFromCart(item.id)}><PiTrashSimpleLight size={24} style={{ pointerEvents: 'none' }} /></div>
+                                <div className='CartCost' id="cart">{item.sale ? formatNumberWithSpaces(item.count * item.sale) : formatNumberWithSpaces(item.count * item.price)} ₽</div>
+                                <div className='ItemDelete' id='cart' onClick={() => deleteFromCart(item)}><PiTrashSimpleLight size={24} style={{ pointerEvents: 'none' }} /></div>
                               </div>
                             </div>
                           )
@@ -893,7 +899,6 @@ export const App = observer(() => {
                             maxLength="15"
                             value={phoneNumber}
                             onChange={(e) => {
-                              // handlePhoneChange(e)
                               handlePhone(e)
                             }}
                             onKeyDown={handleBackspace}
@@ -928,7 +933,6 @@ export const App = observer(() => {
             <button className="MobileCartBtn" onClick={showCart}>
               <CiShoppingCart size={34} />
               <div className="CartCount">{cartItems.counts && countsSum()}</div>
-              {/* <span className='CartCostSpan'>{cartCost ? formatNumberWithSpaces(cartCost) + ' ₽' : ''}</span> */}
             </button>
           </div>
         }

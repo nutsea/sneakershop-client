@@ -150,13 +150,6 @@ const AdminInput = ({ itemChange }) => {
 
         let images = []
 
-        if (name === 'size_eu' || name === 'size_ru' || name === 'size_us' || name === 'size_uk' || name === 'size_sm') {
-            newValue = ('' + newValue).replace(/[^0-9.]/g, '')
-            if (newValue.split('.').length > 2) {
-                newValue = newValue.split('.').slice(0, 2).join('.')
-            }
-        }
-
         if (name === 'price' || name === 'sale' || name === 'count') {
             newValue = ('' + newValue).replace(/\D/g, '')
         }
@@ -196,8 +189,10 @@ const AdminInput = ({ itemChange }) => {
 
             case 'size_clo':
                 tempArr = sizes_clo
-                tempArr[id] = newValue
-                setSizes_clo(tempArr)
+                if (newValue !== '0') {
+                    tempArr[id] = newValue;
+                    setSizes_clo(tempArr);
+                }
                 break
 
             case 'price':
@@ -280,7 +275,7 @@ const AdminInput = ({ itemChange }) => {
 
 
     const canCreate = () => {
-        if (item.category && item.code && item.brand && item.name && item.file) {
+        if (item.category && item.code && item.brand && item.name && item.file && item.price) {
             if (item.category === 'shoes') {
                 return true
             } else {
@@ -501,23 +496,23 @@ const AdminInput = ({ itemChange }) => {
                                     {category === 'shoes' ?
                                         <>
                                             <div className="SizeCol">
-                                                <div className="InputClue MT5">Размер EU*</div>
+                                                <div className="InputClue MT5">Размер EU</div>
                                                 <input className="AdminInput" type="text" name="size_eu" id={i} value={sizes_eu[i]} onChange={handleChange} />
                                             </div>
                                             <div className="SizeCol">
-                                                <div className="InputClue MT5">Размер RU*</div>
+                                                <div className="InputClue MT5">Размер RU</div>
                                                 <input className="AdminInput" type="text" name="size_ru" id={i} value={sizes_ru[i]} onChange={handleChange} />
                                             </div>
                                             <div className="SizeCol">
-                                                <div className="InputClue MT5">Размер US*</div>
+                                                <div className="InputClue MT5">Размер US</div>
                                                 <input className="AdminInput" type="text" name="size_us" id={i} value={sizes_us[i]} onChange={handleChange} />
                                             </div>
                                             <div className="SizeCol">
-                                                <div className="InputClue MT5">Размер UK*</div>
+                                                <div className="InputClue MT5">Размер UK</div>
                                                 <input className="AdminInput" type="text" name="size_uk" id={i} value={sizes_uk[i]} onChange={handleChange} />
                                             </div>
                                             <div className="SizeCol">
-                                                <div className="InputClue MT5">Размер СМ*</div>
+                                                <div className="InputClue MT5">Размер СМ</div>
                                                 <input className="AdminInput" type="text" name="size_sm" id={i} value={sizes_sm[i]} onChange={handleChange} />
                                             </div>
                                         </>
