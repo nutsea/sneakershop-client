@@ -189,6 +189,11 @@
     height: 100vh;
     min-width: 100vw;
     overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+    }
 }
 
 .BurgerMain, .BurgerBrands, .BurgerBack {
