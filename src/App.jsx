@@ -860,8 +860,9 @@ export const App = observer(() => {
                                 <img src={process.env.REACT_APP_API_URL + item.img} alt="item" id="cart" />
                               </div>
                               <div className='CartInfo' id="cart">
-                                <div className='CartName' id="cart">{item.name.toUpperCase()}</div>
-                                <div className='CartSize2' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size && item.size.toUpperCase()}</div>
+                                <div className='CartName' id="cart">{item.name?.toUpperCase()}</div>
+                                {/* <div className='CartSize2' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size && item.size.toUpperCase()}</div> */}
+                                <div className='CartSize2' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size}</div>
                                 <div className='CartItemCount' id="cart">
                                   <div className='CartPlus' id="cart" onClick={() => countMinus(item.size_type, item.id)}>
                                     <AiOutlineMinus size={20} style={{ pointerEvents: 'none' }} />
@@ -872,7 +873,8 @@ export const App = observer(() => {
                                   </div>
                                 </div>
                               </div>
-                              <div className='CartSize' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size && item.size.toUpperCase()}</div>
+                              {/* <div className='CartSize' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size && item.size.toUpperCase()}</div> */}
+                              <div className='CartSize' id="cart">{item.size_type && item.size_type !== 'clo' && item.size_type.toUpperCase()} {item.size}</div>
                               <div className='CartItemEnd' id='cart'>
                                 <div className='CartCost' id="cart">{item.sale ? formatNumberWithSpaces(item.count * item.sale) : formatNumberWithSpaces(item.count * item.price)} ₽</div>
                                 <div className='ItemDelete' id='cart' onClick={() => deleteFromCart(item)}><PiTrashSimpleLight size={24} style={{ pointerEvents: 'none' }} /></div>

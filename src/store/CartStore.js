@@ -46,12 +46,20 @@ export default class CartStore {
 
         for (let i of newCart) {
             let same = cart.find(item => item.id === i.id)
-            i.size = same[`size_${i.size_type}`]
-            i.img = same.img
-            i.price = same.price
-            i.sale = same.sale
-            i.name = same.name
+            console.log(cart)
+            if (same) {
+                i.size = same[`size_${i.size_type}`]
+                i.img = same.img
+                i.price = same.price
+                i.sale = same.sale
+                i.name = same.name
+            } else {
+                let oldCart = JSON.parse(localStorage.getItem('cart'))
+                oldCart = oldCart.filter(j => j.id !== i.id)
+                localStorage.setItem('cart', JSON.stringify(oldCart))
+            }
         }
+
         this._cart = newCart
         this._counts = countsOfItems
     }

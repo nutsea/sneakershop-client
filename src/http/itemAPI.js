@@ -8,6 +8,7 @@ export const fetchBrands = async () => {
 export const fetchShoesRnd = async () => {
     const category = 'shoes'
     const { data } = await $host.get('api/item/rndcategory', { params: { category } })
+    console.log(data)
     return data
 }
 
@@ -86,7 +87,8 @@ export const fetchCart = async (idArr) => {
         } else {
             return item;
         }
-    });
+    })
+    console.log(formattedArr)
     const { data } = await $host.get('api/item/cart', { params: { idArr: formattedArr } })
     return data
 }
