@@ -374,6 +374,13 @@
         width: 0;
     }
 
+    &::-webkit-scrollbar-thumb {
+        display: none;
+        width: 0;
+    }
+
+    scrollbar-width: 0;
+
     &::before {
         content: '';
         position: absolute;
@@ -848,6 +855,13 @@
             display: none;
             width: 0;
         }
+
+        &::-webkit-scrollbar-thumb {
+            display: none;
+            width: 0;
+        }
+    
+        scrollbar-width: 0;
     }
 
     .SmallImg {

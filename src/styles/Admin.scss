@@ -317,6 +317,13 @@
         display: none;
         width: 0;
     }
+    
+    &::-webkit-scrollbar-thumb {
+        display: none;
+        width: 0;
+    }
+
+    scrollbar-width: 0;
 }
 
 table {
