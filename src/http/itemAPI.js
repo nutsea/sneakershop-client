@@ -8,7 +8,6 @@ export const fetchBrands = async () => {
 export const fetchShoesRnd = async () => {
     const category = 'shoes'
     const { data } = await $host.get('api/item/rndcategory', { params: { category } })
-    console.log(data)
     return data
 }
 

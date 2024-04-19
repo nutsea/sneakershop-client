@@ -236,7 +236,6 @@ const Item = observer(({ startSearch, openCart }) => {
                             count++
                         }
                     }
-                    console.log(size_types, count)
                     setSizesCountState(count)
                 } else {
                     setSizeType(null)

@@ -44,9 +44,13 @@ export default class CartStore {
             countsOfItems[i.id] = count
         }
 
+        // let oldCart = JSON.parse(localStorage.getItem('cart'))
+        // oldCart = oldCart.filter(j => !j.size_type)
+        // localStorage.setItem('cart', JSON.stringify(oldCart))
+
         for (let i of newCart) {
             let same = cart.find(item => item.id === i.id)
-            console.log(cart)
+            console.log(cartList)
             if (same) {
                 i.size = same[`size_${i.size_type}`]
                 i.img = same.img

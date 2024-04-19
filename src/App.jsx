@@ -543,11 +543,6 @@ export const App = observer(() => {
   const deleteFromCart = (item) => {
     let cartList = JSON.parse(localStorage.getItem('cart'))
     if (Array.isArray(cartList) && cartList.length > 0) {
-      for (let i of cartList) {
-        if (i.id === item.id && i.size_type === item.size_type) {
-          console.log(i, ' ', item.size_type)
-        }
-      }
       cartList = cartList.filter(i => !(Number(i.id) === Number(item.id) && i.size_type === item.size_type))
       localStorage.setItem('cart', JSON.stringify(cartList))
       fetchCart(cartList).then(data => {
@@ -624,7 +619,10 @@ export const App = observer(() => {
   }, [windowWidth, windowHeight, brands.length])
 
   useEffect(() => {
-    const cartList = JSON.parse(localStorage.getItem('cart'))
+    let cartList = JSON.parse(localStorage.getItem('cart'))
+    console.log(cartList)
+    cartList = cartList.filter(j => j.size_type)
+    localStorage.setItem('cart', JSON.stringify(cartList))
     if (Array.isArray(cartList) && cartList.length > 0) {
       fetchCart(cartList).then(data => {
         cartItems.setFullCart(data, cartList)
