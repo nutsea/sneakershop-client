@@ -398,7 +398,7 @@ export const App = observer(() => {
 
   const showCart = () => {
     document.querySelector('.CartContainer').classList.remove('Opacity0')
-    document.querySelector('.CartContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(30px);')
+    document.querySelector('.CartContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);')
     document.querySelector('.CartBlock').setAttribute('style', 'transform: translateX(0);')
     setScrollPos(window.scrollY)
     document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
@@ -409,7 +409,7 @@ export const App = observer(() => {
 
   const showSearch = () => {
     document.querySelector('.SearchContainer').classList.remove('Opacity0')
-    document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(30px);')
+    document.querySelector('.SearchContainer').setAttribute('style', 'z-index: 11; background-color: rgb(21, 21, 21, 0.3); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);')
     document.querySelector('.SearchBlock').setAttribute('style', 'transform: translateY(0);')
     setScrollPos(window.scrollY)
     document.querySelector('.AppContent').setAttribute('style', `transform: translateY(-${window.scrollY}px)`)
@@ -435,13 +435,13 @@ export const App = observer(() => {
         setIsOrdering(false)
         setOrderDone(false)
       }
-      document.querySelector('.CartContainer').setAttribute('style', 'z-index: 11; background-color: transparent; backdrop-filter: blur(0);')
+      document.querySelector('.CartContainer').setAttribute('style', 'z-index: 11; background-color: transparent; backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);')
       document.querySelector('.CartBlock').setAttribute('style', 'transform: translateX(100vw);')
       document.querySelector('.AppContent').classList.remove('Lock')
       window.scrollTo(0, scrollPos)
       document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
       setTimeout(() => {
-        document.querySelector('.CartContainer').setAttribute('style', 'z-index: -1000; background-color: transparent; backdrop-filter: blur(0);')
+        document.querySelector('.CartContainer').setAttribute('style', 'z-index: -1000; background-color: transparent; backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);')
         document.querySelector('.CartContainer').classList.add('Opacity0')
       }, 334)
     }
@@ -449,13 +449,13 @@ export const App = observer(() => {
 
   const hideSearch = (e) => {
     if (!e || e.target.id !== 'search') {
-      document.querySelector('.SearchContainer')?.setAttribute('style', 'z-index: 11; background-color: transparent; backdrop-filter: blur(0);')
+      document.querySelector('.SearchContainer')?.setAttribute('style', 'z-index: 11; background-color: transparent; backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);')
       document.querySelector('.SearchBlock')?.setAttribute('style', 'transform: translateY(-280px);')
       document.querySelector('.AppContent')?.classList.remove('Lock')
       window.scrollTo(0, scrollPos)
       document.querySelector('.AppContent').setAttribute('style', 'transform: translateY(0)')
       setTimeout(() => {
-        document.querySelector('.SearchContainer')?.setAttribute('style', 'z-index: -1000; background-color: transparent; backdrop-filter: blur(0);')
+        document.querySelector('.SearchContainer')?.setAttribute('style', 'z-index: -1000; background-color: transparent; backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0);')
         document.querySelector('.SearchContainer')?.classList.add('Opacity0')
       }, 334)
       setIsSearch(false)
